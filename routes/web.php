@@ -15,14 +15,14 @@ Route::middleware('guest')->group(function () {
 
 Route::middleware('auth')->group(function () {
     Route::get('/logout', [LoginController::class, 'logout'])->name('logout');
-    
+
     Route::get('/dashboard', [DashboardController::class, 'index'])
          ->name('dashboard');
-    
+
     Route::get('/admin/dashboard', [DashboardController::class, 'adminDashboard'])
          ->name('admin.dashboard')
-         ->middleware('can:IsAdmin');
-    
+         ->middleware('IsAdmin');
+
     Route::get('/user/dashboard', [DashboardController::class, 'userDashboard'])
          ->name('user.dashboard');
 });
