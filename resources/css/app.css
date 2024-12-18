@@ -1,0 +1,150 @@
+.card-total-pajak {
+    background-color: #dff0d8;
+}
+
+.card-taget-realisasi {
+    background-color: #f2dede;
+    border-radius: 20px;
+}
+
+/* Container for better layout control */
+.custom-select-container {
+    position: relative;
+    display: inline-block;
+    width: fit-content;
+}
+
+/* Default Select Styling */
+.custom-select {
+    background-color: #a49296;
+    border-radius: 20px;
+    font-size: 14px;
+    color: white;
+    padding: 5px 10px;
+    border: none;
+    outline: none;
+    width: 50%; /* Default small width */
+    text-align: left;
+    /* appearance: none; */
+    /* -moz-appearance: none; */
+    /* -webkit-appearance: none; */
+    transition: all 0.3s ease;
+    white-space: nowrap;
+    overflow: hidden;
+}
+
+/* Arrow styling */
+/* .custom-arrow {
+    position: absolute;
+    top: 50%;
+    right: 10px;
+    transform: translateY(-50%);
+    font-size: 16px;
+    color: white;
+    pointer-events: none;
+    transition: transform 0.3s ease, content 0.3s ease;
+    content: "<";
+} */
+
+/* Focus state for select and arrow */
+.custom-select:focus + .custom-arrow {
+    content: "v"; /* Change arrow to 'v' */
+    transform: translateY(-50%) rotate(180deg); /* Optional rotation */
+}
+
+/* Change background on focus */
+.custom-select:focus {
+    background-color: #c2b69f;
+    width: fit-content; /* Expand to fit content */
+    min-width: 100%; /* Ensure minimum width */
+    outline: none;
+}
+
+/* Dropdown options styling */
+.custom-select option {
+    background-color: #c2b69f;
+    color: black;
+    text-align: center;
+    padding: 5px;
+    border-bottom: 1px solid white;
+}
+
+.custom-select option:last-child {
+    border-bottom: none;
+}
+
+#tahun-pajak {
+    background-color: #e0e0e0;
+    border: none;
+    outline: none;
+    border-radius: 10px;
+}
+
+#masa-pajak {
+    background-color: #e0e0e0;
+    border: none;
+    outline: none;
+    border-radius: 10px;
+}
+
+.chart-legend .legend-item {
+    display: flex;
+    align-items: center;
+    margin: 0 10px;
+}
+.chart-legend .legend-color {
+    width: 15px;
+    height: 15px;
+    margin-right: 5px;
+}
+
+.card-penerimaan {
+    background-color: #dfdfdf;
+    border-radius: 20px;
+}
+
+.table-container {
+    border: 2px solid green;
+    border-radius: 10px;    
+}
+
+.table th {
+    text-align: center;
+    vertical-align: middle;
+    border-top: 3px solid #525659 !important; /* Border atas */
+}
+
+.table td {
+    text-align: center;
+    vertical-align: middle;
+}
+
+.btn-custom {
+    border: none;
+    background-color: #D9D9D9 !important;
+    color: black;
+    border-radius: 25px !important;
+    padding: 5px 25px !important;
+}
+
+.btn-custom:hover {
+    background-color: #69D84E !important;
+    color: black;
+}
+
+.btn-cetak {
+    background-color: #1b2547 !important;
+    color: white !important;
+    border: none;
+    border-top-right-radius: 50px !important;
+    border-bottom-right-radius: 50px !important;
+    border-top-left-radius: 0 !important;
+    border-bottom-left-radius: 0 !important;
+    padding: 10px 20px;
+    font-size: 20px;
+    text-align: center;
+}
+
+.modal-header {
+    border-bottom: 2px solid black !important;
+}

@@ -3,7 +3,7 @@
 @section('content')
 <div class="container-fluid">
     <div class="row">
-        <div class="col-md-3 well" style="background-color: transparent; min-width: 250px; height: 480px;">
+        <div class="col-md-3 well">
             <form method="POST" action="{{ route('login') }}" class="form-horizontal">
                 @csrf
                 
@@ -58,10 +58,48 @@
                 </div>
             </form>
         </div>
-
-        <div class="col-md-9 well text-center" style="background-color: transparent; height:auto; min-height:480px;">
-            <img src="{{ asset('assets/img/semut-pemda.png') }}" style="height: 500px;" alt="Semut Pemda">
-        </div>
     </div>
 </div>
+@endsection
+
+@section('styles')
+<style>
+    body {
+        height: 90vh; /* Membuat body memiliki tinggi 100% dari viewport */
+        margin: 0;
+        display: flex;
+        justify-content: center; /* Memusatkan secara horizontal */
+        align-items: center; /* Memusatkan secara vertikal */
+        background-image: url('{{ asset("assets/img/semut-pemda.png") }}');
+        background-size: contain;
+        background-repeat: no-repeat;
+        background-position: center 90px;
+    }
+
+    .container-fluid {
+        width: 100%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .row {
+        width: 100%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .col-md-3 {
+        background-color: rgba(255, 255, 255, 0.4); /* Warna putih dengan transparansi 80% */
+        min-width: 450px;
+        height: auto;
+        max-width: 400px;
+        padding: 20px;
+        box-sizing: border-box;
+        border-radius: 10px; /* Membuat sudut kolom login menjadi melengkung */
+        backdrop-filter: blur(10px); /* Menambahkan efek blur pada latar belakang */
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Memberikan bayangan halus di sekitar form */
+    }
+</style>
 @endsection
