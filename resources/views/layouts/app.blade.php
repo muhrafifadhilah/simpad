@@ -1,11 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <!-- ... -->
-    @yield('styles')
-</head>
-<!-- ... -->
-<head>
     <meta charset="utf-8">
     <title>{{ config('app.name', 'SIMPAD Kabupaten Bogor') }}</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -20,96 +15,152 @@
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    
+
     <style>
-        body { 
-            padding-top: 70px; 
-            padding-bottom: 40px; 
+        body {
+            display: flex;
+            min-height: 100vh;
+            margin: 0;
+            flex-direction: column;
         }
-        .navbar-custom {
+
+        .navbar {
             background-color: #00A8A8;
+            color: #fff;
+            padding: 10px 20px;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1050;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
         }
-        .navbar-custom .nav-link {
+
+        .navbar .user-info {
+            display: flex;
+            align-items: center;
+        }
+
+        .navbar .dropdown-menu {
+            background-color: #007979;
+        }
+
+        .sidebar {
+            width: 250px;
+            background-color: #00A8A8;
             color: #E6E6E6;
+            position: fixed;
+            top: 50px; /* Offset for navbar height */
+            bottom: 0;
+            left: 0;
+            padding: 20px;
+            overflow-y: auto;
+        }
+
+        .sidebar a {
+            color: #E6E6E6;
+            text-decoration: none;
+            display: block;
+            padding: 10px 15px;
+            margin-bottom: 5px;
+            border-radius: 5px;
+            transition: background-color 0.2s;
+        }
+
+        .sidebar a:hover {
+            background-color: #007979;
+        }
+
+        .sidebar .dropdown-menu a {
+            padding-left: 30px;
+        }
+
+        .content {
+            margin-left: 250px;
+            margin-top: 70px; /* Offset for navbar height */
+            padding: 20px;
+            flex-grow: 1;
         }
     </style>
 </head>
 <body>
-    
-        <nav class="navbar navbar-expand-lg navbar-custom fixed-top">
-            <div class="container-fluid">
-                <a class="navbar-brand" href="{{ url('/') }}">
-                    <img src="{{ asset('assets/img/logo-header.png') }}" alt="logo-header" style="height:68px;">
-                </a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-                @if (Auth::user())
-                <div class="collapse navbar-collapse" id="navbarNav">
-                    <ul class="navbar-nav ms-auto">
-                        <li class="nav-item">
-                            <a class="nav-link" href="{{ url('/') }}">Beranda</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="{{ url('/b-tax') }}">B-TAX</a>
-                        </li>
-                        <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle" href="#" id="pendaftaranDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                Pendaftaran
-                            </a>
-                            <ul class="dropdown-menu" aria-labelledby="pendaftaranDropdown">
-                                <li><a class="dropdown-item" href="{{ url('/pendaftaran/subjek-pajak') }}">Subjek Pajak</a></li>
-                                <li><a class="dropdown-item" href="{{ url('/pendaftaran/objek-pajak') }}">Objek Pajak</a></li>
-                                <li><a class="dropdown-item" href="{{ url('/pendaftaran/ektentifikasi') }}">Ektentifikasi</a></li>
-                                <li><a class="dropdown-item" href="{{ url('/pendaftaran/laporan') }}">Laporan</a></li>
-                            </ul>
-                        </li>
-                        <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle" href="#" id="pendataanDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                Pendataan
-                            </a>
-                            <ul class="dropdown-menu" aria-labelledby="pendataanDropdown">
-                                <li><a class="dropdown-item" href="{{ url('/pendataan/option1') }}">Option 1</a></li>
-                                <li><a class="dropdown-item" href="{{ url('/pendataan/option2') }}">Option 2</a></li>
-                            </ul>
-                        </li>
-                        <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle" href="#" id="penerimaanDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                Penerimaan
-                            </a>
-                            <ul class="dropdown-menu" aria-labelledby="penerimaanDropdown">
-                                <li><a class="dropdown-item" href="{{ url('/penerimaan/option1') }}">Option 1</a></li>
-                                <li><a class="dropdown-item" href="{{ url('/penerimaan/option2') }}">Option 2</a></li>
-                            </ul>
-                        </li>
-                        <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle" href="#" id="penagihanDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                Penagihan
-                            </a>
-                            <ul class="dropdown-menu" aria-labelledby="penagihanDropdown">
-                                <li><a class="dropdown-item" href="{{ url('/penagihan/option1') }}">Option 1</a></li>
-                                <li><a class="dropdown-item" href="{{ url('/penagihan/option2') }}">Option 2</a></li>
-                            </ul>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="{{ url('/pelayanan') }}">Pelayanan</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="{{ url('/referensi') }}">Referensi</a>
+
+    <!-- Navbar -->
+    <nav class="navbar">
+        <div class="brand">
+            <img src="{{ asset('assets/img/logo-header.png') }}" alt="logo-header" style="height: 45px;">
+        </div>
+        <div class="user-info">
+            @if (Auth::user())
+                <div class="dropdown ms-3">
+                    <span class="dropdown-toggle text-white" href="#" data-bs-toggle="dropdown">Hi, {{ Auth::user()->name }}</span>
+                    <ul class="dropdown-menu dropdown-menu-end">
+                        <li><a class="dropdown-item" href="{{ url('/profile') }}" style="color: white;">Profil</a></li>
+                        <li>
+                            <form method="POST" action="{{ route('logout') }}">
+                                @csrf
+                                <button type="submit" class="dropdown-item" style="color: white;">Logout</button>
+                            </form>
                         </li>
                     </ul>
                 </div>
-                @endif
-        </nav>
+            @endif
+        </div>
+    </nav>
 
-    <div class="content mt-5">
+    <!-- Sidebar -->
+    <div class="sidebar">
+        @if (Auth::user())
+        <a href="{{ url('/') }}">Executive Summary</a>
+        <a href="{{ url('/b-tax') }}">B-TAX</a>
+        <div class="dropdown">
+            <a href="#" class="dropdown-toggle" data-bs-toggle="dropdown">Pendaftaran</a>
+            <ul class="dropdown-menu">
+                <li><a class="dropdown-item" href="{{ url('/pendaftaran/subjek-pajak') }}">Subjek Pajak</a></li>
+                <li><a class="dropdown-item" href="{{ url('/pendaftaran/objek-pajak') }}">Objek Pajak</a></li>
+                <li><a class="dropdown-item" href="{{ url('/pendaftaran/ektentifikasi') }}">Ektentifikasi</a></li>
+                <li><a class="dropdown-item" href="{{ url('/pendaftaran/laporan') }}">Laporan</a></li>
+            </ul>
+        </div>
+        <div class="dropdown">
+            <a href="#" class="dropdown-toggle" data-bs-toggle="dropdown">Pendataan</a>
+            <ul class="dropdown-menu">
+                <li><a class="dropdown-item" href="{{ url('/pendataan/option1') }}">Option 1</a></li>
+                <li><a class="dropdown-item" href="{{ url('/pendataan/option2') }}">Option 2</a></li>
+            </ul>
+        </div>
+        <div class="dropdown">
+            <a href="#" class="dropdown-toggle" data-bs-toggle="dropdown">Penerimaan</a>
+            <ul class="dropdown-menu">
+                <li><a class="dropdown-item" href="{{ url('/penerimaan/option1') }}">Option 1</a></li>
+                <li><a class="dropdown-item" href="{{ url('/penerimaan/option2') }}">Option 2</a></li>
+            </ul>
+        </div>
+        <div class="dropdown">
+            <a href="#" class="dropdown-toggle" data-bs-toggle="dropdown">Penagihan</a>
+            <ul class="dropdown-menu">
+                <li><a class="dropdown-item" href="{{ url('/penagihan/option1') }}">Option 1</a></li>
+                <li><a class="dropdown-item" href="{{ url('/penagihan/option2') }}">Option 2</a></li>
+            </ul>
+        </div>
+            <a href="{{ url('/pelayanan') }}">Pelayanan</a>
+            <a href="{{ url('/referensi') }}">Referensi</a>
+        </div>
+        @endif
+    </div>
+
+    <!-- Main Content -->
+    <div class="content">
         @yield('content')
     </div>
 
-    <footer class="fixed-bottom text-center py-3 bg-light">
+    <!-- Footer -->
+    <footer class="text-center py-3 bg-light">
         <p class="text-muted">
             <strong>
-                <a href="{{ config('app.url') }}">© {{ config('app.name') }} {{ date('Y') }}</a>
+                <a href="{{ config('app.url') }}">&copy; {{ config('app.name') }} {{ date('Y') }}</a>
             </strong>
             | Page rendered in {{ round(microtime(true) - LARAVEL_START, 4) }} seconds
         </p>
