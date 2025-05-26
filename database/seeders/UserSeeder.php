@@ -23,8 +23,6 @@ class UserSeeder extends Seeder
         // Tambahkan pengguna dengan role admin
         User::create([
             'userid' => 'admin',
-            'name' => 'Administrator',
-            'email' => 'admin@example.com',
             'password' => Hash::make('password123'),
             'role_id' => $adminRole->id // Hubungkan dengan role admin
         ]);
@@ -32,8 +30,6 @@ class UserSeeder extends Seeder
         // Tambahkan pengguna dengan role user
         User::create([
             'userid' => 'user',
-            'name' => 'Regular User',
-            'email' => 'user@example.com',
             'password' => Hash::make('password123'),
             'role_id' => $userRole->id // Hubungkan dengan role user
         ]);

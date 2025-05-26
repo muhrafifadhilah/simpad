@@ -22,8 +22,6 @@ class User extends Authenticatable
     protected $fillable = [
         "userid",
         "role_id",
-        'name',
-        'email',
         'password',
     ];
 
@@ -50,6 +48,21 @@ class User extends Authenticatable
     public function role(): BelongsTo
     {
         return $this->belongsTo(Role::class);
+    }
+
+    public function groupUsers()
+    {
+        return $this->hasMany(GroupUser::class);
+    }
+
+    public function wps()
+    {
+        return $this->hasMany(Wp::class);
+    }
+
+    public function psis()
+    {
+        return $this->hasMany(Psi::class);
     }
 
     public static function validateCredentials($userid, $password)
