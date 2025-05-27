@@ -13,7 +13,6 @@ return new class extends Migration
     {
         Schema::create('groups_privileges', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('group_id')->constrained('groups_user')->onDelete('cascade');
             $table->string('kode');
             $table->string('module');
             $table->boolean('baca')->default(false);

@@ -50,14 +50,9 @@ class User extends Authenticatable
         return $this->belongsTo(Role::class);
     }
 
-    public function groupUsers()
-    {
-        return $this->hasMany(GroupUser::class);
-    }
-
     public function wps()
     {
-        return $this->hasMany(Wp::class);
+        return $this->hasMany(Wp::class, 'user_id');
     }
 
     public function psis()

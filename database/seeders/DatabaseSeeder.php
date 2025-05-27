@@ -13,11 +13,11 @@ class DatabaseSeeder extends Seeder
     {
         // Tambahkan role terlebih dahulu
         $adminRole = Role::create([
-            'name' => 'admin',
+            'name' => 'psi',
         ]);
 
         $userRole = Role::create([
-            'name' => 'user',
+            'name' => 'wp',
         ]);
 
         // Tambahkan pengguna dengan role admin

@@ -26,3 +26,5 @@ Route::middleware('auth')->group(function () {
     Route::get('/user/dashboard', [DashboardController::class, 'userDashboard'])
          ->name('user.dashboard');
 });
+
+Route::get('/get-users', [App\Http\Controllers\UserController::class, 'index']);

@@ -9,18 +9,17 @@ class GroupUser extends Model
     protected $table = 'groups_user';
 
     protected $fillable = [
-        'user_id',
         'kode',
         'nama',
     ];
 
-    public function user()
+    public function hasGroupsUsers()
     {
-        return $this->belongsTo(User::class);
+        return $this->hasMany(HasGroupsUser::class, 'groups_user_id');
     }
 
-    public function privileges()
+    public function hasGroupsPrivileges()
     {
-        return $this->hasMany(GroupPrivilege::class, 'group_id');
+        return $this->hasMany(HasGroupsPrivilege::class, 'groups_user_id');
     }
 }

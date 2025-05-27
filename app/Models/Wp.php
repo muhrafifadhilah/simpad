@@ -19,6 +19,11 @@ class Wp extends Model
 
     public function user()
     {
-        return $this->belongsTo(User::class);
+        return $this->belongsTo(User::class, 'user_id');
+    }
+
+    public function hasGroupsUsers()
+    {
+        return $this->hasMany(HasGroupsUser::class, 'wp_id');
     }
 }

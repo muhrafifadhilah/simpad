@@ -9,7 +9,6 @@ class GroupPrivilege extends Model
     protected $table = 'groups_privileges';
 
     protected $fillable = [
-        'group_id',
         'kode',
         'module',
         'baca',
@@ -18,8 +17,8 @@ class GroupPrivilege extends Model
         'hapus',
     ];
 
-    public function group()
+    public function hasGroupsPrivileges()
     {
-        return $this->belongsTo(GroupUser::class, 'group_id');
+        return $this->hasMany(HasGroupsPrivilege::class, 'groups_privilege_id');
     }
 }
