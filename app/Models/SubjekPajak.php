@@ -31,4 +31,9 @@ class SubjekPajak extends Model
     {
         return $this->hasMany(ObjekPajak::class, 'subjek_pajak_id');
     }
+
+    public function Wp()
+    {
+        return $this->hasOne(Wp::class, 'subjek_pajak_id');
+    }
 }
