@@ -44,23 +44,24 @@
         }
 
         .navbar .dropdown-menu {
-            background-color: #007979;
+            background-color: #FFFBE6;
         }
 
         .sidebar {
             width: 250px;
-            background-color: #00A8A8;
-            color: #E6E6E6;
+            background-color: #FFFBE6;
+            color: black;
             position: fixed;
-            top: 50px; /* Offset for navbar height */
+            top: 0; /* Offset for navbar height */
             bottom: 0;
             left: 0;
             padding: 20px;
             overflow-y: auto;
+            border-top-right-radius: 80px;
         }
 
         .sidebar a {
-            color: #E6E6E6;
+            color: black;
             text-decoration: none;
             display: block;
             padding: 10px 15px;
@@ -88,32 +89,13 @@
 <body>
 
     <!-- Navbar -->
-    <nav class="navbar">
-        <div class="brand">
-            <img src="{{ asset('assets/img/logo-header.png') }}" alt="logo-header" style="height: 45px;">
-        </div>
-        <div class="user-info">
-            @if (Auth::user())
-                <div class="dropdown ms-3">
-                    <span class="dropdown-toggle text-white" href="#" data-bs-toggle="dropdown">Hi, {{ Auth::user()->name }}</span>
-                    <ul class="dropdown-menu dropdown-menu-end">
-                        <li><a class="dropdown-item" href="{{ url('/profile') }}" style="color: white;">Profil</a></li>
-                        <li>
-                            <form method="POST" action="{{ route('logout') }}">
-                                @csrf
-                                <button type="submit" class="dropdown-item" style="color: white;">Logout</button>
-                            </form>
-                        </li>
-                    </ul>
-                </div>
-            @endif
-        </div>
-    </nav>
+    
 
     <!-- Sidebar -->
     <div class="sidebar">
+        <img src="{{ asset('assets/img/logo-header.png') }}" alt="logo-header" style="height: 45px; margin-bottom: 20px;">
         @if (Auth::user())
-        <a href="{{ url('/') }}">Executive Summary</a>
+        <a href="{{ url('/admin/dashboard') }}">Executive Summary</a>
         <a href="{{ url('/b-tax') }}">B-TAX</a>
         <div class="dropdown">
             <a href="#" class="dropdown-toggle" data-bs-toggle="dropdown">Pendaftaran</a>
@@ -147,6 +129,10 @@
         </div>
             <a href="{{ url('/pelayanan') }}">Pelayanan</a>
             <a href="{{ url('/referensi') }}">Referensi</a>
+            <a href="{{ url('/pegawai') }}">Pegawai</a>
+            <a href="{{ url('/wajib-pajak') }}">Wajib Pajak</a>
+            <a href="{{ url('/kecamatan') }}">Kecamatan</a>
+            <a href="{{ url('/upt') }}">UPT</a>
         </div>
         @endif
     </div>
@@ -166,6 +152,9 @@
         </p>
     </footer>
 
+    <!-- jQuery CDN -->
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    @yield('scripts')
 </body>
 </html>

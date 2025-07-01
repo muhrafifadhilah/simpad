@@ -4,13 +4,15 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Psi extends Model
+class Pegawai extends Model
 {
-    protected $table = 'psi';
+    protected $table = 'pegawai';
 
     protected $fillable = [
         'user_id',
-        'name'
+        'nama',
+        'nip',
+        'jabatan',
     ];
 
     public function user()

@@ -14,7 +14,6 @@ return new class extends Migration
         Schema::create('wp', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
-            $table->foreignId('subjek_pajak_id')->constrained('subjek_pajak')->onDelete('cascade');
             $table->string('name');
             $table->string('jabatan');
             $table->string('nip')->unique();

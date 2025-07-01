@@ -11,10 +11,10 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('groups_user', function (Blueprint $table) {
+        Schema::create('upt_has_kecamatan', function (Blueprint $table) {
             $table->id();
-            $table->string('kode');
-            $table->string('nama');
+            $table->foreignId('upt_id')->constrained('upt')->onDelete('cascade');
+            $table->foreignId('kecamatan_id')->constrained('kecamatan')->onDelete('cascade');
             $table->timestamps();
         });
     }
@@ -24,6 +24,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('groups_user');
+        Schema::dropIfExists('upt_has_kecamatan');
     }
 };

@@ -37,11 +37,16 @@
                     <div class="input-group">
                         <span class="input-group-text"><i class="bi bi-lock"></i></span>
                         <input type="password" name="password" 
-                               class="form-control" 
+                               class="form-control @error('password') is-invalid @enderror" 
                                placeholder="Password" 
                                autocomplete="off" 
                                required>
                     </div>
+                    @error('password')
+                        <div class="alert alert-danger">
+                            {{ $message }}
+                        </div>
+                    @enderror
                 </div>
                 
                 <div class="mb-3 form-check">

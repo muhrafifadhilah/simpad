@@ -10,12 +10,7 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Validation\ValidationException;
 
 class LoginController extends Controller
-{
-    public function __construct()
-    {
-        $this->middleware('guest')->except('logout');
-    }
-
+{   
     public function showLoginForm()
     {
         return view('auth.login');
@@ -32,14 +27,10 @@ class LoginController extends Controller
         );
 
         if ($user) {
-            // Log the user in
             Auth::login($user, $request->boolean('remember'));
-
-            // Redirect based on user role
             return $this->authenticated($request, $user);
         }
 
-        // If authentication fails
         return $this->sendFailedLoginResponse($request);
     }
 
@@ -53,14 +44,14 @@ class LoginController extends Controller
 
     protected function authenticated(Request $request, $user)
     {
-        // Log login attempt
         Log::info('User logged in', ['userid' => $user->userid]);
+        $role = optional($user->role)->name;
 
-        // Redirect based on role
-        return match($user->role->name) {
-            'admin' => redirect()->route('admin.dashboard'),
-            'user' => redirect()->route('user.dashboard'),
-            default => redirect()->route('home')
+        // Perbaiki mapping role ke route
+        return match($role) {
+            'psi' => redirect()->route('admin.dashboard'),
+            'wp' => redirect()->route('user.dashboard'),
+            default => redirect('/'),
         };
     }
 
@@ -68,16 +59,14 @@ class LoginController extends Controller
     {
         throw ValidationException::withMessages([
             'userid' => [trans('auth.failed')],
-        ])->errorBag('login');
+        ]);
     }
 
     public function logout(Request $request)
     {
         Auth::logout();
-
         $request->session()->invalidate();
         $request->session()->regenerateToken();
-
         return redirect('/login')->with('status', 'You have been logged out.');
     }
 }

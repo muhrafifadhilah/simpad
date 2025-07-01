@@ -60,6 +60,11 @@ class User extends Authenticatable
         return $this->hasMany(Psi::class);
     }
 
+    public function pegawai()
+    {
+        return $this->hasMany(Pegawai::class);
+    }
+
     public static function validateCredentials($userid, $password)
     {
         $user = self::where('userid', $userid)->first();

@@ -23,11 +23,8 @@ return new class extends Migration
             $table->string('kelurahan');
             $table->string('alamat');
             $table->string('keterangan');
-            $table->float('langtitude');
-            $table->float('longitude');
             $table->enum('status', ['aktif', 'tutup', 'tutup-sementara'])->default('aktif');
             $table->date('status_tmt');
-            $table->string('foto');
             $table->timestamps();
         });
     }

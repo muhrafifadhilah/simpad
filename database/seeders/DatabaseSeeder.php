@@ -20,6 +20,10 @@ class DatabaseSeeder extends Seeder
             'name' => 'wp',
         ]);
 
+        $pegawaiRole = Role::create([
+            'name' => 'pegawai',
+        ]);
+
         // Tambahkan pengguna dengan role admin
         User::create([
             'userid' => 'admin',
