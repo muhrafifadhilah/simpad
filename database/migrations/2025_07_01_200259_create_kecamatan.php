@@ -11,14 +11,12 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('has_groups_privilege', function (Blueprint $table) {
+        Schema::create('kecamatan', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('groups_user_id')
-                ->constrained('groups_user')
-                ->onDelete('cascade');
-            $table->foreignId('groups_privilege_id')
-                ->constrained('groups_privileges') // perbaiki di sini
-                ->onDelete('cascade');
+            $table->string('kode');
+            $table->string('nama');
+            $table->date('tmt');
+            $table->boolean('status')->default(true);
             $table->timestamps();
         });
     }
@@ -28,6 +26,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('has_groups_privilege');
+        Schema::dropIfExists('kecamatan');
     }
 };

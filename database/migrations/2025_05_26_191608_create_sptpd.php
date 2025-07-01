@@ -28,7 +28,6 @@ return new class extends Migration
             $table->integer('kompensasi');
             $table->integer('pajak_terutang');
             $table->integer('omset_tapping_box');
-            $table->string('upt_id');
             $table->timestamps();
         });
     }

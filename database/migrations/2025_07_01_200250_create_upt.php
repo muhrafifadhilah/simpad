@@ -11,14 +11,13 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('groups_privileges', function (Blueprint $table) {
+        Schema::create('upt', function (Blueprint $table) {
             $table->id();
-            $table->string('kode');
-            $table->string('module');
-            $table->boolean('baca')->default(false);
-            $table->boolean('tambah')->default(false);
-            $table->boolean('edit')->default(false);
-            $table->boolean('hapus')->default(false);
+            $table->integer('no');
+            $table->string('nama');
+            $table->string('kepala_upt');
+            $table->text('alamat');
+            $table->boolean('status')->default(true);
             $table->timestamps();
         });
     }
@@ -28,6 +27,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('groups_privileges');
+        Schema::dropIfExists('upt');
     }
 };
