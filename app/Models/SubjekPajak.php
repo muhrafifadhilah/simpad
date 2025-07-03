@@ -11,9 +11,9 @@ class SubjekPajak extends Model
     protected $fillable = [
         'no_form',
         'tanggal',
-        'pribadi/badan',
+        'pribadi_badan',
+        'pemilik',
         'subjek_pajak',
-        'nama',
         'alamat',
         'kecamatan',
         'kelurahan',
@@ -30,5 +30,10 @@ class SubjekPajak extends Model
     public function objekPajaks()
     {
         return $this->hasMany(ObjekPajak::class, 'subjek_pajak_id');
+    }
+
+    public function wp()
+    {
+        return $this->belongsTo(Wp::class, 'subjek_pajak_id');
     }
 }

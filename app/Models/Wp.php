@@ -11,10 +11,10 @@ class Wp extends Model
     protected $fillable = [
         'user_id',
         'name',
-        'jabatan',
         'nip',
         'nohp',
         'disabled',
+        'subjek_pajak_id',
     ];
 
     public function user()
@@ -22,8 +22,8 @@ class Wp extends Model
         return $this->belongsTo(User::class, 'user_id');
     }
 
-    public function hasGroupsUsers()
+    public function subjekPajak()
     {
-        return $this->hasMany(HasGroupsUser::class, 'wp_id');
+        return $this->hasOne(SubjekPajak::class, 'subjek_pajak_id');
     }
 }

@@ -13,12 +13,11 @@ return new class extends Migration
     {
         Schema::create('subjek_pajak', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('wp_id')->constrained('wp')->onDelete('cascade');
             $table->string('no_form');
             $table->date('tanggal');
-            $table->enum('pribadi/badan', ['pribadi', 'badan']);
+            $table->enum('pribadi_badan', ['pribadi', 'badan']);
+            $table->string('pemilik');
             $table->string('subjek_pajak');
-            $table->string('nama');
             $table->string('alamat');
             $table->string('kecamatan');
             $table->string('kelurahan');

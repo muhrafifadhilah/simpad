@@ -11,6 +11,7 @@ class Sptpd extends Model
     protected $fillable = [
         'objek_pajak_id',
         'subjek_pajak_id',
+        'upt_id',
         'masa_pajak_awal',
         'masa_pajak_akhir',
         'jatuh_tempo',
