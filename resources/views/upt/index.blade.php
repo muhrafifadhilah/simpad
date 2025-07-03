@@ -24,6 +24,20 @@
                     </thead>
                 </table>
             </div>
+            <!-- Modal Detail Kecamatan -->
+            <div class="modal fade" id="modalDetailKecamatan" tabindex="-1" aria-labelledby="modalDetailKecamatanLabel" aria-hidden="true">
+              <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="modalDetailKecamatanLabel">Daftar Kecamatan UPT</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    </div>
+                    <div class="modal-body">
+                        <ul id="listKecamatanUPT" style="padding-left:18px;"></ul>
+                    </div>
+                </div>
+              </div>
+            </div>
         </div>
     </div>
 </div>
@@ -58,10 +72,9 @@ $(function() {
                 data: 'id',
                 orderable: false,
                 searchable: false,
-                render: function(id) {
+                render: function(id, type, row) {
                     return `
-                        <a href="/upt/${id}/edit" class="btn btn-sm btn-warning">Edit</a>
-                        <button class="btn btn-sm btn-danger btn-delete" data-id="${id}">Hapus</button>
+                        <button class="btn btn-info btn-sm btn-detail" data-id="${id}">Detail</button>
                     `;
                 }
             }
@@ -80,6 +93,24 @@ $(function() {
                 }
             });
         }
+    });
+
+    // Detail kecamatan
+    $('#uptTable').on('click', '.btn-detail', function() {
+        let id = $(this).data('id');
+        $('#listKecamatanUPT').html('<li>Memuat data...</li>');
+        $('#modalDetailKecamatan').modal('show');
+        $.get('/upt/' + id + '/kecamatan', function(data) {
+            let html = '';
+            if (data.length === 0) {
+                html = '<li><i>Tidak ada kecamatan</i></li>';
+            } else {
+                data.forEach(function(kec) {
+                    html += `<li>${kec.nama}</li>`;
+                });
+            }
+            $('#listKecamatanUPT').html(html);
+        });
     });
 });
 </script>

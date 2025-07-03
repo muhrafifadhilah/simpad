@@ -30,6 +30,7 @@ Route::middleware('auth')->group(function () {
     Route::resource('objek_pajak', \App\Http\Controllers\ObjekPajakController::class);
     Route::resource('kecamatan', \App\Http\Controllers\KecamatanController::class);
     Route::resource('upt', \App\Http\Controllers\UptController::class);
+    Route::get('upt/{id}/kecamatan', [\App\Http\Controllers\UptController::class, 'getKecamatan']);
 });
 
 Route::get('/get-users', [App\Http\Controllers\UserController::class, 'index']);
