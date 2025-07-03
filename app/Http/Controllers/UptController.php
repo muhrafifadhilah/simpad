@@ -79,4 +79,15 @@ class UptController extends Controller
         $upt->delete();
         return response()->json(['success' => true]);
     }
+
+    public function getKecamatan($id)
+    {
+        $upt = \App\Models\Upt::with('kecamatans')->findOrFail($id);
+        return response()->json($upt->kecamatans->map(function($kec) {
+            return [
+                'id' => $kec->id,
+                'nama' => $kec->nama
+            ];
+        }));
+    }
 }
