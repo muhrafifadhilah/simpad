@@ -5,7 +5,7 @@
     <div style="background: #fff; border-radius: 4px; border: 1px solid #eee; margin-top: 20px;">
         <div style="padding: 20px 25px 10px 25px;">
             <div style="font-size: 22px; font-weight: bold; letter-spacing: 1px; margin-bottom: 10px;">
-                <span style="border-bottom: 3px solid #eaeaea; padding-bottom: 5px;">USERS</span>
+                <span style="border-bottom: 3px solid #eaeaea; padding-bottom: 5px;">Pegawai</span>
             </div>
             <div class="d-flex align-items-center mb-2 flex-wrap gap-2 justify-content-between">
                 <div>

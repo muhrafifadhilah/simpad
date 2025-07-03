@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id();
             $table->foreignId('objek_pajak_id')->constrained('objek_pajak')->onDelete('cascade');
             $table->foreignId('subjek_pajak_id')->constrained('subjek_pajak')->onDelete('cascade');
+            $table->foreignId('upt_id')->constrained('upt')->onDelete('cascade');
             $table->date('masa_pajak_awal');
             $table->date('masa_pajak_akhir');
             $table->date('jatuh_tempo');

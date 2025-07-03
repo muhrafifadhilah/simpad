@@ -25,6 +25,11 @@ Route::middleware('auth')->group(function () {
          ->name('user.dashboard');
 
     Route::resource('pegawai', App\Http\Controllers\PegawaiController::class);
+    Route::resource('subjek_pajak', \App\Http\Controllers\SubjekPajakController::class);
+    Route::get('subjek_pajak/cetak-kartu/{id}', [\App\Http\Controllers\SubjekPajakController::class, 'cetakKartu'])->name('subjek_pajak.cetak_kartu');
+    Route::resource('objek_pajak', \App\Http\Controllers\ObjekPajakController::class);
+    Route::resource('kecamatan', \App\Http\Controllers\KecamatanController::class);
+    Route::resource('upt', \App\Http\Controllers\UptController::class);
 });
 
 Route::get('/get-users', [App\Http\Controllers\UserController::class, 'index']);

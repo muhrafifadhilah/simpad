@@ -100,37 +100,18 @@
         <div class="dropdown">
             <a href="#" class="dropdown-toggle" data-bs-toggle="dropdown">Pendaftaran</a>
             <ul class="dropdown-menu">
-                <li><a class="dropdown-item" href="{{ url('/pendaftaran/subjek-pajak') }}">Subjek Pajak</a></li>
-                <li><a class="dropdown-item" href="{{ url('/pendaftaran/objek-pajak') }}">Objek Pajak</a></li>
-                <li><a class="dropdown-item" href="{{ url('/pendaftaran/ektentifikasi') }}">Ektentifikasi</a></li>
-                <li><a class="dropdown-item" href="{{ url('/pendaftaran/laporan') }}">Laporan</a></li>
+                <li><a class="dropdown-item" href="{{ url('/subjek_pajak') }}">Subjek Pajak</a></li>
+                <li><a class="dropdown-item" href="{{ url('/objek_pajak') }}">Objek Pajak</a></li>
             </ul>
         </div>
         <div class="dropdown">
             <a href="#" class="dropdown-toggle" data-bs-toggle="dropdown">Pendataan</a>
             <ul class="dropdown-menu">
-                <li><a class="dropdown-item" href="{{ url('/pendataan/option1') }}">Option 1</a></li>
-                <li><a class="dropdown-item" href="{{ url('/pendataan/option2') }}">Option 2</a></li>
+                <li><a class="dropdown-item" href="{{ url('/sptpd') }}">SPTPD</a></li>
             </ul>
         </div>
-        <div class="dropdown">
-            <a href="#" class="dropdown-toggle" data-bs-toggle="dropdown">Penerimaan</a>
-            <ul class="dropdown-menu">
-                <li><a class="dropdown-item" href="{{ url('/penerimaan/option1') }}">Option 1</a></li>
-                <li><a class="dropdown-item" href="{{ url('/penerimaan/option2') }}">Option 2</a></li>
-            </ul>
-        </div>
-        <div class="dropdown">
-            <a href="#" class="dropdown-toggle" data-bs-toggle="dropdown">Penagihan</a>
-            <ul class="dropdown-menu">
-                <li><a class="dropdown-item" href="{{ url('/penagihan/option1') }}">Option 1</a></li>
-                <li><a class="dropdown-item" href="{{ url('/penagihan/option2') }}">Option 2</a></li>
-            </ul>
-        </div>
-            <a href="{{ url('/pelayanan') }}">Pelayanan</a>
-            <a href="{{ url('/referensi') }}">Referensi</a>
             <a href="{{ url('/pegawai') }}">Pegawai</a>
-            <a href="{{ url('/wajib-pajak') }}">Wajib Pajak</a>
+            <a href="{{ url('/wajib_pajak') }}">Wajib Pajak</a>
             <a href="{{ url('/kecamatan') }}">Kecamatan</a>
             <a href="{{ url('/upt') }}">UPT</a>
         </div>
