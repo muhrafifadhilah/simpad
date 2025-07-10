@@ -6,21 +6,33 @@
             <div class="col-md-12">
                 <div class="d-flex justify-content-between p-3 align-items-center mb-5" style="background-color: #D5ED9F; margin-top: -70px; border-radius: 25px;">
                     <h4>Executive Summary</h4>
-                        @if (Auth::user())
-                            <div class="dropdown ms-3">
-                                <span class="dropdown-toggle text-black" href="#" data-bs-toggle="dropdown">Hi, {{ Auth::user()->userid }}</span>
-                                <ul class="dropdown-menu dropdown-menu-end">
-                                    <li><a class="dropdown-item" href="{{ url('/profile') }}" style="color: black;">Profil</a></li>
-                                    <li>
-                                        <form method="POST" action="{{ route('logout') }}">
-                                            @csrf
-                                            <button type="submit" class="dropdown-item" style="color: black;">Logout</button>
-                                        </form>
-                                    </li>
-                                </ul>
-                            </div>
-                        @endif
+                    @if (Auth::user())
+                        <div class="dropdown ms-3">
+                            <span class="dropdown-toggle text-black" href="#" data-bs-toggle="dropdown">Hi, {{ Auth::user()->userid }}</span>
+                            <ul class="dropdown-menu dropdown-menu-end">
+                                <li><a class="dropdown-item" href="{{ url('/profile') }}" style="color: black;">Profil</a></li>
+                                <li>
+                                    <form method="POST" action="{{ route('logout') }}">
+                                        @csrf
+                                        <button type="submit" class="dropdown-item" style="color: black;">Logout</button>
+                                    </form>
+                                </li>
+                            </ul>
+                        </div>
+                    @endif
                 </div>
+
+                {{-- FILTER UPT (pindah ke bawah executive summary) --}}
+                <div class="mb-3" style="margin-top:-20px;">
+                    <label for="filterUpt" class="form-label">Filter UPT</label>
+                    <select id="filterUpt" class="form-select" style="max-width:300px;display:inline-block;">
+                        <option value="">Semua UPT</option>
+                        @foreach($uptList as $upt)
+                            <option value="{{ $upt->id }}">{{ $upt->nama }}</option>
+                        @endforeach
+                    </select>
+                </div>
+                {{-- END FILTER UPT --}}
 
                 {{-- TABULASI --}}
                 <div class="card mb-4">
@@ -280,8 +292,46 @@
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script>
-        let taxData = @json($taxData);
-        let taxData2 = @json($taxData2);
+        let allTaxData = @json($taxData);
+        let allTaxData2 = @json($taxData2);
+        let allSptpdByJenis = @json($sptpdByJenis ?? []);
+        let taxData = allTaxData;
+        let taxData2 = allTaxData2;
+        let sptpdByJenis = allSptpdByJenis;
+
+        function filterByUpt(uptId) {
+            if (!uptId) {
+                taxData = allTaxData;
+                taxData2 = allTaxData2;
+                sptpdByJenis = allSptpdByJenis;
+            } else {
+                taxData = allTaxData.map(function(item) {
+                    let filtered = {...item};
+                    filtered.realisasi = (item.realisasi_by_upt && item.realisasi_by_upt[uptId]) ? item.realisasi_by_upt[uptId] : 0;
+                    return filtered;
+                });
+                taxData2 = allTaxData2.map(function(item) {
+                    let filtered = {...item};
+                    ['januari','februari','maret','april','mei','juni','juli','agustus','september','oktober','november','desember'].forEach(function(bulan) {
+                        filtered[bulan] = (item[bulan+'_by_upt'] && item[bulan+'_by_upt'][uptId]) ? item[bulan+'_by_upt'][uptId] : 0;
+                    });
+                    return filtered;
+                });
+                sptpdByJenis = {};
+                Object.keys(allSptpdByJenis).forEach(function(jenis) {
+                    sptpdByJenis[jenis] = allSptpdByJenis[jenis].filter(function(row) {
+                        return row.upt_id == uptId;
+                    });
+                });
+            }
+            renderTaxTable();
+            renderChart();
+        }
+
+        $('#filterUpt').on('change', function() {
+            filterByUpt($(this).val());
+        });
+
         let combinedChart = null;
 
         function renderTaxTable() {
@@ -456,9 +506,6 @@
                 }
             }
         });
-
-        // Data SPTPD per jenis pajak (inject dari controller)
-        let sptpdByJenis = @json($sptpdByJenis ?? []);
 
         // Modal detail SPTPD per jenis pajak
         $(document).on('click', '.btn-detail-sptpd', function(e) {
