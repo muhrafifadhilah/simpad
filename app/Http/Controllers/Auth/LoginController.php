@@ -49,9 +49,7 @@ class LoginController extends Controller
 
         // Perbaiki mapping role ke route
         return match($role) {
-            'psi' => redirect()->route('admin.dashboard'),
-            'wp' => redirect()->route('user.dashboard'),
-            default => redirect('/'),
+            default => redirect()->route('admin.dashboard'),
         };
     }
 

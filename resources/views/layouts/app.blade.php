@@ -137,7 +137,7 @@
                 <a href="{{ url('/kecamatan') }}">Kecamatan</a>
                 <a href="{{ url('/upt') }}">UPT</a>
             @elseif ($role === 'wp')
-                <a href="{{ route('wp.dashboard') }}">Executive Summary</a>
+                <a href="{{ route('admin.dashboard') }}">Executive Summary</a>
                 <a href="{{ route('wp.sptpd') }}">SPTPD Saya</a>
             @endif
         @endif
