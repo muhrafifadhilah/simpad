@@ -34,6 +34,6 @@ class SubjekPajak extends Model
 
     public function wp()
     {
-        return $this->belongsTo(Wp::class, 'subjek_pajak_id');
+        return $this->hasOne(Wp::class, 'subjek_pajak_id');
     }
 }

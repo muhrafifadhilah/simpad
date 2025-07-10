@@ -69,6 +69,7 @@ class Kernel extends HttpKernel
     protected $routeMiddleware = [
         // Middleware lainnya
         'IsPsi' => \App\Http\Middleware\IsPsi::class,
+        'role' => \App\Http\Middleware\RoleMiddleware::class,
     ];
 
 }

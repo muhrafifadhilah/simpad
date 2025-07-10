@@ -103,8 +103,14 @@
                             <input type="text" name="alamat" id="alamat" class="form-control" required>
                         </div>
                         <div class="mb-2">
+                            {{-- Tambahkan select kecamatan di modal --}}
                             <label>Kecamatan</label>
-                            <input type="text" name="kecamatan" id="kecamatan" class="form-control" required>
+                            <select name="kecamatan" id="kecamatan" class="form-control" required>
+                                <option value="">Pilih Kecamatan</option>
+                                @foreach($kecamatans as $kec)
+                                    <option value="{{ $kec->nama }}">{{ $kec->nama }}</option>
+                                @endforeach
+                            </select>
                         </div>
                         <div class="mb-2">
                             <label>Kelurahan</label>

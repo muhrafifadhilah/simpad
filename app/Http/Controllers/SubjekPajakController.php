@@ -7,11 +7,13 @@ use Barryvdh\DomPDF\Facade\Pdf; // pastikan barryvdh/laravel-dompdf sudah diinst
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use Yajra\DataTables\Facades\DataTables;
+use App\Models\Kecamatan;
 
 class SubjekPajakController extends Controller
 {
     public function index(Request $request)
     {
+        $kecamatans = Kecamatan::all();
         if ($request->ajax()) {
             $query = SubjekPajak::query();
             if ($request->filled('tipe')) {
@@ -19,7 +21,7 @@ class SubjekPajakController extends Controller
             }
             return DataTables::of($query)->make(true);
         }
-        return view('subjek_pajak.index');
+        return view('subjek_pajak.index', compact('kecamatans'));
     }
 
     public function store(Request $request)

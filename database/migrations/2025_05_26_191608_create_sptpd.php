@@ -19,16 +19,16 @@ return new class extends Migration
             $table->date('masa_pajak_awal');
             $table->date('masa_pajak_akhir');
             $table->date('jatuh_tempo');
-            $table->integer('dasar');
+            $table->bigInteger('dasar'); // ubah ke bigInteger
             $table->float('tarif');
-            $table->integer('denda');
-            $table->integer('bunga');
-            $table->integer('setoran');
-            $table->integer('lain_lain');
-            $table->integer('kenaikan');
-            $table->integer('kompensasi');
-            $table->integer('pajak_terutang');
-            $table->integer('omset_tapping_box');
+            $table->bigInteger('denda');
+            $table->bigInteger('bunga');
+            $table->bigInteger('setoran');
+            $table->bigInteger('lain_lain');
+            $table->bigInteger('kenaikan');
+            $table->bigInteger('kompensasi');
+            $table->bigInteger('pajak_terutang');
+            $table->bigInteger('omset_tapping_box');
             $table->timestamps();
         });
     }

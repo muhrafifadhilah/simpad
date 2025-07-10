@@ -24,6 +24,8 @@ class Wp extends Model
 
     public function subjekPajak()
     {
-        return $this->hasOne(SubjekPajak::class, 'subjek_pajak_id');
+        // Salah: hasOne(SubjekPajak::class, 'subjek_pajak_id');
+        // Benar: belongsTo(SubjekPajak::class, 'subjek_pajak_id');
+        return $this->belongsTo(SubjekPajak::class, 'subjek_pajak_id');
     }
 }
