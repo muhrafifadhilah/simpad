@@ -3,6 +3,7 @@ FROM node:20 AS vite-builder
 WORKDIR /app
 COPY package.json package-lock.json ./
 RUN npm install --legacy-peer-deps
+RUN npm install -g laravel-echo-server
 COPY . .
 RUN npm run build
 # Debug: list public folder contents, but do not fail if dist/build doesn't exist

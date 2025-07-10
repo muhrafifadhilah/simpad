@@ -4,6 +4,8 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use App\Events\DashboardTaxUpdate;
+use App\Models\Sptpd;
 
 class DashboardController extends Controller
 {
@@ -24,273 +26,177 @@ class DashboardController extends Controller
      */
     public function adminDashboard()
     {
-        $taxData = [
-            [
-                'jenisPajak' => 'PBJT atas Jasa Perhotelan',
-                'targetAnggaran' => 151629301000,
-                'realisasi' => 127693708700,
-                'img' => '/assets/img/hotel.png',
-                'tahunLalu' => 144332162687,
-            ],
-            [
-                'jenisPajak' => 'PBJT atas Makanan dan / atau Minuman',
-                'targetAnggaran' => 360633732000,
-                'realisasi' => 306739990533,
-                'img' => '/assets/img/makan.png',
-                'tahunLalu' => 312508124736,
-            ],
-            [
-                'jenisPajak' => 'PBJT atas Jasa Kesenian dan Hiburan',
-                'targetAnggaran' => 80646989000,
-                'realisasi' => 75097658180,
-                'img' => '/assets/img/seni.png',
-                'tahunLalu' => 78309550432,
-            ],
-            [
-                'jenisPajak' => 'Pajak Reklame',
-                'targetAnggaran' => 28415110000,
-                'realisasi' => 25404910752,
-                'img' => '/assets/img/reklame.png',
-                'tahunLalu' => 26565469856,
-            ],
-            [
-                'jenisPajak' => 'PBJT atas Tenaga Listrik',
-                'targetAnggaran' => 376582300000,
-                'realisasi' => 144967881912,
-                'img' => '/assets/img/listrik.png',
-                'tahunLalu' => 144881930911,
-            ],
-            [
-                'jenisPajak' => 'PBJT atas Jasa Parkir',
-                'targetAnggaran' => 8333241000,
-                'realisasi' => 10104254909,
-                'img' => '/assets/img/parkir.png',
-                'tahunLalu' => 19210050276,
-            ],
-            [
-                'jenisPajak' => 'PBJT Air Tanah',
-                'targetAnggaran' => 72440860000,
-                'realisasi' => 50235343031,
-                'img' => '/assets/img/air.png',
-                'tahunLalu' => 69704094539,
-            ],
-            [
-                'jenisPajak' => 'PBJT Mineral Bukan Logam Dan Batuan',
-                'targetAnggaran' => 122040128000,
-                'realisasi' => 99404593678,
-                'img' => '/assets/img/mineral.png',
-                'tahunLalu' => 124214026545,
-            ],
-            [
-                'jenisPajak' => 'PBB',
-                'targetAnggaran' => 640586111000,
-                'realisasi' => 640070905760,
-                'img' => '/assets/img/pbb.png',
-                'tahunLalu' => 610390232793,
-            ],
-            [
-                'jenisPajak' => 'BPHTB',
-                'targetAnggaran' => 990227628000,
-                'realisasi' => 771402638619,
-                'img' => '/assets/img/bphtb.png',
-                'tahunLalu' => 610390232793,
-            ],
+        $allJenis = [
+            'PBJT atas Jasa Perhotelan',
+            'PBJT atas Makanan dan / atau Minuman',
+            'PBJT atas Jasa Kesenian dan Hiburan',
+            'Pajak Reklame',
+            'PBJT atas Tenaga Listrik',
+            'PBJT atas Jasa Parkir',
+            'PBJT Air Tanah',
+            'PBJT Mineral Bukan Logam Dan Batuan',
+            'PBB',
+            'BPHTB',
         ];
 
-        $taxData2 = [
-            [
-              'jenisPajak' => 'BPHTB',
-              'januari' => 53747304777,
-              'februari' => 84144252818,
-              'maret' => 80102074834,
-              'april' => 91808258117,
-              'mei' => 102189742341,
-              'juni' => 201801713350,
-              'juli' => 0,
-              'agustus' => 0,
-              'september' => 0,
-              'oktober'=> 0,
-              'november' => 0,
-              'desember' => 0,
-              'targetTW1' => 198500364675,
-              'targetTW2' => 229423888165,
-              'targetTW3' => 240996527404,
-              'targetTW4' => 505797002254,
-            ],
-            [
-              'jenisPajak'=> 'Pajak Air Tanah',
-              'januari'=> 5365193602,
-              'februari'=> 4919250074,
-              'maret'=> 5354059800,
-              'april'=> 4296875236,
-              'mei'=> 3842953354,
-              'juni'=> 5697573778,
-              'juli'=> 0,
-              'agustus'=> 0,
-              'september'=> 0,
-              'oktober'=> 0,
-              'november'=> 0,
-              'desember'=> 0,
-              'targetTW1'=> 16744142803,
-              'targetTW2'=> 15988563819,
-              'targetTW3'=> 17395561091,
-              'targetTW4'=> 17454288709,
-            ],
-            [
-              'jenisPajak'=> 'Pajak Mineral Bukan Logam Dan Batuan',
-              'januari'=> 10866773651,
-              'februari'=> 12181456442,
-              'maret'=> 10995679699,
-              'april'=> 9948744510,
-              'mei'=> 9679759592,
-              'juni'=> 12041744478,
-              'juli'=> 0,
-              'agustus'=> 0,
-              'september'=> 0,
-              'oktober'=> 0,
-              'november'=> 0,
-              'desember'=> 0,
-              'targetTW1'=> 28276337303,
-              'targetTW2'=> 26937852125,
-              'targetTW3'=> 30888250242,
-              'targetTW4'=> 31514316096, 
-            ],
-            [
-              'jenisPajak'=> 'Pajak Reklame',
-              'januari'=> 1806776667,
-              'februari'=> 2287531668,
-              'maret'=> 4191654710, 
-              'april'=> 1835711470,
-              'mei'=> 1716021162,
-              'juni'=> 2826833916, 
-              'juli'=> 0,
-              'agustus'=> 0,
-              'september'=> 0,
-              'oktober'=> 0,
-              'november'=> 0,
-              'desember'=> 0,
-              'targetTW1'=> 7577620490,
-              'targetTW2'=> 7653084367,
-              'targetTW3'=> 7818022838,
-              'targetTW4'=> 11241715023,
-            ],
-            [
-              'jenisPajak'=> 'PBB P2',
-              'januari'=> 14955885610,
-              'februari'=> 72350040100,
-              'maret'=> 193887371900,
-              'april'=> 45735681936,
-              'mei'=> 67173160283,
-              'juni'=> 70323938255,
-              'juli'=> 0,
-              'agustus'=> 0,
-              'september'=> 0,
-              'oktober'=> 0,
-              'november'=> 0,
-              'desember'=> 0,
-              'targetTW1'=> 238571324435,
-              'targetTW2'=> 204394054689,
-              'targetTW3'=> 181561694129,
-              'targetTW4'=> 55871860551,
-            ],
-            [
-              'jenisPajak'=> 'PBJT atas Jasa Kesenian dan Hiburan',
-              'januari'=> 8794498390,
-              'februari'=> 7735624131,
-              'maret'=> 5443872995,
-              'april'=> 3388043465,
-              'mei'=> 10387660012,
-              'juni'=> 7548976187,
-              'juli'=> 0,
-              'agustus'=> 0,
-              'september'=> 0,
-              'oktober'=> 0,
-              'november'=> 0,
-              'desember'=> 0,
-              'targetTW1'=> 20899848950,
-              'targetTW2'=> 19319649490,
-              'targetTW3'=> 23827439361,
-              'targetTW4'=> 24335479259,
-            ],
-            [
-              'jenisPajak'=> 'PBJT atas Jasa Parkir',
-              'januari'=> 1248935428,
-              'februari'=> 1181643875,
-              'maret'=> 980465188,
-              'april'=> 1170694938,
-              'mei'=> 1317471373,
-              'juni'=> 1265442368,
-              'juli'=> 0,
-              'agustus'=> 0,
-              'september'=> 0,
-              'oktober'=> 0,
-              'november'=> 0,
-              'desember'=> 0,
-              'targetTW1'=> 3272163862,
-              'targetTW2'=> 3449578804,
-              'targetTW3'=> 3308609591,
-              'targetTW4'=> 3559942330,
-            ],
-            [
-              'jenisPajak'=> 'PBJT atas Jasa Perhotelan',
-              'januari'=> 17523371181,
-              'februari'=> 14448358966,
-              'maret'=> 10635445555,
-              'april'=> 6124653204,
-              'mei'=> 10322203055,
-              'juni'=> 10930681093,
-              'juli'=> 0,
-              'agustus'=> 0,
-              'september'=> 0,
-              'oktober'=> 0,
-              'november'=> 0,
-              'desember'=> 0,
-              'targetTW1'=> 40333725629,
-              'targetTW2'=> 36256765557,
-              'targetTW3'=> 41582185546,
-              'targetTW4'=> 41921136241,
-            ],
-            [
-              'jenisPajak'=> 'PBJT atas Makanan dan / atau Minuman',
-              'januari'=> 40116697307,
-              'februari'=> 39344400852,
-              'maret'=> 28054766358,
-              'april'=> 29284304618,
-              'mei'=> 35020394431,
-              'juni'=> 34506911700,
-              'juli'=> 0,
-              'agustus'=> 0,
-              'september'=> 0,
-              'oktober'=> 0,
-              'november'=> 0,
-              'desember'=> 0,
-              'targetTW1'=> 95263721585,
-              'targetTW2'=> 94965755845,
-              'targetTW3'=> 96977489425,
-              'targetTW4'=> 92878496248,
-            ],
-            [
-              'jenisPajak'=> 'PBJT atas Tenaga Listrik',
-              'januari'=> 34495389908,
-              'februari'=> 34699458040,
-              'maret'=> 33085105305,
-              'april'=> 28851936325,
-              'mei'=> 31228531505,
-              'juni'=> 28317279242, 
-              'juli'=> 0,
-              'agustus'=> 0,
-              'september'=> 0,
-              'oktober'=> 0,
-              'november'=> 0,
-              'desember'=> 0,
-              'targetTW1'=> 96944875642,
-              'targetTW2'=> 106322655649,
-              'targetTW3'=> 107923105693,
-              'targetTW4'=> 110549177960,
-            ],
-          ];
+        $imgMap = [
+            'PBJT atas Jasa Perhotelan' => '/assets/img/hotel.png',
+            'PBJT atas Makanan dan / atau Minuman' => '/assets/img/makan.png',
+            'PBJT atas Jasa Kesenian dan Hiburan' => '/assets/img/seni.png',
+            'Pajak Reklame' => '/assets/img/reklame.png',
+            'PBJT atas Tenaga Listrik' => '/assets/img/listrik.png',
+            'PBJT atas Jasa Parkir' => '/assets/img/parkir.png',
+            'PBJT Air Tanah' => '/assets/img/air.png',
+            'PBJT Mineral Bukan Logam Dan Batuan' => '/assets/img/mineral.png',
+            'PBB' => '/assets/img/pbb.png',
+            'BPHTB' => '/assets/img/bphtb.png',
+            '-' => '/assets/img/other.png',
+        ];
 
-        return view('admin.dashboard.index', compact('taxData', 'taxData2'));
+        $targetDummy = [
+            'PBJT atas Jasa Perhotelan' => 151629301000,
+            'PBJT atas Makanan dan / atau Minuman' => 360633732000,
+            'PBJT atas Jasa Kesenian dan Hiburan' => 80646989000,
+            'Pajak Reklame' => 28415110000,
+            'PBJT atas Tenaga Listrik' => 376582300000,
+            'PBJT atas Jasa Parkir' => 8333241000,
+            'PBJT Air Tanah' => 72440860000,
+            'PBJT Mineral Bukan Logam Dan Batuan' => 122040128000,
+            'PBB' => 640586110000,
+            'BPHTB' => 990227628000,
+        ];
+
+        $uptList = \App\Models\Upt::all();
+
+        // Ambil data SPTPD tahun 2025 untuk tabel detail per jenis pajak
+        $sptpd = \App\Models\Sptpd::with(['objekPajak', 'subjekPajak'])
+            ->whereYear('masa_pajak_awal', 2025)
+            ->get();
+
+        $grouped = $sptpd->groupBy(function($item) {
+            $jenis = $item->objekPajak->jenis_pajak ?? '-';
+            return trim($jenis);
+        });
+
+        $taxData = [];
+        $taxData2 = [];
+        $sptpdByJenis = [];
+
+        $tahunLaluDummy = [
+            'PBJT atas Jasa Perhotelan' => 144332162687,
+            'PBJT atas Makanan dan / atau Minuman' => 312508124736,
+            'PBJT atas Jasa Kesenian dan Hiburan' => 78309550432,
+            'Pajak Reklame' => 26565469856,
+            'PBJT atas Tenaga Listrik' => 144881930911,
+            'PBJT atas Jasa Parkir' => 19210050276,
+            'PBJT Air Tanah' => 69704094539,
+            'PBJT Mineral Bukan Logam Dan Batuan' => 124214026545,
+            'PBB' => 610390232793,
+            'BPHTB' => 1043286166887,
+        ];
+
+        // Tambahkan definisi $bulan
+        $bulan = [
+            'januari', 'februari', 'maret', 'april', 'mei', 'juni',
+            'juli', 'agustus', 'september', 'oktober', 'november', 'desember'
+        ];
+
+        foreach ($allJenis as $jenis) {
+            $items = $grouped[$jenis] ?? collect();
+            $realisasi = $items->sum('pajak_terutang');
+
+            // Hitung realisasi per UPT untuk filter
+            $realisasi_by_upt = [];
+            foreach ($uptList as $upt) {
+                $realisasi_by_upt[$upt->id] = $items->where('upt_id', $upt->id)->sum('pajak_terutang');
+            }
+
+            $taxData[] = [
+                'jenisPajak' => $jenis,
+                'targetAnggaran' => $targetDummy[$jenis] ?? 0,
+                'realisasi' => $realisasi,
+                'tahunLalu' => $tahunLaluDummy[$jenis] ?? 0,
+                'img' => $imgMap[$jenis] ?? $imgMap['-'],
+                'realisasi_by_upt' => $realisasi_by_upt,
+            ];
+        }
+
+        // Untuk taxData2 (per bulan)
+        foreach ($allJenis as $jenis) {
+            $items = $grouped[$jenis] ?? collect();
+            $target = $targetDummy[$jenis] ?? 0;
+            $targetTW = [
+                1 => round($target * 0.25),
+                2 => round($target * 0.25),
+                3 => round($target * 0.25),
+                4 => round($target * 0.25),
+            ];
+            $bulanData = [];
+            foreach ($bulan as $i => $b) {
+                $bulanData[$b] = $items->filter(function($item) use ($i) {
+                    return \Carbon\Carbon::parse($item->masa_pajak_awal)->month == ($i+1);
+                })->sum('pajak_terutang');
+                // By UPT
+                $byUpt = [];
+                foreach ($uptList as $upt) {
+                    $byUpt[$upt->id] = $items->filter(function($item) use ($i, $upt) {
+                        return \Carbon\Carbon::parse($item->masa_pajak_awal)->month == ($i+1) && $item->upt_id == $upt->id;
+                    })->sum('pajak_terutang');
+                }
+                $bulanData[$b.'_by_upt'] = $byUpt;
+            }
+            $taxData2[] = [
+                'jenisPajak' => $jenis,
+                'targetTW1' => $targetTW[1],
+                'januari' => $bulanData['januari'],
+                'februari' => $bulanData['februari'],
+                'maret' => $bulanData['maret'],
+                'targetTW2' => $targetTW[2],
+                'april' => $bulanData['april'],
+                'mei' => $bulanData['mei'],
+                'juni' => $bulanData['juni'],
+                'targetTW3' => $targetTW[3],
+                'juli' => $bulanData['juli'],
+                'agustus' => $bulanData['agustus'],
+                'september' => $bulanData['september'],
+                'targetTW4' => $targetTW[4],
+                'oktober' => $bulanData['oktober'],
+                'november' => $bulanData['november'],
+                'desember' => $bulanData['desember'],
+                // By UPT
+                'januari_by_upt' => $bulanData['januari_by_upt'],
+                'februari_by_upt' => $bulanData['februari_by_upt'],
+                'maret_by_upt' => $bulanData['maret_by_upt'],
+                'april_by_upt' => $bulanData['april_by_upt'],
+                'mei_by_upt' => $bulanData['mei_by_upt'],
+                'juni_by_upt' => $bulanData['juni_by_upt'],
+                'juli_by_upt' => $bulanData['juli_by_upt'],
+                'agustus_by_upt' => $bulanData['agustus_by_upt'],
+                'september_by_upt' => $bulanData['september_by_upt'],
+                'oktober_by_upt' => $bulanData['oktober_by_upt'],
+                'november_by_upt' => $bulanData['november_by_upt'],
+                'desember_by_upt' => $bulanData['desember_by_upt'],
+            ];
+        }
+
+        // Untuk sptpdByJenis, tambahkan upt_id
+        foreach ($grouped as $jenis => $items) {
+            $sptpdByJenis[$jenis] = $items->map(function($row) {
+                return [
+                    'no_sptpd' => $row->id,
+                    'tanggal' => $row->created_at ? $row->created_at->format('d-m-Y') : '',
+                    'nopd' => $row->objekPajak->nopd ?? '-',
+                    'subjek_pajak' => $row->subjekPajak->subjek_pajak ?? '-',
+                    'masa_pajak' => ($row->masa_pajak_awal ? \Carbon\Carbon::parse($row->masa_pajak_awal)->format('M Y') : '') .
+                        ($row->masa_pajak_akhir ? ' s/d ' . \Carbon\Carbon::parse($row->masa_pajak_akhir)->format('M Y') : ''),
+                    'dasar' => $row->dasar,
+                    'pajak_terutang' => $row->pajak_terutang,
+                    'upt_id' => $row->upt_id,
+                ];
+            })->toArray();
+        }
+
+        return view('admin.dashboard.index', compact('taxData', 'taxData2', 'sptpdByJenis', 'uptList'));
     }
 
     /**
@@ -301,5 +207,22 @@ class DashboardController extends Controller
     public function userDashboard()
     {
         return view('user.dashboard.index'); // Sesuaikan lokasi file view untuk user dashboard
+    }
+
+    /**
+     * Update data pajak dan memicu event.
+     *
+     * @param \Illuminate\Http\Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function updateTaxData(Request $request)
+    {
+        // Ambil data pajak terbaru dari database atau request
+        $taxData = $request->input('taxData'); // atau generate dari DB
+
+        // Broadcast event ke frontend
+        event(new DashboardTaxUpdate($taxData));
+
+        return response()->json(['success' => true]);
     }
 }

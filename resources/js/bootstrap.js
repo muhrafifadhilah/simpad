@@ -30,3 +30,10 @@ window.axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
 //     forceTLS: (import.meta.env.VITE_PUSHER_SCHEME ?? 'https') === 'https',
 //     enabledTransports: ['ws', 'wss'],
 // });
+
+/**
+ * Untuk realtime dengan socket.io, gunakan socket.io-client.
+ * Contoh penggunaan (tambahkan di bawah ini jika ingin global):
+ */
+import { io } from "socket.io-client";
+window.io = io;

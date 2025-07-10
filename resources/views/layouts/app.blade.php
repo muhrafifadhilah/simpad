@@ -88,33 +88,58 @@
 </head>
 <body>
 
-    <!-- Navbar -->
-    
-
     <!-- Sidebar -->
     <div class="sidebar">
         <img src="{{ asset('assets/img/logo-header.png') }}" alt="logo-header" style="height: 45px; margin-bottom: 20px;">
         @if (Auth::user())
-        <a href="{{ url('/admin/dashboard') }}">Executive Summary</a>
-        <a href="{{ url('/b-tax') }}">B-TAX</a>
-        <div class="dropdown">
-            <a href="#" class="dropdown-toggle" data-bs-toggle="dropdown">Pendaftaran</a>
-            <ul class="dropdown-menu">
-                <li><a class="dropdown-item" href="{{ url('/subjek_pajak') }}">Subjek Pajak</a></li>
-                <li><a class="dropdown-item" href="{{ url('/objek_pajak') }}">Objek Pajak</a></li>
-            </ul>
-        </div>
-        <div class="dropdown">
-            <a href="#" class="dropdown-toggle" data-bs-toggle="dropdown">Pendataan</a>
-            <ul class="dropdown-menu">
-                <li><a class="dropdown-item" href="{{ url('/sptpd') }}">SPTPD</a></li>
-            </ul>
-        </div>
-            <a href="{{ url('/pegawai') }}">Pegawai</a>
-            <a href="{{ url('/wajib_pajak') }}">Wajib Pajak</a>
-            <a href="{{ url('/kecamatan') }}">Kecamatan</a>
-            <a href="{{ url('/upt') }}">UPT</a>
-        </div>
+            @php
+                $role = Auth::user()->role->name ?? '';
+            @endphp
+
+            @if ($role === 'psi')
+                <a href="{{ url('/admin/dashboard') }}">Executive Summary</a>
+                <a href="{{ url('/b-tax') }}">B-TAX</a>
+                <div class="dropdown">
+                    <a href="#" class="dropdown-toggle" data-bs-toggle="dropdown">Pendaftaran</a>
+                    <ul class="dropdown-menu">
+                        <li><a class="dropdown-item" href="{{ url('/subjek_pajak') }}">Subjek Pajak</a></li>
+                        <li><a class="dropdown-item" href="{{ url('/objek_pajak') }}">Objek Pajak</a></li>
+                    </ul>
+                </div>
+                <div class="dropdown">
+                    <a href="#" class="dropdown-toggle" data-bs-toggle="dropdown">Pendataan</a>
+                    <ul class="dropdown-menu">
+                        <li><a class="dropdown-item" href="{{ url('/sptpd') }}">SPTPD</a></li>
+                    </ul>
+                </div>
+                <a href="{{ url('/pegawai') }}">Pegawai</a>
+                <a href="{{ url('/wp') }}">Wajib Pajak</a>
+                <a href="{{ url('/kecamatan') }}">Kecamatan</a>
+                <a href="{{ url('/upt') }}">UPT</a>
+            @elseif ($role === 'pegawai')
+                <a href="{{ url('/admin/dashboard') }}">Executive Summary</a>
+                <a href="{{ url('/b-tax') }}">B-TAX</a>
+                <div class="dropdown">
+                    <a href="#" class="dropdown-toggle" data-bs-toggle="dropdown">Pendaftaran</a>
+                    <ul class="dropdown-menu">
+                        <li><a class="dropdown-item" href="{{ url('/subjek_pajak') }}">Subjek Pajak</a></li>
+                        <li><a class="dropdown-item" href="{{ url('/objek_pajak') }}">Objek Pajak</a></li>
+                    </ul>
+                </div>
+                <div class="dropdown">
+                    <a href="#" class="dropdown-toggle" data-bs-toggle="dropdown">Pendataan</a>
+                    <ul class="dropdown-menu">
+                        <li><a class="dropdown-item" href="{{ url('/sptpd') }}">SPTPD</a></li>
+                    </ul>
+                </div>
+                {{-- Pegawai tidak bisa akses menu Pegawai --}}
+                <a href="{{ url('/wp') }}">Wajib Pajak</a>
+                <a href="{{ url('/kecamatan') }}">Kecamatan</a>
+                <a href="{{ url('/upt') }}">UPT</a>
+            @elseif ($role === 'wp')
+                <a href="{{ route('wp.dashboard') }}">Executive Summary</a>
+                <a href="{{ route('wp.sptpd') }}">SPTPD Saya</a>
+            @endif
         @endif
     </div>
 

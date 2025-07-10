@@ -41,7 +41,7 @@
                                 <table class="table table-bordered table-hover">
                                     <thead>
                                         <tr>
-                                            <th style="color: #FF6600">Jenis Pajak</th>
+                                            <th style="color: #FF6600; text-align: left;">Jenis Pajak</th>
                                             <th style="color: #FF6600">Target (RP.)</th>
                                             <th style="color: #FF6600">Realisasi (RP.)</th>
                                             <th style="color: #FF6600">Progres (%)</th>
@@ -54,20 +54,17 @@
                                             $style = $persen > 100 ? 'style=background-color:#00712D!important;color:white!important;' : '';
                                         @endphp
                                         <tr>
-                                            <td {!! $style !!}>{{ $tax['jenisPajak'] }}</td>
+                                            <td {!! $style !!} style="text-align: left;{{ $persen > 100 ? 'background-color:#00712D!important;color:white!important;' : '' }}">{{ $tax['jenisPajak'] }}</td>
                                             <td {!! $style !!}>{{ number_format($tax['targetAnggaran'], 0, ',', '.') }}</td>
                                             <td {!! $style !!}>{{ number_format($tax['realisasi'], 0, ',', '.') }}</td>
                                             <td {!! $style !!}>{{ number_format($persen, 2) }}%</td>
                                         </tr>
                                     @endforeach
                                         <tr>
-                                            <td style="font-weight: bold; color: #00712D">Total</td>
+                                            <td style="font-weight: bold; color: #00712D; text-align: left;">Total</td>
                                             <td style="font-weight: bold; color: #00712D">{{ number_format(array_sum(array_column($taxData, 'targetAnggaran')), 0, ',', '.') }}</td>
                                             <td style="font-weight: bold; color: #00712D">{{ number_format(array_sum(array_column($taxData, 'realisasi')), 0, ',', '.') }}</td>
-                                            {{-- <td style="font-weight: bold;">0</td>
-                                            <td style="font-weight: bold;">{{ number_format(array_sum(array_column($taxData, 'realisasi')), 0, ',', '.') }}</td> --}}
                                             <td style="font-weight: bold; color: #00712D">{{ number_format((array_sum(array_column($taxData, 'realisasi')) / array_sum(array_column($taxData, 'targetAnggaran'))) * 100, 2) }}%</td>
-                                            {{-- <td style="font-weight: bold;">{{ number_format(array_sum(array_column($taxData, 'realisasi')) - array_sum(array_column($taxData, 'targetAnggaran')), 0, ',', '.') }}</td> --}}
                                         </tr>
                                     </tbody>
                                 </table>
@@ -112,7 +109,7 @@
                                 <span style="color: #00712D; text-align:center; margin-top: 5px;">2025 : <span style="color: black">Rp.{{ $tax['realisasi'] }}</span></span>
                                 <span style="color: #FF6600; text-align:center; margin-top: 5px;">2024 : <span style="color: black">Rp.{{ $tax['tahunLalu'] }}</span></span>
                                 <div class="w-100 text-end">
-                                    <a href="" style="color: #606060; margin-top: 5px; text-decoration: none; text-align: end;">Lihat detail</a>
+                                    <a href="#" class="btn-detail-sptpd" data-jenis="{{ $tax['jenisPajak'] }}" style="color: #606060; margin-top: 5px; text-decoration: none; text-align: end;">Lihat detail</a>
                                 </div>
                             </div>
                         @endforeach
@@ -248,82 +245,152 @@
         </div>
     </div>
 
+    {{-- Modal Detail SPTPD per Jenis Pajak --}}
+    <div class="modal fade" id="modalDetailSptpd" tabindex="-1">
+      <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title">Detail SPTPD: <span id="modalJenisPajak"></span></h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+          </div>
+          <div class="modal-body">
+            <div class="table-responsive">
+              <table class="table table-bordered table-hover" id="tableDetailSptpd">
+                <thead>
+                  <tr>
+                    <th>No SPTPD</th>
+                    <th>Tanggal</th>
+                    <th>NOPD</th>
+                    <th>Subjek Pajak</th>
+                    <th>Masa Pajak</th>
+                    <th>Dasar</th>
+                    <th>Pajak Terutang</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {{-- Data via JS --}}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script>
-        const taxData = @json($taxData); // Pass data using JSON
-        const taxData2 = @json($taxData2); // Pass data using JSON
+        let taxData = @json($taxData);
+        let taxData2 = @json($taxData2);
+        let combinedChart = null;
 
-        const ctxCombined = document.getElementById('combinedChart').getContext('2d');
+        function renderTaxTable() {
+            const tbody = document.querySelector('#tableContainer tbody');
+            tbody.innerHTML = '';
+            let totalTarget = 0, totalRealisasi = 0;
+            taxData.forEach(function(tax) {
+                const persen = (tax.targetAnggaran > 0) ? (tax.realisasi / tax.targetAnggaran) * 100 : 0;
+                const style = persen > 100 ? 'style="background-color:#00712D!important;color:white!important;"' : '';
+                tbody.innerHTML += `
+                    <tr>
+                        <td ${style}>${tax.jenisPajak}</td>
+                        <td ${style}>${Number(tax.targetAnggaran).toLocaleString('id-ID')}</td>
+                        <td ${style}>${Number(tax.realisasi).toLocaleString('id-ID')}</td>
+                        <td ${style}>${persen.toFixed(2)}%</td>
+                    </tr>
+                `;
+                totalTarget += Number(tax.targetAnggaran);
+                totalRealisasi += Number(tax.realisasi);
+            });
+            const totalPersen = totalTarget > 0 ? (totalRealisasi / totalTarget) * 100 : 0;
+            tbody.innerHTML += `
+                <tr>
+                    <td style="font-weight: bold; color: #00712D">Total</td>
+                    <td style="font-weight: bold; color: #00712D">${totalTarget.toLocaleString('id-ID')}</td>
+                    <td style="font-weight: bold; color: #00712D">${totalRealisasi.toLocaleString('id-ID')}</td>
+                    <td style="font-weight: bold; color: #00712D">${totalPersen.toFixed(2)}%</td>
+                </tr>
+            `;
+        }
 
-        const labels = taxData.map(item => item.jenisPajak);
-        const realizationData = taxData.map(item => item.realisasi);
-        const targetData = taxData.map(item => item.targetAnggaran);
+        function renderChart() {
+            const labels = taxData.map(item => item.jenisPajak);
+            const realizationData = taxData.map(item => item.realisasi);
+            const targetData = taxData.map(item => item.targetAnggaran);
 
-        const dataCombined = {
-            labels: labels,
-            datasets: [
-                {
-                    type: 'line',
-                    label: 'Target Anggaran',
-                    data: targetData,
-                    borderColor: 'rgba(255, 99, 132, 1)',
-                    fill: false,
-                    tension: 0.2,
-                    pointRadius: 5,
-                    pointStyle: 'circle'
-                },
-                {
-                    type: 'bar',
-                    label: 'Realisasi',
-                    data: realizationData,
-                    backgroundColor: 'rgba(54, 162, 235, 1)',
-                    borderColor: 'rgba(54, 162, 235, 1)',
-                    borderWidth: 1
-                },
-            ]
-        };
+            const dataCombined = {
+                labels: labels,
+                datasets: [
+                    {
+                        type: 'line',
+                        label: 'Target Anggaran',
+                        data: targetData,
+                        borderColor: 'rgba(255, 99, 132, 1)',
+                        fill: false,
+                        tension: 0.2,
+                        pointRadius: 5,
+                        pointStyle: 'circle'
+                    },
+                    {
+                        type: 'bar',
+                        label: 'Realisasi',
+                        data: realizationData,
+                        backgroundColor: 'rgba(54, 162, 235, 1)',
+                        borderColor: 'rgba(54, 162, 235, 1)',
+                        borderWidth: 1
+                    },
+                ]
+            };
 
-        const optionsCombined = {
-            responsive: true,
-            scales: {
-                x: {
-                    stacked: false,
-                    title: {
-                        display: true,
-                        text: 'Jenis Pajak'
-                    }
-                },
-                y: {
-                    stacked: false,
-                    beginAtZero: true,
-                    ticks: {
-                        callback: function(value) {
-                            return value.toLocaleString();
+            const optionsCombined = {
+                responsive: true,
+                scales: {
+                    x: {
+                        stacked: false,
+                        title: {
+                            display: true,
+                            text: 'Jenis Pajak'
                         }
                     },
-                    title: {
+                    y: {
+                        stacked: false,
+                        beginAtZero: true,
+                        ticks: {
+                            callback: function(value) {
+                                return value.toLocaleString();
+                            }
+                        },
+                        title: {
+                            display: true,
+                            text: 'Nominal (Rp)'
+                        }
+                    }
+                },
+                plugins: {
+                    tooltip: {
+                        mode: 'index',
+                        intersect: false
+                    },
+                    legend: {
                         display: true,
-                        text: 'Nominal (Rp)'
+                        position: 'bottom'
                     }
                 }
-            },
-            plugins: {
-                tooltip: {
-                    mode: 'index',
-                    intersect: false
-                },
-                legend: {
-                    display: true,
-                    position: 'bottom'
-                }
-            }
-        };
+            };
 
-        new Chart(ctxCombined, {
-            type: 'bar',
-            data: dataCombined,
-            options: optionsCombined
-        });
+            if (combinedChart) {
+                combinedChart.destroy();
+            }
+            const ctxCombined = document.getElementById('combinedChart').getContext('2d');
+            combinedChart = new Chart(ctxCombined, {
+                type: 'bar',
+                data: dataCombined,
+                options: optionsCombined
+            });
+        }
+
+        renderTaxTable();
+        renderChart();
 
         const ctxTaxPerMonth = document.getElementById('combinedChart2').getContext('2d');
         const monthLabels = ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'];
@@ -388,6 +455,37 @@
                     }
                 }
             }
+        });
+
+        // Data SPTPD per jenis pajak (inject dari controller)
+        let sptpdByJenis = @json($sptpdByJenis ?? []);
+
+        // Modal detail SPTPD per jenis pajak
+        $(document).on('click', '.btn-detail-sptpd', function(e) {
+            e.preventDefault();
+            let jenis = $(this).data('jenis');
+            $('#modalJenisPajak').text(jenis);
+            let data = sptpdByJenis[jenis] || [];
+            let tbody = $('#tableDetailSptpd tbody');
+            tbody.empty();
+            if (data.length === 0) {
+                tbody.append('<tr><td colspan="7" class="text-center">Data tidak ada</td></tr>');
+            } else {
+                data.forEach(function(row) {
+                    tbody.append(`
+                        <tr>
+                            <td>${row.no_sptpd}</td>
+                            <td>${row.tanggal}</td>
+                            <td>${row.nopd}</td>
+                            <td>${row.subjek_pajak}</td>
+                            <td>${row.masa_pajak}</td>
+                            <td>${parseInt(row.dasar).toLocaleString('id-ID')}</td>
+                            <td>${parseInt(row.pajak_terutang).toLocaleString('id-ID')}</td>
+                        </tr>
+                    `);
+                });
+            }
+            $('#modalDetailSptpd').modal('show');
         });
 
         document.getElementById('showTableButton').addEventListener('click', () => {

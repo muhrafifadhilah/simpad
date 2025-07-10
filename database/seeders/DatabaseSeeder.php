@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\Hash;
 
 class DatabaseSeeder extends Seeder
 {
-    public function run()
+    public function run(): void
     {
         // Tambahkan role terlebih dahulu
         $adminRole = Role::create([
@@ -36,6 +36,13 @@ class DatabaseSeeder extends Seeder
             'userid' => 'user',
             'password' => Hash::make('password123'),
             'role_id' => $userRole->id // Hubungkan dengan role user
+        ]);
+
+        $this->call([
+            UptSeeder::class,
+            SubjekPajakSeeder::class,
+            ObjekPajakSeeder::class,
+            SptpdSeeder::class,
         ]);
     }
 }

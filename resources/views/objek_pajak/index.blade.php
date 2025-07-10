@@ -78,15 +78,51 @@
                         </div>
                         <div class="mb-2">
                             <label>Kategori Usaha</label>
-                            <input type="text" name="kategori_usaha" id="kategori_usaha" class="form-control" required>
+                            <select name="kategori_usaha" id="kategori_usaha" class="form-select" required>
+                                <option value="">Pilih Kategori Usaha</option>
+                                <option value="PBJT atas Jasa Perhotelan">PBJT atas Jasa Perhotelan</option>
+                                <option value="PBJT atas Makanan dan / atau Minuman">PBJT atas Makanan dan / atau Minuman</option>
+                                <option value="PBJT atas Jasa Kesenian dan Hiburan">PBJT atas Jasa Kesenian dan Hiburan</option>
+                                <option value="Pajak Reklame">Pajak Reklame</option>
+                                <option value="PBJT atas Tenaga Listrik">PBJT atas Tenaga Listrik</option>
+                                <option value="PBJT atas Jasa Parkir">PBJT atas Jasa Parkir</option>
+                                <option value="PBJT Air Tanah">PBJT Air Tanah</option>
+                                <option value="PBJT Mineral Bukan Logam Dan Batuan">PBJT Mineral Bukan Logam Dan Batuan</option>
+                                <option value="PBB">PBB</option>
+                                <option value="BPHTB">BPHTB</option>
+                            </select>
                         </div>
                         <div class="mb-2">
                             <label>Jenis Usaha</label>
-                            <input type="text" name="jenis_usaha" id="jenis_usaha" class="form-control" required>
+                            <select name="jenis_usaha" id="jenis_usaha" class="form-select" required>
+                                <option value="">Pilih Jenis Usaha</option>
+                                <option value="PBJT atas Jasa Perhotelan">PBJT atas Jasa Perhotelan</option>
+                                <option value="PBJT atas Makanan dan / atau Minuman">PBJT atas Makanan dan / atau Minuman</option>
+                                <option value="PBJT atas Jasa Kesenian dan Hiburan">PBJT atas Jasa Kesenian dan Hiburan</option>
+                                <option value="Pajak Reklame">Pajak Reklame</option>
+                                <option value="PBJT atas Tenaga Listrik">PBJT atas Tenaga Listrik</option>
+                                <option value="PBJT atas Jasa Parkir">PBJT atas Jasa Parkir</option>
+                                <option value="PBJT Air Tanah">PBJT Air Tanah</option>
+                                <option value="PBJT Mineral Bukan Logam Dan Batuan">PBJT Mineral Bukan Logam Dan Batuan</option>
+                                <option value="PBB">PBB</option>
+                                <option value="BPHTB">BPHTB</option>
+                            </select>
                         </div>
                         <div class="mb-2">
                             <label>Jenis Pajak</label>
-                            <input type="text" name="jenis_pajak" id="jenis_pajak" class="form-control" required>
+                            <select name="jenis_pajak" id="jenis_pajak" class="form-select" required>
+                                <option value="">Pilih Jenis Pajak</option>
+                                <option value="PBJT atas Jasa Perhotelan">PBJT atas Jasa Perhotelan</option>
+                                <option value="PBJT atas Makanan dan / atau Minuman">PBJT atas Makanan dan / atau Minuman</option>
+                                <option value="PBJT atas Jasa Kesenian dan Hiburan">PBJT atas Jasa Kesenian dan Hiburan</option>
+                                <option value="Pajak Reklame">Pajak Reklame</option>
+                                <option value="PBJT atas Tenaga Listrik">PBJT atas Tenaga Listrik</option>
+                                <option value="PBJT atas Jasa Parkir">PBJT atas Jasa Parkir</option>
+                                <option value="PBJT Air Tanah">PBJT Air Tanah</option>
+                                <option value="PBJT Mineral Bukan Logam Dan Batuan">PBJT Mineral Bukan Logam Dan Batuan</option>
+                                <option value="PBB">PBB</option>
+                                <option value="BPHTB">BPHTB</option>
+                            </select>
                         </div>
                     </div>
                     <div class="col-md-6">
@@ -326,6 +362,20 @@ $(function() {
             }
         });
     });
+
+    // Sinkronisasi dropdown
+    $('#kategori_usaha').on('change', function() {
+        var val = $(this).val();
+        if(val) {
+            $('#jenis_usaha').val(val);
+            $('#jenis_pajak').val(val);
+        } else {
+            $('#jenis_usaha').val('');
+            $('#jenis_pajak').val('');
+        }
+    });
+
+    // Jika ingin sinkron dua arah, tambahkan juga event di jenis_usaha/jenis_pajak jika perlu
 });
 </script>
 @endsection
