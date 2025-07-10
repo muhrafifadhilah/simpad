@@ -97,7 +97,7 @@
             @endphp
 
             @if ($role === 'psi')
-                <a href="{{ url('/admin/dashboard') }}">Executive Summary</a>
+                <a href="{{ url('/dashboard') }}">Executive Summary</a>
                 <a href="{{ url('/b-tax') }}">B-TAX</a>
                 <div class="dropdown">
                     <a href="#" class="dropdown-toggle" data-bs-toggle="dropdown">Pendaftaran</a>
@@ -117,7 +117,7 @@
                 <a href="{{ url('/kecamatan') }}">Kecamatan</a>
                 <a href="{{ url('/upt') }}">UPT</a>
             @elseif ($role === 'pegawai')
-                <a href="{{ url('/admin/dashboard') }}">Executive Summary</a>
+                <a href="{{ url('/dashboard') }}">Executive Summary</a>
                 <a href="{{ url('/b-tax') }}">B-TAX</a>
                 <div class="dropdown">
                     <a href="#" class="dropdown-toggle" data-bs-toggle="dropdown">Pendaftaran</a>
@@ -138,7 +138,6 @@
                 <a href="{{ url('/upt') }}">UPT</a>
             @elseif ($role === 'wp')
                 <a href="{{ route('admin.dashboard') }}">Executive Summary</a>
-                <a href="{{ route('wp.sptpd') }}">SPTPD Saya</a>
             @endif
         @endif
     </div>
