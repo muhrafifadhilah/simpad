@@ -26,6 +26,7 @@ Route::middleware('auth')->group(function () {
         Route::resource('upt', \App\Http\Controllers\UptController::class);
         Route::get('upt/{id}/kecamatan', [\App\Http\Controllers\UptController::class, 'getKecamatan']);
         Route::resource('sptpd', \App\Http\Controllers\SptpdController::class);
+        Route::get('sptpd/export-pdf', [\App\Http\Controllers\SptpdController::class, 'exportPdf'])->name('sptpd.export-pdf');
         Route::post('/dashboard/update-tax', [App\Http\Controllers\Admin\DashboardController::class, 'updateTaxData'])->middleware('auth');
         Route::resource('wp', App\Http\Controllers\WpController::class)->except(['show', 'edit', 'update', 'destroy']);
         Route::post('wp/cari-subjek', [App\Http\Controllers\WpController::class, 'cariSubjek'])->name('wp.cariSubjek');

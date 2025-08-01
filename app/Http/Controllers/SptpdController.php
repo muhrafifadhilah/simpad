@@ -132,4 +132,16 @@ class SptpdController extends Controller
         $sptpd->delete();
         return redirect()->route('sptpd.index')->with('success', 'SPTPD berhasil dihapus');
     }
+
+    public function exportPdf()
+    {
+        // Method untuk export PDF - bisa dikembangkan sesuai kebutuhan
+        $sptpds = Sptpd::with(['objekPajak.subjekPajak'])->get();
+        
+        // Sementara return JSON, nanti bisa diganti dengan PDF generator
+        return response()->json([
+            'message' => 'Export PDF functionality',
+            'data' => $sptpds->count() . ' records ready for export'
+        ]);
+    }
 }

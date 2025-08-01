@@ -1,46 +1,352 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="container" style="max-width: 98%;">
-    <div style="background: #fff; border-radius: 4px; border: 1px solid #eee; margin-top: 20px;">
-        <div style="padding: 20px 25px 10px 25px;">
-            <div style="font-size: 22px; font-weight: bold; letter-spacing: 1px; margin-bottom: 10px;">
-                <span style="border-bottom: 3px solid #eaeaea; padding-bottom: 5px;">Objek Pajak</span>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+<style>
+    /* Modern Page Styling */
+    .main-content-wrapper {
+        width: 100%;
+        max-width: 100%;
+        box-sizing: border-box;
+        overflow-x: hidden;
+        padding: 20px;
+        min-height: 100vh;
+    }
+    
+    .container-fluid {
+        padding: 0 20px;
+        width: 100%;
+        max-width: 1400px;
+        margin: 0 auto;
+        box-sizing: border-box;
+    }
+    
+    /* Modern Header */
+    .modern-header {
+        width: 100%;
+        max-width: 100%;
+        box-sizing: border-box;
+        background: linear-gradient(135deg, var(--secondary-green) 0%, #E8F5E8 100%);
+        border-radius: var(--radius-lg);
+        box-shadow: var(--shadow-sm);
+        margin-bottom: 30px;
+        padding: 25px 30px;
+    }
+    
+    .header-title {
+        color: var(--primary-green);
+        font-size: 1.75rem;
+        font-weight: 700;
+        margin: 0;
+    }
+    
+    .header-subtitle {
+        color: var(--neutral-700);
+        font-size: 0.95rem;
+        margin: 4px 0 0 0;
+    }
+    
+    /* Sidebar toggle button */
+    .sidebar-toggle-btn {
+        background: var(--primary-green);
+        border: none;
+        color: white;
+        padding: 12px 15px;
+        border-radius: var(--radius-md);
+        cursor: pointer;
+        transition: var(--transition);
+        box-shadow: var(--shadow-sm);
+    }
+    
+    .sidebar-toggle-btn:hover {
+        background: var(--accent-green);
+        transform: translateY(-2px);
+        box-shadow: var(--shadow-md);
+    }
+    
+    /* Modern Controls */
+    .modern-controls-container {
+        background: white;
+        border-radius: var(--radius-lg);
+        box-shadow: var(--shadow-sm);
+        border: 1px solid var(--neutral-300);
+        padding: 30px;
+        margin-bottom: 30px;
+    }
+    
+    .controls-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+        gap: 16px;
+        margin-bottom: 20px;
+    }
+    
+    .control-group {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+    }
+    
+    .modern-label {
+        font-weight: 600;
+        color: var(--neutral-700);
+        font-size: 0.9rem;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+    
+    .modern-select {
+        padding: 12px 16px;
+        border: 2px solid var(--neutral-300);
+        border-radius: var(--radius-md);
+        font-size: 0.95rem;
+        transition: var(--transition);
+        background: white;
+    }
+    
+    .modern-select:focus {
+        outline: none;
+        border-color: var(--primary-green);
+        box-shadow: 0 0 0 3px rgba(0, 113, 45, 0.1);
+    }
+    
+    /* Action Buttons */
+    .action-buttons {
+        display: flex;
+        gap: 12px;
+        flex-wrap: wrap;
+        margin-top: 16px;
+    }
+    
+    .btn-modern {
+        padding: 12px 20px;
+        border: none;
+        border-radius: var(--radius-md);
+        font-weight: 600;
+        font-size: 0.9rem;
+        cursor: pointer;
+        transition: var(--transition);
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        min-width: 120px;
+        justify-content: center;
+    }
+    
+    .btn-add {
+        background: #22b8cf;
+        color: white;
+    }
+    
+    .btn-add:hover {
+        background: #1a94a8;
+        transform: translateY(-2px);
+        box-shadow: var(--shadow-md);
+    }
+    
+    .btn-edit {
+        background: #fab005;
+        color: white;
+    }
+    
+    .btn-edit:hover {
+        background: #d19903;
+        transform: translateY(-2px);
+        box-shadow: var(--shadow-md);
+    }
+    
+    .btn-delete {
+        background: #fa5252;
+        color: white;
+    }
+    
+    .btn-delete:hover {
+        background: #e03131;
+        transform: translateY(-2px);
+        box-shadow: var(--shadow-md);
+    }
+    
+    /* Modern Table */
+    .modern-table-container {
+        background: white;
+        border-radius: var(--radius-lg);
+        box-shadow: var(--shadow-sm);
+        border: 1px solid var(--neutral-300);
+        overflow: hidden;
+    }
+    
+    .modern-table {
+        width: 100%;
+        margin: 0;
+        border-collapse: collapse;
+        font-size: 0.9rem;
+    }
+    
+    .modern-table thead {
+        background: linear-gradient(135deg, var(--primary-green) 0%, var(--accent-green) 100%);
+    }
+    
+    .modern-table thead th {
+        color: white;
+        font-weight: 600;
+        padding: 18px 16px;
+        text-align: left;
+        border: none;
+        font-size: 0.95rem;
+        white-space: nowrap;
+    }
+    
+    .modern-table tbody tr {
+        border-bottom: 1px solid var(--neutral-200);
+        transition: var(--transition);
+    }
+    
+    .modern-table tbody tr:hover {
+        background: var(--neutral-100);
+    }
+    
+    .modern-table tbody tr.selected {
+        background: rgba(0, 113, 45, 0.1);
+        border-left: 4px solid var(--primary-green);
+    }
+    
+    .modern-table tbody td {
+        padding: 16px;
+        border: none;
+        color: var(--neutral-700);
+        vertical-align: middle;
+    }
+    
+    /* Status Badge */
+    .status-badge {
+        padding: 4px 12px;
+        border-radius: 20px;
+        font-size: 0.8rem;
+        font-weight: 600;
+        text-transform: uppercase;
+    }
+    
+    .status-active {
+        background: rgba(40, 167, 69, 0.2);
+        color: #28a745;
+    }
+    
+    .status-inactive {
+        background: rgba(220, 53, 69, 0.2);
+        color: #dc3545;
+    }
+    
+    /* Responsive Design */
+    @media (max-width: 768px) {
+        .container-fluid {
+            padding-left: 16px;
+            padding-right: 16px;
+        }
+        
+        .modern-header {
+            flex-direction: column;
+            gap: 16px;
+            text-align: center;
+        }
+        
+        .controls-grid {
+            grid-template-columns: 1fr;
+        }
+        
+        .action-buttons {
+            justify-content: center;
+        }
+        
+        .modern-table {
+            font-size: 0.8rem;
+        }
+        
+        .modern-table thead th,
+        .modern-table tbody td {
+            padding: 10px 8px;
+        }
+    }
+</style>
+
+<div class="main-content-wrapper">
+    <div class="container-fluid">
+        <!-- Modern Header -->
+        <div class="modern-header">
+            <div class="header-content">
+                <div class="header-left d-flex align-items-center">
+                    <button class="sidebar-toggle-btn me-4" id="sidebarToggle">
+                        <i class="fas fa-bars"></i>
+                    </button>
+                    <div>
+                        <h2 class="header-title">Objek Pajak</h2>
+                        <p class="header-subtitle">Manajemen Data Objek Pajak Daerah</p>
+                    </div>
+                </div>
             </div>
-            <div class="d-flex align-items-center mb-2 flex-wrap gap-2">
-                <select id="filterSubjek" class="form-select form-select-sm me-2" style="width:220px;">
-                    <option value="">SEMUA SUBJEK PAJAK</option>
-                    @foreach($subjekList as $subjek)
-                        <option value="{{ $subjek->id }}">{{ $subjek->subjek_pajak }} ({{ $subjek->npwpd }})</option>
-                    @endforeach
-                </select>
-                <select id="filterKecamatan" class="form-select form-select-sm me-2" style="width:180px;">
-                    <option value="">SEMUA KECAMATAN</option>
-                    @foreach($kecamatanList as $kec)
-                        <option value="{{ $kec->nama }}">{{ $kec->nama }}</option>
-                    @endforeach
-                </select>
-                <button class="btn btn-sm" id="addObjekBtn" style="background:#22b8cf;color:#fff;min-width:70px;">Tambah</button>
-                <button class="btn btn-sm" id="editObjekBtn" style="background:#fab005;color:#fff;min-width:70px;">Edit</button>
-                <button class="btn btn-sm" id="deleteObjekBtn" style="background:#fa5252;color:#fff;min-width:70px;">Hapus</button>
+        </div>
+        
+        <!-- Modern Controls -->
+        <div class="modern-controls-container">
+            <div class="controls-grid">
+                <div class="control-group">
+                    <label class="modern-label">
+                        <i class="fas fa-user me-2"></i>Subjek Pajak
+                    </label>
+                    <select id="filterSubjek" class="modern-select">
+                        <option value="">Semua Subjek Pajak</option>
+                        @foreach($subjekList as $subjek)
+                            <option value="{{ $subjek->id }}">{{ $subjek->subjek_pajak }} ({{ $subjek->npwpd }})</option>
+                        @endforeach
+                    </select>
+                </div>
+                <div class="control-group">
+                    <label class="modern-label">
+                        <i class="fas fa-map-marker-alt me-2"></i>Kecamatan
+                    </label>
+                    <select id="filterKecamatan" class="modern-select">
+                        <option value="">Semua Kecamatan</option>
+                        @foreach($kecamatanList as $kec)
+                            <option value="{{ $kec->nama }}">{{ $kec->nama }}</option>
+                        @endforeach
+                    </select>
+                </div>
             </div>
-            <div class="table-responsive">
-                <table class="table table-bordered table-hover" id="objekTable" style="background: #fafaff; user-select: text;">
-                    <thead>
-                        <tr>
-                            <th>NPWPD</th>
-                            <th>NOPD</th>
-                            <th>Nama Usaha</th>
-                            <th>Kategori Usaha</th>
-                            <th>Jenis Usaha</th>
-                            <th>Jenis Pajak</th>
-                            <th>Kecamatan</th>
-                            <th>Kelurahan</th>
-                            <th>Status</th>
-                        </tr>
-                    </thead>
-                </table>
+            
+            <div class="action-buttons">
+                <button class="btn-modern btn-add" id="addObjekBtn">
+                    <i class="fas fa-plus"></i>Tambah
+                </button>
+                <button class="btn-modern btn-edit" id="editObjekBtn">
+                    <i class="fas fa-edit"></i>Edit
+                </button>
+                <button class="btn-modern btn-delete" id="deleteObjekBtn">
+                    <i class="fas fa-trash"></i>Hapus
+                </button>
             </div>
+        </div>
+        
+        <!-- Modern Table -->
+        <div class="modern-table-container">
+            <table class="modern-table" id="objekTable">
+                <thead>
+                    <tr>
+                        <th><i class="fas fa-id-card me-2"></i>NPWPD</th>
+                        <th><i class="fas fa-barcode me-2"></i>NOPD</th>
+                        <th><i class="fas fa-store me-2"></i>Nama Usaha</th>
+                        <th><i class="fas fa-tags me-2"></i>Kategori Usaha</th>
+                        <th><i class="fas fa-briefcase me-2"></i>Jenis Usaha</th>
+                        <th><i class="fas fa-receipt me-2"></i>Jenis Pajak</th>
+                        <th><i class="fas fa-city me-2"></i>Kecamatan</th>
+                        <th><i class="fas fa-building me-2"></i>Kelurahan</th>
+                        <th><i class="fas fa-check-circle me-2"></i>Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- Data will be loaded via AJAX -->
+                </tbody>
+            </table>
         </div>
     </div>
 </div>
@@ -376,6 +682,14 @@ $(function() {
     });
 
     // Jika ingin sinkron dua arah, tambahkan juga event di jenis_usaha/jenis_pajak jika perlu
+    
+    // Sidebar toggle functionality
+    const sidebarToggle = document.getElementById('sidebarToggle');
+    if (sidebarToggle) {
+        sidebarToggle.addEventListener('click', function() {
+            document.body.classList.toggle('sidebar-collapsed');
+        });
+    }
 });
 </script>
 @endsection

@@ -1,53 +1,346 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="container" style="max-width: 700px;">
-    <div style="background: #fff; border-radius: 4px; border: 1px solid #eee; margin-top: 20px;">
-        <div style="padding: 20px 25px 10px 25px;">
-            <div style="font-size: 22px; font-weight: bold; letter-spacing: 1px; margin-bottom: 10px;">
-                <span style="border-bottom: 3px solid #eaeaea; padding-bottom: 5px;">Kecamatan</span>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+<style>
+    /* Modern Page Styling */
+    .main-content-wrapper {
+        width: 100%;
+        max-width: 100%;
+        box-sizing: border-box;
+        overflow-x: hidden;
+        padding: 20px;
+        min-height: 100vh;
+    }
+    
+    .container-fluid {
+        padding: 0 20px;
+        width: 100%;
+        max-width: 1200px;
+        margin: 0 auto;
+        box-sizing: border-box;
+    }
+    
+    /* Modern Header */
+    .modern-header {
+        width: 100%;
+        max-width: 100%;
+        box-sizing: border-box;
+        background: linear-gradient(135deg, var(--secondary-green) 0%, #E8F5E8 100%);
+        border-radius: var(--radius-lg);
+        box-shadow: var(--shadow-sm);
+        margin-bottom: 24px;
+    }
+    
+    .header-title {
+        color: var(--primary-green);
+        font-size: 1.75rem;
+        font-weight: 700;
+        margin: 0;
+    }
+    
+    .header-subtitle {
+        color: var(--neutral-700);
+        font-size: 0.95rem;
+        margin: 4px 0 0 0;
+    }
+    
+    /* Sidebar toggle button */
+    .sidebar-toggle-btn {
+        background: var(--primary-green);
+        border: none;
+        color: white;
+        padding: 12px 15px;
+        border-radius: var(--radius-md);
+        cursor: pointer;
+        transition: var(--transition);
+        box-shadow: var(--shadow-sm);
+    }
+    
+    .sidebar-toggle-btn:hover {
+        background: var(--accent-green);
+        transform: translateY(-2px);
+        box-shadow: var(--shadow-md);
+    }
+    
+    /* Modern Controls */
+    .modern-controls-container {
+        background: white;
+        border-radius: var(--radius-lg);
+        box-shadow: var(--shadow-sm);
+        border: 1px solid var(--neutral-300);
+        padding: 24px;
+        margin-bottom: 24px;
+    }
+    
+    /* Action Buttons */
+    .action-buttons {
+        display: flex;
+        gap: 12px;
+        flex-wrap: wrap;
+    }
+    
+    .btn-modern {
+        padding: 12px 20px;
+        border: none;
+        border-radius: var(--radius-md);
+        font-weight: 600;
+        font-size: 0.9rem;
+        cursor: pointer;
+        transition: var(--transition);
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        min-width: 120px;
+        justify-content: center;
+    }
+    
+    .btn-add {
+        background: #22b8cf;
+        color: white;
+    }
+    
+    .btn-add:hover {
+        background: #1a94a8;
+        transform: translateY(-2px);
+        box-shadow: var(--shadow-md);
+    }
+    
+    .btn-edit {
+        background: #fab005;
+        color: white;
+    }
+    
+    .btn-edit:hover {
+        background: #d19903;
+        transform: translateY(-2px);
+        box-shadow: var(--shadow-md);
+    }
+    
+    .btn-delete {
+        background: #fa5252;
+        color: white;
+    }
+    
+    .btn-delete:hover {
+        background: #e03131;
+        transform: translateY(-2px);
+        box-shadow: var(--shadow-md);
+    }
+    
+    /* Modern Table */
+    .modern-table-container {
+        background: white;
+        border-radius: var(--radius-lg);
+        box-shadow: var(--shadow-sm);
+        border: 1px solid var(--neutral-300);
+        overflow: hidden;
+        max-width: 900px;
+        margin: 0 auto;
+    }
+    
+    .modern-table {
+        width: 100%;
+        margin: 0;
+        border-collapse: collapse;
+        font-size: 0.9rem;
+    }
+    
+    .modern-table thead {
+        background: linear-gradient(135deg, var(--primary-green) 0%, var(--accent-green) 100%);
+    }
+    
+    .modern-table thead th {
+        color: white;
+        font-weight: 600;
+        padding: 16px 12px;
+        text-align: left;
+        border: none;
+        font-size: 0.9rem;
+    }
+    
+    .modern-table tbody tr {
+        border-bottom: 1px solid var(--neutral-200);
+        transition: var(--transition);
+        cursor: pointer;
+    }
+    
+    .modern-table tbody tr:hover {
+        background: var(--neutral-100);
+    }
+    
+    .modern-table tbody tr.selected {
+        background: rgba(0, 113, 45, 0.1);
+        border-left: 4px solid var(--primary-green);
+    }
+    
+    .modern-table tbody td {
+        padding: 14px 12px;
+        border: none;
+        color: var(--neutral-700);
+        vertical-align: middle;
+    }
+    
+    /* Status Badge */
+    .status-badge {
+        padding: 4px 12px;
+        border-radius: 20px;
+        font-size: 0.8rem;
+        font-weight: 600;
+        text-transform: uppercase;
+    }
+    
+    .status-active {
+        background: rgba(40, 167, 69, 0.2);
+        color: #28a745;
+    }
+    
+    .status-inactive {
+        background: rgba(220, 53, 69, 0.2);
+        color: #dc3545;
+    }
+    
+    /* Modal Styling */
+    .modal-content {
+        border-radius: var(--radius-lg);
+        border: none;
+        box-shadow: var(--shadow-lg);
+    }
+    
+    .modal-header {
+        background: linear-gradient(135deg, var(--primary-green) 0%, var(--accent-green) 100%);
+        color: white;
+        border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+    }
+    
+    .modal-title {
+        font-weight: 700;
+    }
+    
+    .form-label {
+        font-weight: 600;
+        color: var(--neutral-700);
+        margin-bottom: 8px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+    
+    .form-control {
+        border: 2px solid var(--neutral-300);
+        border-radius: var(--radius-md);
+        padding: 12px 16px;
+        transition: var(--transition);
+    }
+    
+    .form-control:focus {
+        outline: none;
+        border-color: var(--primary-green);
+        box-shadow: 0 0 0 3px rgba(0, 113, 45, 0.1);
+    }
+    
+    /* Responsive Design */
+    @media (max-width: 768px) {
+        .container-fluid {
+            padding-left: 16px;
+            padding-right: 16px;
+        }
+        
+        .modern-header {
+            flex-direction: column;
+            gap: 16px;
+            text-align: center;
+        }
+        
+        .action-buttons {
+            justify-content: center;
+        }
+        
+        .modern-table {
+            font-size: 0.8rem;
+        }
+        
+        .modern-table thead th,
+        .modern-table tbody td {
+            padding: 10px 8px;
+        }
+    }
+</style>
+
+<div class="main-content-wrapper">
+    <div class="container-fluid">
+        <!-- Modern Header -->
+        <div class="modern-header">
+            <div class="header-content">
+                <div class="header-left d-flex align-items-center">
+                    <button class="sidebar-toggle-btn me-4" id="sidebarToggle">
+                        <i class="fas fa-bars"></i>
+                    </button>
+                    <div>
+                        <h2 class="header-title">Data Kecamatan</h2>
+                        <p class="header-subtitle">Manajemen Wilayah Kecamatan</p>
+                    </div>
+                </div>
             </div>
-            <div class="mb-2">
-                <button class="btn btn-sm" id="addKecBtn" style="background:#22b8cf;color:#fff;min-width:70px;">Tambah</button>
-                <button class="btn btn-sm" id="editKecBtn" style="background:#fab005;color:#fff;min-width:70px;">Edit</button>
-                <button class="btn btn-sm" id="deleteKecBtn" style="background:#fa5252;color:#fff;min-width:70px;">Hapus</button>
+        </div>
+        
+        <!-- Modern Controls -->
+        <div class="modern-controls-container">
+            <div class="action-buttons">
+                <button class="btn-modern btn-add" id="addKecBtn">
+                    <i class="fas fa-plus"></i>Tambah
+                </button>
+                <button class="btn-modern btn-edit" id="editKecBtn">
+                    <i class="fas fa-edit"></i>Edit
+                </button>
+                <button class="btn-modern btn-delete" id="deleteKecBtn">
+                    <i class="fas fa-trash"></i>Hapus
+                </button>
             </div>
-            <div class="table-responsive">
-                <table class="table table-bordered table-hover" id="kecamatanTable" style="background: #fafaff;">
-                    <thead>
-                        <tr style="background:#e8eaff;">
-                            <th>Kode</th>
-                            <th>Kecamatan</th>
-                            <th>TMT</th>
-                            <th>Aktif</th>
-                        </tr>
-                    </thead>
-                </table>
-            </div>
+        </div>
+        
+        <!-- Modern Table -->
+        <div class="modern-table-container">
+            <table class="modern-table" id="kecamatanTable">
+                <thead>
+                    <tr>
+                        <th><i class="fas fa-barcode me-2"></i>Kode</th>
+                        <th><i class="fas fa-map-marked-alt me-2"></i>Kecamatan</th>
+                        <th><i class="fas fa-calendar me-2"></i>TMT</th>
+                        <th><i class="fas fa-check-circle me-2"></i>Status</th>
+                    </tr>
+                </thead>
+            </table>
         </div>
     </div>
 </div>
 
-<!-- Modal -->
+<!-- Modern Modal -->
 <div class="modal fade" id="kecModal" tabindex="-1" aria-labelledby="kecModalLabel" aria-hidden="true">
-  <div class="modal-dialog">
-    <form id="kecForm">
-        @csrf
-        <input type="hidden" name="id" id="kec_id">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="kecModalLabel">Tambah/Edit Kecamatan</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-            </div>
-            <div class="modal-body">
-                <div class="mb-2">
-                    <label>Kode</label>
-                    <input type="text" name="kode" id="kode" class="form-control" maxlength="4" required>
+    <div class="modal-dialog">
+        <form id="kecForm">
+            @csrf
+            <input type="hidden" name="id" id="kec_id">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="kecModalLabel">
+                        <i class="fas fa-map-marked-alt me-2"></i>Tambah/Edit Kecamatan
+                    </h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
                 </div>
-                <div class="mb-2">
-                    <label>Nama Kecamatan</label>
-                    <input type="text" name="nama" id="nama" class="form-control" required>
-                </div>
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label class="form-label">
+                            <i class="fas fa-barcode"></i>Kode
+                        </label>
+                        <input type="text" name="kode" id="kode" class="form-control" maxlength="4" required placeholder="Masukkan kode kecamatan">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">
+                            <i class="fas fa-map-marked-alt"></i>Nama Kecamatan
+                        </label>
+                        <input type="text" name="nama" id="nama" class="form-control" required placeholder="Masukkan nama kecamatan">
                 <div class="mb-2">
                     <label>TMT</label>
                     <input type="date" name="tmt" id="tmt" class="form-control" required>
@@ -236,6 +529,14 @@ $(function() {
             }
         });
     });
+    
+    // Sidebar toggle functionality
+    const sidebarToggle = document.getElementById('sidebarToggle');
+    if (sidebarToggle) {
+        sidebarToggle.addEventListener('click', function() {
+            document.body.classList.toggle('sidebar-collapsed');
+        });
+    }
 });
 </script>
 @endsection
