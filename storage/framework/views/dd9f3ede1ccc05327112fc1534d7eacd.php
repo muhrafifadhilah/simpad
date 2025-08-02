@@ -1,6 +1,4 @@
-@extends('layouts.app')
-
-@section('content')
+<?php $__env->startSection('content'); ?>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
 <style>
@@ -453,7 +451,7 @@
 <div class="modal fade" id="subjekModal" tabindex="-1" aria-labelledby="subjekModalLabel" aria-hidden="true">
   <div class="modal-dialog modal-lg">
     <form id="subjekForm">
-        @csrf
+        <?php echo csrf_field(); ?>
         <input type="hidden" name="id" id="subjek_id">
         <div class="modal-content">
             <div class="modal-header">
@@ -568,9 +566,9 @@
         </div>
     </div>
 </div>
-@endsection
+<?php $__env->stopSection(); ?>
 
-@section('styles')
+<?php $__env->startSection('styles'); ?>
 <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap5.min.css">
 <style>
     #subjekTable th, #subjekTable td {
@@ -595,9 +593,9 @@
         box-shadow: none !important;
     }
 </style>
-@endsection
+<?php $__env->stopSection(); ?>
 
-@section('scripts')
+<?php $__env->startSection('scripts'); ?>
 <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
 <script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap5.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
@@ -630,7 +628,7 @@ $(function() {
             }
         },
         ajax: {
-            url: '{{ route('subjek_pajak.index') }}',
+            url: '<?php echo e(route('subjek_pajak.index')); ?>',
             data: function(d) {
                 d.subjek = $('#filterSubjek').val();
                 d.pemilik = $('#filterPemilik').val();
@@ -726,9 +724,9 @@ $(function() {
         }).then((result) => {
             if (result.isConfirmed) {
                 $.ajax({
-                    url: "{{ url('subjek_pajak') }}/" + selectedRowId,
+                    url: "<?php echo e(url('subjek_pajak')); ?>/" + selectedRowId,
                     type: 'DELETE',
-                    data: { _token: '{{ csrf_token() }}' },
+                    data: { _token: '<?php echo e(csrf_token()); ?>' },
                     success: function() {
                         Swal.fire('Berhasil!', 'Data subjek pajak dihapus.', 'success');
                         table.ajax.reload();
@@ -760,10 +758,10 @@ $(function() {
         let id = $('#subjek_id').val();
         let url, type;
         if (id) {
-            url = "{{ url('subjek_pajak') }}/" + id;
+            url = "<?php echo e(url('subjek_pajak')); ?>/" + id;
             type = 'PUT';
         } else {
-            url = "{{ route('subjek_pajak.store') }}";
+            url = "<?php echo e(route('subjek_pajak.store')); ?>";
             type = 'POST';
         }
         $.ajax({
@@ -895,7 +893,7 @@ $(function() {
                 let rowData = table.row($('#subjekTable tbody tr.selected')).data();
                 
                 $.post(`/subjek_pajak/reset-wp-password/${rowData.id}`, {
-                    _token: '{{ csrf_token() }}'
+                    _token: '<?php echo e(csrf_token()); ?>'
                 }, function(response) {
                     if (response.success) {
                         Swal.fire({
@@ -915,4 +913,6 @@ $(function() {
     });
 });
 </script>
-@endsection
+<?php $__env->stopSection(); ?>
+
+<?php echo $__env->make('layouts.app', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?><?php /**PATH D:\Project\simpad\resources\views/subjek_pajak/index.blade.php ENDPATH**/ ?>

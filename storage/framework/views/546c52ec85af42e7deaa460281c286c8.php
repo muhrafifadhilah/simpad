@@ -150,11 +150,11 @@
 <body>
     <div class="container">
         <div class="kartu-wrapper">
-            {{-- Halaman Depan --}}
+            
             <div class="kartu">
                 <div class="header">
                     <h3>KARTU NPWPD</h3>
-                    <div class="npwpd">{{ $subjek->npwpd }}</div>
+                    <div class="npwpd"><?php echo e($subjek->npwpd); ?></div>
                 </div>
                 
                 <div class="content">
@@ -162,49 +162,50 @@
                         <tr>
                             <td class="label">Nama</td>
                             <td class="colon">:</td>
-                            <td class="value">{{ $subjek->subjek_pajak }}</td>
+                            <td class="value"><?php echo e($subjek->subjek_pajak); ?></td>
                         </tr>
                         <tr>
                             <td class="label">Pemilik</td>
                             <td class="colon">:</td>
-                            <td class="value">{{ $subjek->pemilik }}</td>
+                            <td class="value"><?php echo e($subjek->pemilik); ?></td>
                         </tr>
                         <tr>
                             <td class="label">Alamat</td>
                             <td class="colon">:</td>
-                            <td class="value">{{ $subjek->alamat }}</td>
+                            <td class="value"><?php echo e($subjek->alamat); ?></td>
                         </tr>
                         <tr>
                             <td class="label">Kecamatan</td>
                             <td class="colon">:</td>
-                            <td class="value">{{ $subjek->kecamatan }}</td>
+                            <td class="value"><?php echo e($subjek->kecamatan); ?></td>
                         </tr>
                         <tr>
                             <td class="label">Kelurahan</td>
                             <td class="colon">:</td>
-                            <td class="value">{{ $subjek->kelurahan }}</td>
+                            <td class="value"><?php echo e($subjek->kelurahan); ?></td>
                         </tr>
                         <tr>
                             <td class="label">No. Pengukuhan</td>
                             <td class="colon">:</td>
-                            <td class="value">{{ $subjek->noPengukuhan }}</td>
+                            <td class="value"><?php echo e($subjek->noPengukuhan); ?></td>
                         </tr>
                         <tr>
                             <td class="label">Tgl. Pengukuhan</td>
                             <td class="colon">:</td>
-                            <td class="value">{{ \Carbon\Carbon::parse($subjek->tanggalPengukuhan)->format('d-m-Y') }}</td>
+                            <td class="value"><?php echo e(\Carbon\Carbon::parse($subjek->tanggalPengukuhan)->format('d-m-Y')); ?></td>
                         </tr>
                     </table>
                 </div>
                 
                 <div class="footer">
-                    Dicetak: {{ now()->format('d-m-Y H:i') }}
+                    Dicetak: <?php echo e(now()->format('d-m-Y H:i')); ?>
+
                 </div>
             </div>
         </div>
 
         <div class="kartu-wrapper">
-            {{-- Halaman Belakang --}}
+            
             <div class="kartu">
                 <div class="back-title">KETENTUAN PENGGUNAAN</div>
                 <div class="back-content">
@@ -237,3 +238,4 @@
     </div>
 </body>
 </html>
+<?php /**PATH D:\Project\simpad\resources\views/subjek_pajak/kartu_pdf.blade.php ENDPATH**/ ?>

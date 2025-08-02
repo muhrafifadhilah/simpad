@@ -8,6 +8,8 @@ use App\Models\SubjekPajak;
 use App\Models\Upt;
 use Illuminate\Http\Request;
 use Yajra\DataTables\Facades\DataTables;
+use Barryvdh\DomPDF\Facade\Pdf;
+use Illuminate\Support\Facades\Log;
 
 class SptpdController extends Controller
 {
@@ -15,6 +17,32 @@ class SptpdController extends Controller
     {
         if ($request->ajax()) {
             $query = \App\Models\Sptpd::with(['objekPajak.subjekPajak']);
+            
+            // Apply search filters
+            if ($request->filled('search_nopd')) {
+                $query->whereHas('objekPajak', function($q) use ($request) {
+                    $q->where('nopd', 'like', '%' . $request->search_nopd . '%');
+                });
+            }
+            
+            if ($request->filled('search_nama')) {
+                $query->whereHas('objekPajak.subjekPajak', function($q) use ($request) {
+                    $q->where('subjek_pajak', 'like', '%' . $request->search_nama . '%');
+                });
+            }
+            
+            if ($request->filled('search_jenis')) {
+                $query->whereHas('objekPajak', function($q) use ($request) {
+                    $q->where('jenis_pajak', 'like', '%' . $request->search_jenis . '%');
+                });
+            }
+            
+            if ($request->filled('search_periode')) {
+                $periode = \Carbon\Carbon::parse($request->search_periode);
+                $query->whereYear('masa_pajak_awal', $periode->year)
+                      ->whereMonth('masa_pajak_awal', $periode->month);
+            }
+            
             return DataTables::of($query)
                 ->addColumn('no_sptpd', function($row) {
                     // Format: YYYY.MM.DD.00001x
@@ -74,16 +102,58 @@ class SptpdController extends Controller
         $request->validate([
             'objek_pajak_id' => 'required|exists:objek_pajak,id',
             'upt_id' => 'required|exists:upt,id',
+            'tanggal_terima' => 'required|date',
+            'jatuh_tempo' => 'required|date',
             'masa_pajak_awal' => 'required|date',
             'masa_pajak_akhir' => 'required|date',
-            'jatuh_tempo' => 'required|date',
-            // ...tambahkan validasi lain sesuai kebutuhan...
+            'dasar_pengenaan' => 'required|numeric',
+            'omset_tapping_box' => 'required|numeric',
+            'pajak_terutang' => 'required|numeric',
         ]);
-        $objek = \App\Models\ObjekPajak::with('subjekPajak')->findOrFail($request->objek_pajak_id);
-        $sptpd = new \App\Models\Sptpd($request->all());
-        $sptpd->subjek_pajak_id = $objek->subjek_pajak_id;
-        $sptpd->save();
-        return redirect()->route('sptpd.index')->with('success', 'SPTPD berhasil ditambahkan');
+
+        try {
+            $objek = \App\Models\ObjekPajak::with('subjekPajak')->findOrFail($request->objek_pajak_id);
+            
+            $sptpd = new \App\Models\Sptpd();
+            $sptpd->objek_pajak_id = $request->objek_pajak_id;
+            $sptpd->subjek_pajak_id = $objek->subjek_pajak_id;
+            $sptpd->upt_id = $request->upt_id;
+            $sptpd->jatuh_tempo = $request->jatuh_tempo;
+            $sptpd->masa_pajak_awal = $request->masa_pajak_awal;
+            $sptpd->masa_pajak_akhir = $request->masa_pajak_akhir;
+            $sptpd->dasar = $request->dasar_pengenaan;
+            $sptpd->tarif = $request->tarif ?? 0;
+            $sptpd->omset_tapping_box = $request->omset_tapping_box;
+            $sptpd->pajak_terutang = $request->pajak_terutang;
+            $sptpd->denda = $request->denda ?? 0;
+            $sptpd->bunga = $request->bunga ?? 0;
+            $sptpd->setoran = $request->setoran ?? 0;
+            $sptpd->kenaikan = $request->kenaikan ?? 0;
+            $sptpd->kompensasi = $request->kompensasi ?? 0;
+            $sptpd->lain_lain = $request->lain_lain ?? 0;
+            $sptpd->created_at = $request->tanggal_terima;
+            $sptpd->save();
+
+            // Check if AJAX request
+            if ($request->ajax()) {
+                return response()->json([
+                    'success' => true,
+                    'message' => 'SPTPD berhasil ditambahkan',
+                    'data' => $sptpd
+                ]);
+            }
+
+            return redirect()->route('sptpd.index')->with('success', 'SPTPD berhasil ditambahkan');
+        } catch (\Exception $e) {
+            if ($request->ajax()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Gagal menyimpan data: ' . $e->getMessage()
+                ], 500);
+            }
+
+            return back()->withErrors(['error' => 'Gagal menyimpan data: ' . $e->getMessage()]);
+        }
     }
 
     public function show(Sptpd $sptpd)
@@ -108,13 +178,49 @@ class SptpdController extends Controller
             'masa_pajak_awal' => 'required|date',
             'masa_pajak_akhir' => 'required|date',
             'jatuh_tempo' => 'required|date',
-            // ...tambahkan validasi lain sesuai kebutuhan...
         ]);
-        $objek = \App\Models\ObjekPajak::with('subjekPajak')->findOrFail($request->objek_pajak_id);
-        $sptpd->fill($request->all());
-        $sptpd->subjek_pajak_id = $objek->subjek_pajak_id;
-        $sptpd->save();
-        return redirect()->route('sptpd.index')->with('success', 'SPTPD berhasil diupdate');
+
+        try {
+            $objek = \App\Models\ObjekPajak::with('subjekPajak')->findOrFail($request->objek_pajak_id);
+            
+            $sptpd->objek_pajak_id = $request->objek_pajak_id;
+            $sptpd->subjek_pajak_id = $objek->subjek_pajak_id;
+            $sptpd->upt_id = $request->upt_id;
+            $sptpd->masa_pajak_awal = $request->masa_pajak_awal;
+            $sptpd->masa_pajak_akhir = $request->masa_pajak_akhir;
+            $sptpd->jatuh_tempo = $request->jatuh_tempo;
+            $sptpd->dasar = $request->dasar;
+            $sptpd->tarif = $request->tarif;
+            $sptpd->omset_tapping_box = $request->omset_tapping_box;
+            $sptpd->pajak_terutang = $request->pajak_terutang;
+            $sptpd->denda = $request->denda;
+            $sptpd->bunga = $request->bunga;
+            $sptpd->setoran = $request->setoran;
+            $sptpd->kenaikan = $request->kenaikan;
+            $sptpd->kompensasi = $request->kompensasi;
+            $sptpd->lain_lain = $request->lain_lain;
+            $sptpd->save();
+
+            // Check if AJAX request
+            if ($request->ajax()) {
+                return response()->json([
+                    'success' => true,
+                    'message' => 'SPTPD berhasil diupdate',
+                    'data' => $sptpd
+                ]);
+            }
+
+            return redirect()->route('sptpd.index')->with('success', 'SPTPD berhasil diupdate');
+        } catch (\Exception $e) {
+            if ($request->ajax()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Gagal mengupdate data: ' . $e->getMessage()
+                ], 500);
+            }
+
+            return back()->withErrors(['error' => 'Gagal mengupdate data: ' . $e->getMessage()]);
+        }
     }
 
     public function destroy(Sptpd $sptpd)
@@ -133,15 +239,71 @@ class SptpdController extends Controller
         return redirect()->route('sptpd.index')->with('success', 'SPTPD berhasil dihapus');
     }
 
-    public function exportPdf()
+    public function exportPdf(Request $request)
     {
-        // Method untuk export PDF - bisa dikembangkan sesuai kebutuhan
-        $sptpds = Sptpd::with(['objekPajak.subjekPajak'])->get();
-        
-        // Sementara return JSON, nanti bisa diganti dengan PDF generator
-        return response()->json([
-            'message' => 'Export PDF functionality',
-            'data' => $sptpds->count() . ' records ready for export'
-        ]);
+        try {
+            // Increase memory limit for PDF generation
+            ini_set('memory_limit', '1024M');
+            set_time_limit(300); // 5 minutes
+            
+            // Get SPTPD data with relationships
+            $query = \App\Models\Sptpd::with(['objekPajak.subjekPajak']);
+            
+            // Apply search filters if provided
+            if ($request->filled('search_nopd')) {
+                $query->whereHas('objekPajak', function($q) use ($request) {
+                    $q->where('nopd', 'like', '%' . $request->search_nopd . '%');
+                });
+            }
+            
+            if ($request->filled('search_nama')) {
+                $query->whereHas('objekPajak.subjekPajak', function($q) use ($request) {
+                    $q->where('subjek_pajak', 'like', '%' . $request->search_nama . '%');
+                });
+            }
+            
+            if ($request->filled('search_jenis')) {
+                $query->whereHas('objekPajak', function($q) use ($request) {
+                    $q->where('jenis_pajak', 'like', '%' . $request->search_jenis . '%');
+                });
+            }
+            
+            if ($request->filled('search_periode')) {
+                $periode = \Carbon\Carbon::parse($request->search_periode);
+                $query->whereYear('masa_pajak_awal', $periode->year)
+                      ->whereMonth('masa_pajak_awal', $periode->month);
+            }
+            
+            // Limit data to prevent memory issues
+            $sptpds = $query->orderBy('created_at', 'desc')->limit(1000)->get();
+            
+            // Generate PDF with DomPDF options
+            $pdf = Pdf::loadView('sptpd.pdf', compact('sptpds'))
+                ->setOptions([
+                    'dpi' => 96,
+                    'defaultFont' => 'Arial',
+                    'isHtml5ParserEnabled' => true,
+                    'isPhpEnabled' => true
+                ]);
+            
+            // Set paper size and orientation
+            $pdf->setPaper('A4', 'landscape');
+            
+            // Generate filename with timestamp
+            $filename = 'data_sptpd_' . date('Y-m-d_H-i-s') . '.pdf';
+            
+            // Return PDF download
+            return $pdf->download($filename);
+            
+        } catch (\Exception $e) {
+            // Log the error for debugging
+            Log::error('PDF Export Error: ' . $e->getMessage());
+            
+            // Return error response
+            return response()->json([
+                'error' => true,
+                'message' => 'Gagal mengexport PDF: ' . $e->getMessage()
+            ], 500);
+        }
     }
 }

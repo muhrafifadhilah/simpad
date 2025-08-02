@@ -9,6 +9,7 @@ class Sptpd extends Model
     protected $table = 'sptpd';
 
     protected $fillable = [
+        'nomor_sptpd',
         'objek_pajak_id',
         'subjek_pajak_id',
         'upt_id',
@@ -25,6 +26,11 @@ class Sptpd extends Model
         'kompensasi',
         'pajak_terutang',
         'omset_tapping_box',
+        'status',
+        'metode_bayar',
+        'bukti_bayar',
+        'keterangan_bayar',
+        'tanggal_bayar',
     ];
 
     public function objekPajak()

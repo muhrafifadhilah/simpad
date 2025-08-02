@@ -1,6 +1,6 @@
-@extends('layouts.app')
 
-@section('content')
+
+<?php $__env->startSection('content'); ?>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
 <style>
@@ -183,6 +183,23 @@
         color: white;
         text-decoration: none;
     }
+
+    .btn-detail {
+        background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+        color: white;
+        border: 1px solid transparent;
+        padding: 8px 16px;
+        font-size: 0.85rem;
+        min-width: auto;
+    }
+    
+    .btn-detail:hover {
+        background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+        transform: translateY(-2px);
+        box-shadow: var(--shadow-md);
+        color: white;
+        text-decoration: none;
+    }
     
     /* Modern Table */
     .modern-table-container {
@@ -204,7 +221,7 @@
         margin: 0;
         border-collapse: collapse;
         font-size: 0.9rem;
-        min-width: 800px;
+        min-width: 1000px;
         background: white;
     }
     
@@ -282,21 +299,22 @@
         display: inline-flex;
         align-items: center;
         justify-content: center;
-        min-width: 24px;
-        height: 24px;
-        border-radius: 50%;
-        font-weight: bold;
-        font-size: 14px;
+        padding: 6px 12px;
+        border-radius: 20px;
+        font-size: 0.8rem;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.025em;
     }
     
     .status-active {
-        background-color: #22c55e;
-        color: white;
+        background: rgba(34, 197, 94, 0.15);
+        color: #16a34a;
     }
     
     .status-inactive {
-        background-color: #ef4444;
-        color: white;
+        background: rgba(239, 68, 68, 0.15);
+        color: #dc2626;
     }
 
     /* Modal Styling */
@@ -357,6 +375,24 @@
         border-color: var(--primary-green);
         box-shadow: 0 0 0 3px rgba(0, 113, 45, 0.1);
         background: white;
+    }
+
+    /* List Styling for Modal */
+    .list-group-item {
+        border: 1px solid var(--neutral-300);
+        padding: 12px 16px;
+        background: white;
+        color: var(--neutral-700);
+    }
+
+    .list-group-item:first-child {
+        border-top-left-radius: var(--radius-md);
+        border-top-right-radius: var(--radius-md);
+    }
+
+    .list-group-item:last-child {
+        border-bottom-left-radius: var(--radius-md);
+        border-bottom-right-radius: var(--radius-md);
     }
 
     /* Responsive Design */
@@ -507,8 +543,8 @@
                         <i class="fas fa-bars"></i>
                     </button>
                     <div>
-                        <h2 class="header-title">Data Kecamatan</h2>
-                        <p class="header-subtitle">Manajemen Wilayah Kecamatan</p>
+                        <h2 class="header-title">Unit Pelayanan Teknis</h2>
+                        <p class="header-subtitle">Manajemen Data UPT dan Kecamatan</p>
                     </div>
                 </div>
             </div>
@@ -517,14 +553,14 @@
         <!-- Modern Controls -->
         <div class="modern-controls-container">
             <div class="action-buttons">
-                <button class="btn-modern btn-add" id="addKecBtn">
-                    <i class="fas fa-plus"></i>Tambah
+                <button class="btn-modern btn-add" id="addUptBtn">
+                    <i class="fas fa-plus"></i>Tambah UPT
                 </button>
-                <button class="btn-modern btn-edit" id="editKecBtn">
-                    <i class="fas fa-edit"></i>Edit
+                <button class="btn-modern btn-edit" id="editUptBtn">
+                    <i class="fas fa-edit"></i>Edit UPT
                 </button>
-                <button class="btn-modern btn-delete" id="deleteKecBtn">
-                    <i class="fas fa-trash"></i>Hapus
+                <button class="btn-modern btn-delete" id="deleteUptBtn">
+                    <i class="fas fa-trash"></i>Hapus UPT
                 </button>
             </div>
         </div>
@@ -532,17 +568,19 @@
         <!-- Modern Table -->
         <div class="modern-table-container">
             <div class="table-wrapper">
-                <table class="modern-table" id="kecamatanTable">
+                <table class="modern-table" id="uptTable">
                     <thead>
                         <tr>
-                            <th><i class="fas fa-code me-2"></i>Kode</th>
-                            <th><i class="fas fa-city me-2"></i>Kecamatan</th>
-                            <th><i class="fas fa-calendar me-2"></i>TMT</th>
+                            <th><i class="fas fa-list-ol me-2"></i>No</th>
+                            <th><i class="fas fa-building me-2"></i>Nama UPT</th>
+                            <th><i class="fas fa-user-tie me-2"></i>Kepala UPT</th>
+                            <th><i class="fas fa-map-marker-alt me-2"></i>Alamat</th>
                             <th><i class="fas fa-check-circle me-2"></i>Status</th>
+                            <th><i class="fas fa-cogs me-2"></i>Aksi</th>
                         </tr>
                     </thead>
                     <tbody>
-                        {{-- Data will be loaded via AJAX --}}
+                        
                     </tbody>
                 </table>
             </div>
@@ -550,16 +588,16 @@
     </div>
 </div>
 
-<!-- Modern Modal -->
-<div class="modal fade" id="kecModal" tabindex="-1" aria-labelledby="kecModalLabel" aria-hidden="true">
+<!-- Modern Modal untuk UPT -->
+<div class="modal fade" id="uptModal" tabindex="-1" aria-labelledby="uptModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-lg">
-        <form id="kecForm">
-            @csrf
-            <input type="hidden" name="id" id="kec_id">
+        <form id="uptForm">
+            <?php echo csrf_field(); ?>
+            <input type="hidden" name="id" id="upt_id">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="kecModalLabel">
-                        <i class="fas fa-city"></i>Tambah/Edit Kecamatan
+                    <h5 class="modal-title" id="uptModalLabel">
+                        <i class="fas fa-building"></i>Tambah/Edit UPT
                     </h5>
                     <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
                 </div>
@@ -568,34 +606,37 @@
                         <div class="col-md-6">
                             <div class="mb-3">
                                 <label class="form-label">
-                                    <i class="fas fa-code"></i>Kode
+                                    <i class="fas fa-building"></i>Nama UPT
                                 </label>
-                                <input type="text" name="kode" id="kode" class="form-control" maxlength="4" required placeholder="Masukkan kode kecamatan">
+                                <input type="text" name="nama_upt" id="nama_upt" class="form-control" required placeholder="Masukkan nama UPT">
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">
+                                    <i class="fas fa-user-tie"></i>Kepala UPT
+                                </label>
+                                <input type="text" name="kepala_upt" id="kepala_upt" class="form-control" required placeholder="Masukkan nama kepala UPT">
                             </div>
                         </div>
                         <div class="col-md-6">
                             <div class="mb-3">
                                 <label class="form-label">
-                                    <i class="fas fa-calendar"></i>TMT
+                                    <i class="fas fa-map-marker-alt"></i>Alamat
                                 </label>
-                                <input type="date" name="tmt" id="tmt" class="form-control" required>
+                                <textarea name="alamat" id="alamat" class="form-control" rows="4" required placeholder="Masukkan alamat UPT"></textarea>
                             </div>
                         </div>
                     </div>
-                    <div class="mb-3">
-                        <label class="form-label">
-                            <i class="fas fa-city"></i>Nama Kecamatan
-                        </label>
-                        <input type="text" name="nama" id="nama" class="form-control" required placeholder="Masukkan nama kecamatan">
-                    </div>
-                    <div class="mb-3">
-                        <label class="form-label">
-                            <i class="fas fa-toggle-on"></i>Status
-                        </label>
-                        <select name="status" id="status" class="form-select" required>
-                            <option value="1">Aktif</option>
-                            <option value="0">Tidak Aktif</option>
-                        </select>
+                    <div class="row">
+                        <div class="col-12">
+                            <label class="form-label">
+                                <i class="fas fa-map-signs"></i>Kecamatan yang Dikelola
+                            </label>
+                            <div class="row" id="kecamatanCheckboxes">
+                                <div class="col-12">
+                                    <p class="text-muted">Memuat data kecamatan...</p>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
                 <div class="modal-footer">
@@ -610,51 +651,81 @@
         </form>
     </div>
 </div>
-@endsection
 
-@section('styles')
+<!-- Modal Detail Kecamatan -->
+<div class="modal fade" id="modalDetailKecamatan" tabindex="-1" aria-labelledby="modalDetailKecamatanLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="modalDetailKecamatanLabel">
+                    <i class="fas fa-map me-2"></i>Daftar Kecamatan UPT
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <ul id="listKecamatanUPT" class="list-group list-group-flush">
+                    <li class="list-group-item">Memuat data...</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+<?php $__env->stopSection(); ?>
+
+<?php $__env->startSection('styles'); ?>
 <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap5.min.css">
-@endsection
+<?php $__env->stopSection(); ?>
 
-@section('scripts')
+<?php $__env->startSection('scripts'); ?>
 <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
 <script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap5.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
 $(function() {
     let selectedRowId = null;
-    let table = $('#kecamatanTable').DataTable({
+    let table = $('#uptTable').DataTable({
         processing: true,
         serverSide: true,
         searching: true,
         info: true,
         lengthChange: true,
         pageLength: 25,
-        ajax: '{{ route('kecamatan.index') }}',
+        ajax: '<?php echo e(route('upt.index')); ?>',
         columns: [
-            { data: 'kode', name: 'kode' },
-            { data: 'nama', name: 'nama' },
             { 
-                data: 'tmt', 
-                name: 'tmt',
-                render: function(data) {
-                    if (!data) return '';
-                    let d = new Date(data);
-                    let day = String(d.getDate()).padStart(2, '0');
-                    let month = String(d.getMonth()+1).padStart(2, '0');
-                    let year = d.getFullYear();
-                    return `${day}-${month}-${year}`;
+                data: null, 
+                name: 'no',
+                orderable: false,
+                searchable: false,
+                render: function (data, type, row, meta) {
+                    return meta.row + meta.settings._iDisplayStart + 1;
                 }
             },
+            { data: 'nama', name: 'nama' },
+            { data: 'kepala_upt', name: 'kepala_upt' },
+            { data: 'alamat', name: 'alamat' },
             { 
                 data: 'status', 
                 name: 'status',
                 render: function(data) {
                     if (data == 1) {
-                        return '<span class="status-badge status-active">✓</span>';
+                        return '<span class="status-badge status-active"><i class="fas fa-check me-1"></i>Aktif</span>';
                     } else {
-                        return '<span class="status-badge status-inactive">✗</span>';
+                        return '<span class="status-badge status-inactive"><i class="fas fa-times me-1"></i>Non-Aktif</span>';
                     }
+                }
+            },
+            { 
+                data: 'id',
+                name: 'actions',
+                orderable: false,
+                searchable: false,
+                render: function(data, type, row) {
+                    return `
+                        <button class="btn-modern btn-detail" onclick="showDetailKecamatan(${data})">
+                            <i class="fas fa-eye"></i> Detail
+                        </button>
+                    `;
                 }
             }
         ],
@@ -677,7 +748,7 @@ $(function() {
     });
 
     // Row selection functionality
-    $('#kecamatanTable tbody').on('click', 'tr', function () {
+    $('#uptTable tbody').on('click', 'tr', function () {
         if ($(this).hasClass('selected')) {
             $(this).removeClass('selected');
             selectedRowId = null;
@@ -688,18 +759,43 @@ $(function() {
         }
     });
 
+    // Function to load kecamatan checkboxes
+    function loadKecamatanCheckboxes() {
+        $.get("<?php echo e(url('api/kecamatan')); ?>", function(data) {
+            let html = '';
+            if (data && data.length > 0) {
+                data.forEach(function(kecamatan) {
+                    html += `
+                        <div class="col-md-4 mb-2">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" name="kecamatan_ids[]" value="${kecamatan.id}" id="kec_${kecamatan.id}">
+                                <label class="form-check-label" for="kec_${kecamatan.id}">
+                                    ${kecamatan.nama}
+                                </label>
+                            </div>
+                        </div>
+                    `;
+                });
+            } else {
+                html = '<div class="col-12"><p class="text-muted">Tidak ada data kecamatan</p></div>';
+            }
+            $('#kecamatanCheckboxes').html(html);
+        }).fail(function() {
+            $('#kecamatanCheckboxes').html('<div class="col-12"><p class="text-danger">Gagal memuat data kecamatan</p></div>');
+        });
+    }
+
     // Add button functionality
-    $('#addKecBtn').click(function() {
-        $('#kecForm')[0].reset();
-        $('#kec_id').val('');
-        $('#kecModalLabel').html('<i class="fas fa-city"></i>Tambah Kecamatan');
-        $('#status').val('1');
-        $('#tmt').val(new Date().toISOString().slice(0,10));
-        $('#kecModal').modal('show');
+    $('#addUptBtn').click(function() {
+        $('#uptForm')[0].reset();
+        $('#upt_id').val('');
+        loadKecamatanCheckboxes();
+        $('#uptModalLabel').html('<i class="fas fa-building"></i>Tambah UPT');
+        $('#uptModal').modal('show');
     });
 
     // Edit button functionality
-    $('#editKecBtn').click(function() {
+    $('#editUptBtn').click(function() {
         if (!selectedRowId) {
             Swal.fire({
                 title: 'Peringatan!',
@@ -709,29 +805,39 @@ $(function() {
             });
             return;
         }
-        let rowData = table.row('.selected').data();
-        if (!rowData) {
+        
+        loadKecamatanCheckboxes();
+        
+        $.get("<?php echo e(url('upt')); ?>/" + selectedRowId, function(data) {
+            $('#upt_id').val(data.id);
+            $('#nama_upt').val(data.nama_upt);
+            $('#kepala_upt').val(data.kepala_upt);
+            $('#alamat').val(data.alamat);
+            
+            // Reset and check the selected kecamatans after loading
+            setTimeout(function() {
+                $('input[name="kecamatan_ids[]"]').prop('checked', false);
+                if (data.kecamatans) {
+                    data.kecamatans.forEach(function(kec) {
+                        $('#kec_' + kec.id).prop('checked', true);
+                    });
+                }
+            }, 500); // Wait for checkboxes to load
+            
+            $('#uptModalLabel').html('<i class="fas fa-building"></i>Edit UPT');
+            $('#uptModal').modal('show');
+        }).fail(function() {
             Swal.fire({
                 title: 'Error!',
-                text: 'Data tidak ditemukan atau sudah dihapus.',
+                text: 'Gagal mengambil data UPT.',
                 icon: 'error',
                 confirmButtonColor: '#00712D'
             });
-            table.ajax.reload();
-            selectedRowId = null;
-            return;
-        }
-        $('#kec_id').val(rowData.id);
-        $('#kode').val(rowData.kode);
-        $('#nama').val(rowData.nama);
-        $('#tmt').val(rowData.tmt);
-        $('#status').val(rowData.status);
-        $('#kecModalLabel').html('<i class="fas fa-city"></i>Edit Kecamatan');
-        $('#kecModal').modal('show');
+        });
     });
 
     // Delete button functionality
-    $('#deleteKecBtn').click(function() {
+    $('#deleteUptBtn').click(function() {
         if (!selectedRowId) {
             Swal.fire({
                 title: 'Peringatan!',
@@ -741,6 +847,7 @@ $(function() {
             });
             return;
         }
+        
         let rowData = table.row('.selected').data();
         if (!rowData) {
             Swal.fire({
@@ -753,9 +860,10 @@ $(function() {
             selectedRowId = null;
             return;
         }
+        
         Swal.fire({
             title: 'Konfirmasi Hapus',
-            text: 'Yakin ingin menghapus kecamatan "' + rowData.nama + '"?',
+            text: 'Yakin ingin menghapus UPT "' + rowData.nama_upt + '"?',
             icon: 'warning',
             showCancelButton: true,
             confirmButtonColor: '#dc2626',
@@ -765,15 +873,15 @@ $(function() {
         }).then((result) => {
             if (result.isConfirmed) {
                 $.ajax({
-                    url: "{{ url('kecamatan') }}/" + selectedRowId,
+                    url: "<?php echo e(url('upt')); ?>/" + selectedRowId,
                     type: 'DELETE',
-                    data: { _token: '{{ csrf_token() }}' },
+                    data: { _token: '<?php echo e(csrf_token()); ?>' },
                     success: function() {
                         table.ajax.reload();
                         selectedRowId = null;
                         Swal.fire({
                             title: 'Berhasil!',
-                            text: 'Data kecamatan berhasil dihapus.',
+                            text: 'Data UPT berhasil dihapus.',
                             icon: 'success',
                             confirmButtonColor: '#00712D'
                         });
@@ -796,16 +904,17 @@ $(function() {
     });
 
     // Form submission
-    $('#kecForm').submit(function(e) {
+    $('#uptForm').submit(function(e) {
         e.preventDefault();
         let formData = $(this).serializeArray();
-        let id = $('#kec_id').val();
+        let id = $('#upt_id').val();
         let url, type;
+        
         if (id) {
-            url = "{{ url('kecamatan') }}/" + id;
+            url = "<?php echo e(url('upt')); ?>/" + id;
             type = 'PUT';
         } else {
-            url = "{{ route('kecamatan.store') }}";
+            url = "<?php echo e(route('upt.store')); ?>";
             type = 'POST';
         }
         
@@ -823,12 +932,12 @@ $(function() {
             type: type,
             data: $.param(formData),
             success: function() {
-                $('#kecModal').modal('hide');
+                $('#uptModal').modal('hide');
                 table.ajax.reload();
                 selectedRowId = null;
                 Swal.fire({
                     title: 'Berhasil!',
-                    text: 'Data kecamatan berhasil disimpan.',
+                    text: 'Data UPT berhasil disimpan.',
                     icon: 'success',
                     confirmButtonColor: '#00712D'
                 });
@@ -850,6 +959,29 @@ $(function() {
             }
         });
     });
+
+    // Detail kecamatan function
+    window.showDetailKecamatan = function(id) {
+        $('#listKecamatanUPT').html('<li class="list-group-item"><i class="fas fa-spinner fa-spin me-2"></i>Memuat data...</li>');
+        $('#modalDetailKecamatan').modal('show');
+        
+        $.get('<?php echo e(url("upt")); ?>/' + id + '/kecamatan', function(data) {
+            let html = '';
+            if (data.length === 0) {
+                html = '<li class="list-group-item text-muted"><i class="fas fa-info-circle me-2"></i>Tidak ada kecamatan terdaftar</li>';
+            } else {
+                data.forEach(function(kec, index) {
+                    html += `<li class="list-group-item d-flex align-items-center">
+                                <i class="fas fa-map-pin me-3 text-success"></i>
+                                <span class="fw-semibold">${kec.nama}</span>
+                            </li>`;
+                });
+            }
+            $('#listKecamatanUPT').html(html);
+        }).fail(function() {
+            $('#listKecamatanUPT').html('<li class="list-group-item text-danger"><i class="fas fa-exclamation-triangle me-2"></i>Gagal memuat data</li>');
+        });
+    };
     
     // Sidebar toggle functionality
     const sidebarToggle = document.getElementById('sidebarToggle');
@@ -860,4 +992,6 @@ $(function() {
     }
 });
 </script>
-@endsection
+<?php $__env->stopSection(); ?>
+
+<?php echo $__env->make('layouts.app', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?><?php /**PATH D:\Project\simpad\resources\views/upt/index.blade.php ENDPATH**/ ?>

@@ -1,6 +1,6 @@
-@extends('layouts.app')
 
-@section('content')
+
+<?php $__env->startSection('content'); ?>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
 <style>
@@ -542,7 +542,7 @@
                         </tr>
                     </thead>
                     <tbody>
-                        {{-- Data will be loaded via AJAX --}}
+                        
                     </tbody>
                 </table>
             </div>
@@ -554,7 +554,7 @@
 <div class="modal fade" id="kecModal" tabindex="-1" aria-labelledby="kecModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-lg">
         <form id="kecForm">
-            @csrf
+            <?php echo csrf_field(); ?>
             <input type="hidden" name="id" id="kec_id">
             <div class="modal-content">
                 <div class="modal-header">
@@ -610,13 +610,13 @@
         </form>
     </div>
 </div>
-@endsection
+<?php $__env->stopSection(); ?>
 
-@section('styles')
+<?php $__env->startSection('styles'); ?>
 <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap5.min.css">
-@endsection
+<?php $__env->stopSection(); ?>
 
-@section('scripts')
+<?php $__env->startSection('scripts'); ?>
 <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
 <script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap5.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
@@ -630,7 +630,7 @@ $(function() {
         info: true,
         lengthChange: true,
         pageLength: 25,
-        ajax: '{{ route('kecamatan.index') }}',
+        ajax: '<?php echo e(route('kecamatan.index')); ?>',
         columns: [
             { data: 'kode', name: 'kode' },
             { data: 'nama', name: 'nama' },
@@ -765,9 +765,9 @@ $(function() {
         }).then((result) => {
             if (result.isConfirmed) {
                 $.ajax({
-                    url: "{{ url('kecamatan') }}/" + selectedRowId,
+                    url: "<?php echo e(url('kecamatan')); ?>/" + selectedRowId,
                     type: 'DELETE',
-                    data: { _token: '{{ csrf_token() }}' },
+                    data: { _token: '<?php echo e(csrf_token()); ?>' },
                     success: function() {
                         table.ajax.reload();
                         selectedRowId = null;
@@ -802,10 +802,10 @@ $(function() {
         let id = $('#kec_id').val();
         let url, type;
         if (id) {
-            url = "{{ url('kecamatan') }}/" + id;
+            url = "<?php echo e(url('kecamatan')); ?>/" + id;
             type = 'PUT';
         } else {
-            url = "{{ route('kecamatan.store') }}";
+            url = "<?php echo e(route('kecamatan.store')); ?>";
             type = 'POST';
         }
         
@@ -860,4 +860,6 @@ $(function() {
     }
 });
 </script>
-@endsection
+<?php $__env->stopSection(); ?>
+
+<?php echo $__env->make('layouts.app', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?><?php /**PATH D:\Project\simpad\resources\views/kecamatan/index.blade.php ENDPATH**/ ?>

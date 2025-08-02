@@ -13,7 +13,15 @@ class UptController extends Controller
     public function index(Request $request)
     {
         if ($request->ajax()) {
-            return DataTables::of(Upt::query())->make(true);
+            $query = Upt::query();
+            return DataTables::of($query)
+                ->addColumn('no', function($row) {
+                    return '';
+                })
+                ->addColumn('nama_upt', function($row) {
+                    return $row->nama;
+                })
+                ->make(true);
         }
         return view('upt.index');
     }
@@ -24,25 +32,51 @@ class UptController extends Controller
         return view('upt.form', compact('kecamatanList'));
     }
 
+    public function show($id)
+    {
+        $upt = Upt::with('kecamatans')->findOrFail($id);
+        // Map nama ke nama_upt untuk frontend
+        $upt->nama_upt = $upt->nama;
+        return response()->json($upt);
+    }
+
     public function store(Request $request)
     {
         $validated = $request->validate([
-            'no' => 'required|unique:upt,no',
-            'nama' => 'required',
+            'nama_upt' => 'required',
             'kepala_upt' => 'required',
             'alamat' => 'required',
-            'status' => 'nullable|boolean',
             'kecamatan_ids' => 'array'
         ]);
-        $validated['status'] = $request->has('status') ? 1 : 0;
+        
+        // Map nama_upt ke nama untuk database
+        $data = [
+            'no' => str_pad(Upt::count() + 1, 3, '0', STR_PAD_LEFT),
+            'nama' => $validated['nama_upt'],
+            'kepala_upt' => $validated['kepala_upt'],
+            'alamat' => $validated['alamat'],
+            'status' => 1
+        ];
 
         DB::beginTransaction();
-        $upt = Upt::create($validated);
-        if ($request->has('kecamatan_ids')) {
-            $upt->kecamatans()->sync($request->kecamatan_ids);
+        try {
+            $upt = Upt::create($data);
+            if ($request->has('kecamatan_ids')) {
+                $upt->kecamatans()->sync($request->kecamatan_ids);
+            }
+            DB::commit();
+            
+            if ($request->ajax()) {
+                return response()->json(['success' => true, 'message' => 'UPT berhasil disimpan']);
+            }
+            return redirect()->route('upt.index')->with('success', 'UPT berhasil disimpan');
+        } catch (\Exception $e) {
+            DB::rollback();
+            if ($request->ajax()) {
+                return response()->json(['success' => false, 'message' => 'Gagal menyimpan UPT: ' . $e->getMessage()], 500);
+            }
+            return back()->withErrors(['error' => 'Gagal menyimpan UPT: ' . $e->getMessage()]);
         }
-        DB::commit();
-        return redirect()->route('upt.index')->with('success', 'UPT berhasil disimpan');
     }
 
     public function edit($id)
@@ -56,28 +90,55 @@ class UptController extends Controller
     {
         $upt = Upt::findOrFail($id);
         $validated = $request->validate([
-            'no' => 'required|unique:upt,no,' . $id,
-            'nama' => 'required',
+            'nama_upt' => 'required',
             'kepala_upt' => 'required',
             'alamat' => 'required',
-            'status' => 'nullable|boolean',
             'kecamatan_ids' => 'array'
         ]);
-        $validated['status'] = $request->has('status') ? 1 : 0;
+
+        // Map nama_upt ke nama untuk database
+        $data = [
+            'nama' => $validated['nama_upt'],
+            'kepala_upt' => $validated['kepala_upt'],
+            'alamat' => $validated['alamat']
+        ];
 
         DB::beginTransaction();
-        $upt->update($validated);
-        $upt->kecamatans()->sync($request->kecamatan_ids ?? []);
-        DB::commit();
-        return redirect()->route('upt.index')->with('success', 'UPT berhasil diupdate');
+        try {
+            $upt->update($data);
+            $upt->kecamatans()->sync($request->kecamatan_ids ?? []);
+            DB::commit();
+            
+            if ($request->ajax()) {
+                return response()->json(['success' => true, 'message' => 'UPT berhasil diupdate']);
+            }
+            return redirect()->route('upt.index')->with('success', 'UPT berhasil diupdate');
+        } catch (\Exception $e) {
+            DB::rollback();
+            if ($request->ajax()) {
+                return response()->json(['success' => false, 'message' => 'Gagal mengupdate UPT: ' . $e->getMessage()], 500);
+            }
+            return back()->withErrors(['error' => 'Gagal mengupdate UPT: ' . $e->getMessage()]);
+        }
     }
 
     public function destroy($id)
     {
-        $upt = Upt::findOrFail($id);
-        $upt->kecamatans()->detach();
-        $upt->delete();
-        return response()->json(['success' => true]);
+        try {
+            $upt = Upt::findOrFail($id);
+            $upt->kecamatans()->detach();
+            $upt->delete();
+            
+            if (request()->ajax()) {
+                return response()->json(['success' => true, 'message' => 'UPT berhasil dihapus']);
+            }
+            return redirect()->route('upt.index')->with('success', 'UPT berhasil dihapus');
+        } catch (\Exception $e) {
+            if (request()->ajax()) {
+                return response()->json(['success' => false, 'message' => 'Gagal menghapus UPT: ' . $e->getMessage()], 500);
+            }
+            return back()->withErrors(['error' => 'Gagal menghapus UPT: ' . $e->getMessage()]);
+        }
     }
 
     public function getKecamatan($id)

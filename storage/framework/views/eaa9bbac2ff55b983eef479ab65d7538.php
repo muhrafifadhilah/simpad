@@ -1,6 +1,4 @@
-@extends('layouts.app')
-
-@section('content')
+<?php $__env->startSection('content'); ?>
 <div class="login-container">
     <div class="login-background">
         <div class="login-overlay"></div>
@@ -9,7 +7,7 @@
     <div class="login-content">
         <!-- Logo Section -->
         <div class="login-logo">
-            <img src="{{ asset('assets/img/semut.svg') }}" alt="Logo Kabupaten Bogor" class="logo-img">
+            <img src="<?php echo e(asset('assets/img/semut.svg')); ?>" alt="Logo Kabupaten Bogor" class="logo-img">
             <h1 class="login-title">SIMPAD</h1>
             <p class="login-subtitle">Sistem Informasi Pengelolaan Anggaran Daerah</p>
         <p class="login-location">Kabupaten Bogor</p>
@@ -17,27 +15,29 @@
         
         <!-- Login Form -->
         <div class="login-form-container">
-            <form method="POST" action="{{ route('login') }}" class="login-form">
-                @csrf
+            <form method="POST" action="<?php echo e(route('login')); ?>" class="login-form">
+                <?php echo csrf_field(); ?>
                 
                 <div class="form-header">
                     <h2 class="form-title">Masuk ke Sistem</h2>
                     <p class="form-subtitle">Silakan masuk menggunakan akun Anda</p>
                 </div>
                 
-                @if(session('status'))
+                <?php if(session('status')): ?>
                     <div class="alert alert-success modern-alert">
                         <i class="fas fa-check-circle"></i>
-                        {{ session('status') }}
-                    </div>
-                @endif
+                        <?php echo e(session('status')); ?>
 
-                @if($errors->any())
+                    </div>
+                <?php endif; ?>
+
+                <?php if($errors->any()): ?>
                     <div class="alert alert-danger modern-alert">
                         <i class="fas fa-exclamation-circle"></i>
-                        {{ $errors->first() }}
+                        <?php echo e($errors->first()); ?>
+
                     </div>
-                @endif
+                <?php endif; ?>
                 
                 <div class="form-group">
                     <label for="userid" class="form-label">User ID</label>
@@ -46,9 +46,16 @@
                         <input type="text" 
                                id="userid"
                                name="userid" 
-                               class="form-input @error('userid') is-invalid @enderror" 
+                               class="form-input <?php $__errorArgs = ['userid'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?> is-invalid <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>" 
                                placeholder="Masukkan User ID Anda" 
-                               value="{{ old('userid') }}"
+                               value="<?php echo e(old('userid')); ?>"
                                autocomplete="off" 
                                required>
                     </div>
@@ -61,7 +68,14 @@
                         <input type="password" 
                                id="password"
                                name="password" 
-                               class="form-input @error('password') is-invalid @enderror" 
+                               class="form-input <?php $__errorArgs = ['password'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?> is-invalid <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>" 
                                placeholder="Masukkan Password Anda" 
                                autocomplete="off" 
                                required>
@@ -87,9 +101,9 @@
         </div>
     </div>
 </div>
-@endsection
+<?php $__env->stopSection(); ?>
 
-@section('styles')
+<?php $__env->startSection('styles'); ?>
 <style>
     /* Modern Login Page Styles */
     .login-container {
@@ -485,4 +499,6 @@ function togglePassword() {
     }
 }
 </script>
-@endsection
+<?php $__env->stopSection(); ?>
+
+<?php echo $__env->make('layouts.app', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?><?php /**PATH D:\Project\simpad\resources\views/auth/login.blade.php ENDPATH**/ ?>

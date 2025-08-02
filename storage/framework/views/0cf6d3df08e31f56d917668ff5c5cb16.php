@@ -2,17 +2,17 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>{{ config('app.name', 'SIMPAD Kabupaten Bogor') }}</title>
+    <title><?php echo e(config('app.name', 'SIMPAD Kabupaten Bogor')); ?></title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="Sistem Informasi Keuangan Daerah">
-    <meta name="csrf-token" content="{{ csrf_token() }}">
+    <meta name="csrf-token" content="<?php echo e(csrf_token()); ?>">
 
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.bunny.net">
     <link href="https://fonts.bunny.net/css?family=figtree:400,600&display=swap" rel="stylesheet" />
 
     <!-- Styles -->
-    @vite(['resources/css/app.css', 'resources/js/app.js'])
+    <?php echo app('Illuminate\Foundation\Vite')(['resources/css/app.css', 'resources/js/app.js']); ?>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -549,7 +549,7 @@
     </style>
     
     <!-- Additional page-specific styles -->
-    @yield('styles')
+    <?php echo $__env->yieldContent('styles'); ?>
 </head>
 <body>
     <!-- Modern Navbar - Hidden for full sidebar experience -->
@@ -562,19 +562,20 @@
             <div class="dropdown">
                 <button class="btn btn-link dropdown-toggle text-white" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
                     <i class="fas fa-user-circle me-2"></i>
-                    {{ Auth::user()?->name ?? 'User' }}
+                    <?php echo e(Auth::user()?->name ?? 'User'); ?>
+
                 </button>
                 <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownMenuButton">
                     <li><a class="dropdown-item" href="#"><i class="fas fa-user me-2"></i>Profile</a></li>
                     <li><a class="dropdown-item" href="#"><i class="fas fa-cog me-2"></i>Settings</a></li>
                     <li><hr class="dropdown-divider"></li>
                     <li>
-                        <a class="dropdown-item" href="{{ route('logout') }}"
+                        <a class="dropdown-item" href="<?php echo e(route('logout')); ?>"
                            onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
                             <i class="fas fa-sign-out-alt me-2"></i>Logout
                         </a>
-                        <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">
-                            @csrf
+                        <form id="logout-form" action="<?php echo e(route('logout')); ?>" method="POST" class="d-none">
+                            <?php echo csrf_field(); ?>
                         </form>
                     </li>
                 </ul>
@@ -588,21 +589,21 @@
     <!-- Modern Responsive Sidebar -->
     <nav class="sidebar" id="sidebar">
         <div class="sidebar-header">
-            <img src="{{ asset('assets/img/logo-header.png') }}" alt="Logo Bapenda" class="sidebar-logo">
+            <img src="<?php echo e(asset('assets/img/logo-header.png')); ?>" alt="Logo Bapenda" class="sidebar-logo">
         </div>
         
         <div class="sidebar-nav">
-            @if (Auth::user())
-                @php
+            <?php if(Auth::user()): ?>
+                <?php
                     $role = Auth::user()->role->name ?? '';
-                @endphp
+                ?>
 
-                @if ($role === 'psi')
-                    <a href="{{ url('/dashboard') }}" class="{{ request()->is('dashboard') ? 'active' : '' }}">
+                <?php if($role === 'psi'): ?>
+                    <a href="<?php echo e(url('/dashboard')); ?>" class="<?php echo e(request()->is('dashboard') ? 'active' : ''); ?>">
                         <i class="fas fa-tachometer-alt"></i>
                         <span>Executive Summary</span>
                     </a>
-                    <a href="{{ url('/b-tax') }}" class="{{ request()->is('b-tax') ? 'active' : '' }}">
+                    <a href="<?php echo e(url('/b-tax')); ?>" class="<?php echo e(request()->is('b-tax') ? 'active' : ''); ?>">
                         <i class="fas fa-calculator"></i>
                         <span>B-TAX</span>
                     </a>
@@ -613,10 +614,10 @@
                             <span>Pendaftaran</span>
                         </a>
                         <div class="dropdown-menu">
-                            <a class="dropdown-item" href="{{ url('/subjek_pajak') }}">
+                            <a class="dropdown-item" href="<?php echo e(url('/subjek_pajak')); ?>">
                                 <i class="fas fa-user me-2"></i>Subjek Pajak
                             </a>
-                            <a class="dropdown-item" href="{{ url('/objek_pajak') }}">
+                            <a class="dropdown-item" href="<?php echo e(url('/objek_pajak')); ?>">
                                 <i class="fas fa-building me-2"></i>Objek Pajak
                             </a>
                         </div>
@@ -628,28 +629,28 @@
                             <span>Pendataan</span>
                         </a>
                         <div class="dropdown-menu">
-                            <a class="dropdown-item" href="{{ url('/sptpd') }}">
+                            <a class="dropdown-item" href="<?php echo e(url('/sptpd')); ?>">
                                 <i class="fas fa-file-invoice me-2"></i>SPTPD
                             </a>
                         </div>
                     </div>
                     
 
-                    <a href="{{ url('/kecamatan') }}" class="{{ request()->is('kecamatan') ? 'active' : '' }}">
+                    <a href="<?php echo e(url('/kecamatan')); ?>" class="<?php echo e(request()->is('kecamatan') ? 'active' : ''); ?>">
                         <i class="fas fa-map-marker-alt"></i>
                         <span>Kecamatan</span>
                     </a>
-                    <a href="{{ url('/upt') }}" class="{{ request()->is('upt') ? 'active' : '' }}">
+                    <a href="<?php echo e(url('/upt')); ?>" class="<?php echo e(request()->is('upt') ? 'active' : ''); ?>">
                         <i class="fas fa-building"></i>
                         <span>UPT</span>
                     </a>
                     
-                @elseif ($role === 'upt')
-                    <a href="{{ url('/dashboard') }}" class="{{ request()->is('dashboard') ? 'active' : '' }}">
+                <?php elseif($role === 'upt'): ?>
+                    <a href="<?php echo e(url('/dashboard')); ?>" class="<?php echo e(request()->is('dashboard') ? 'active' : ''); ?>">
                         <i class="fas fa-tachometer-alt"></i>
                         <span>Executive Summary</span>
                     </a>
-                    <a href="{{ url('/b-tax') }}" class="{{ request()->is('b-tax') ? 'active' : '' }}">
+                    <a href="<?php echo e(url('/b-tax')); ?>" class="<?php echo e(request()->is('b-tax') ? 'active' : ''); ?>">
                         <i class="fas fa-calculator"></i>
                         <span>B-TAX</span>
                     </a>
@@ -660,10 +661,10 @@
                             <span>Pendaftaran</span>
                         </a>
                         <div class="dropdown-menu">
-                            <a class="dropdown-item" href="{{ url('/subjek_pajak') }}">
+                            <a class="dropdown-item" href="<?php echo e(url('/subjek_pajak')); ?>">
                                 <i class="fas fa-user me-2"></i>Subjek Pajak
                             </a>
-                            <a class="dropdown-item" href="{{ url('/objek_pajak') }}">
+                            <a class="dropdown-item" href="<?php echo e(url('/objek_pajak')); ?>">
                                 <i class="fas fa-building me-2"></i>Objek Pajak
                             </a>
                         </div>
@@ -675,39 +676,39 @@
                             <span>Pendataan</span>
                         </a>
                         <div class="dropdown-menu">
-                            <a class="dropdown-item" href="{{ url('/sptpd') }}">
+                            <a class="dropdown-item" href="<?php echo e(url('/sptpd')); ?>">
                                 <i class="fas fa-file-invoice me-2"></i>SPTPD
                             </a>
                         </div>
                     </div>
                     
 
-                    <a href="{{ url('/kecamatan') }}" class="{{ request()->is('kecamatan') ? 'active' : '' }}">
+                    <a href="<?php echo e(url('/kecamatan')); ?>" class="<?php echo e(request()->is('kecamatan') ? 'active' : ''); ?>">
                         <i class="fas fa-map-marker-alt"></i>
                         <span>Kecamatan</span>
                     </a>
-                    <a href="{{ url('/upt') }}" class="{{ request()->is('upt') ? 'active' : '' }}">
+                    <a href="<?php echo e(url('/upt')); ?>" class="<?php echo e(request()->is('upt') ? 'active' : ''); ?>">
                         <i class="fas fa-building"></i>
                         <span>UPT</span>
                     </a>
                     
-                @elseif ($role === 'wp')
-                    <a href="{{ route('wp.dashboard') }}" class="{{ request()->routeIs('wp.dashboard') ? 'active' : '' }}">
+                <?php elseif($role === 'wp'): ?>
+                    <a href="<?php echo e(route('wp.dashboard')); ?>" class="<?php echo e(request()->routeIs('wp.dashboard') ? 'active' : ''); ?>">
                         <i class="fas fa-tachometer-alt"></i>
                         <span>Dashboard</span>
                     </a>
-                    <a href="{{ route('wp.sptpd') }}" class="{{ request()->routeIs('wp.sptpd') ? 'active' : '' }}">
+                    <a href="<?php echo e(route('wp.sptpd')); ?>" class="<?php echo e(request()->routeIs('wp.sptpd') ? 'active' : ''); ?>">
                         <i class="fas fa-file-invoice"></i>
                         <span>SPTPD Saya</span>
                     </a>
-                @endif
-            @endif
+                <?php endif; ?>
+            <?php endif; ?>
         </div>
     </nav>
 
     <!-- Main Content -->
     <div class="content">
-        @yield('content')
+        <?php echo $__env->yieldContent('content'); ?>
     </div>
 
     <!-- Compact Footer -->
@@ -716,7 +717,7 @@
             <div class="footer-content">
                 <div class="footer-left">
                     <div class="footer-brand">
-                        <img src="{{ asset('assets/img/logo-header.png') }}" alt="Logo SIMPAD" class="footer-logo-small">
+                        <img src="<?php echo e(asset('assets/img/logo-header.png')); ?>" alt="Logo SIMPAD" class="footer-logo-small">
                         <div class="brand-info">
                             <span class="brand-name">SIMPAD</span>
                             <span class="brand-desc">Sistem Informasi Manajemen Pajak Daerah</span>
@@ -726,10 +727,10 @@
                 
                 <div class="footer-right">
                     <div class="footer-meta">
-                        <span class="copyright">&copy; {{ date('Y') }} {{ config('app.name', 'SIMPAD Kabupaten Bogor') }}</span>
+                        <span class="copyright">&copy; <?php echo e(date('Y')); ?> <?php echo e(config('app.name', 'SIMPAD Kabupaten Bogor')); ?></span>
                         <div class="version-info">
                             <span class="version">Version 2.0.1</span>
-                            <span class="build">Build {{ date('Y.m.d') }}</span>
+                            <span class="build">Build <?php echo e(date('Y.m.d')); ?></span>
                         </div>
                     </div>
                 </div>
@@ -816,6 +817,7 @@
         });
     </script>
     
-    @yield('scripts')
+    <?php echo $__env->yieldContent('scripts'); ?>
 </body>
 </html>
+<?php /**PATH D:\Project\simpad\resources\views/layouts/app.blade.php ENDPATH**/ ?>

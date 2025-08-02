@@ -26,8 +26,11 @@ Route::get('/get-users', [UserController::class, 'index']);
 Route::get('/get-groups', [GroupsUserController::class, 'index']);
 Route::post('/create-group', [GroupsUserController::class, 'store']);
 Route::post('/assign-group-to-user', [GroupsUserController::class, 'assignToWp']);
-Route::put('/wp/{id}', [UserController::class, 'update']);
-Route::delete('/wp/{id}', [UserController::class, 'destroy']);
 Route::put('/groups-user/{id}', [GroupsUserController::class, 'update']);
-Route::delete('/grou    ps-user/{id}', [GroupsUserController::class, 'destroy']);
+Route::delete('/groups-user/{id}', [GroupsUserController::class, 'destroy']);
 Route::delete('/groups-user/unassign', [GroupsUserController::class, 'unassignFromWp']);
+
+// API untuk mendapatkan data kecamatan
+Route::get('/kecamatan', function() {
+    return \App\Models\Kecamatan::select('id', 'nama')->where('status', 1)->get();
+});

@@ -10,22 +10,24 @@ class Wp extends Model
 
     protected $fillable = [
         'user_id',
+        'subjek_pajak_id',
         'name',
         'nip',
         'nohp',
         'disabled',
-        'subjek_pajak_id',
     ];
+
+    protected $casts = [
+        'disabled' => 'boolean',
+    ];
+
+    public function subjekPajak()
+    {
+        return $this->belongsTo(SubjekPajak::class, 'subjek_pajak_id');
+    }
 
     public function user()
     {
         return $this->belongsTo(User::class, 'user_id');
-    }
-
-    public function subjekPajak()
-    {
-        // Salah: hasOne(SubjekPajak::class, 'subjek_pajak_id');
-        // Benar: belongsTo(SubjekPajak::class, 'subjek_pajak_id');
-        return $this->belongsTo(SubjekPajak::class, 'subjek_pajak_id');
     }
 }

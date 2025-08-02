@@ -3,9 +3,13 @@
 namespace App\Http\Controllers;
 
 use App\Models\SubjekPajak;
+use App\Models\User;
+use App\Models\Wp;
+use App\Models\Role;
 use Barryvdh\DomPDF\Facade\Pdf; // pastikan barryvdh/laravel-dompdf sudah diinstall
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Hash;
 use Yajra\DataTables\Facades\DataTables;
 use App\Models\Kecamatan;
 
@@ -61,8 +65,66 @@ class SubjekPajakController extends Controller
         $validated['no_form'] = $no_form;
         $validated['npwpd'] = $npwpd;
 
-        SubjekPajak::create($validated);
-        return response()->json(['success' => true, 'no_form' => $no_form, 'npwpd' => $npwpd]);
+        // Buat subjek pajak
+        $subjekPajak = SubjekPajak::create($validated);
+
+        // Otomatis buat akun WP
+        $this->createWpAccount($subjekPajak, $validated);
+
+        return response()->json([
+            'success' => true, 
+            'no_form' => $no_form, 
+            'npwpd' => $npwpd,
+            'message' => 'Subjek Pajak berhasil dibuat. Akun WP telah dibuat otomatis dengan username: ' . $npwpd
+        ]);
+    }
+
+    /**
+     * Membuat akun WP otomatis ketika subjek pajak dibuat
+     */
+    private function createWpAccount(SubjekPajak $subjekPajak, array $validatedData)
+    {
+        // Cari role wp
+        $wpRole = Role::where('name', 'wp')->first();
+        if (!$wpRole) {
+            // Jika role wp belum ada, buat dulu
+            $wpRole = Role::create(['name' => 'wp']);
+        }
+
+        // Generate username dari NPWPD
+        $username = $subjekPajak->npwpd;
+        
+        // Generate password default (bisa diubah nanti)
+        $defaultPassword = 'wp' . date('Y'); // contoh: wp2025
+        
+        // Buat user account
+        $user = User::create([
+            'userid' => $username,
+            'role_id' => $wpRole->id,
+            'password' => Hash::make($defaultPassword),
+        ]);
+
+        // Generate NIP unik untuk WP
+        $nip = 'WP-' . date('Ymd') . '-' . str_pad($subjekPajak->id, 4, '0', STR_PAD_LEFT);
+        while (Wp::where('nip', $nip)->exists()) {
+            $nip = 'WP-' . date('Ymd') . '-' . strtoupper(Str::random(6));
+        }
+
+        // Buat record WP
+        Wp::create([
+            'user_id' => $user->id,
+            'subjek_pajak_id' => $subjekPajak->id,
+            'name' => $validatedData['pemilik'], // atau subjek_pajak
+            'nip' => $nip,
+            'nohp' => $validatedData['nohp'],
+            'disabled' => false,
+        ]);
+
+        return [
+            'username' => $username,
+            'password' => $defaultPassword,
+            'nip' => $nip
+        ];
     }
 
     public function show($id)
@@ -97,6 +159,15 @@ class SubjekPajakController extends Controller
     public function destroy($id)
     {
         $subjek = SubjekPajak::findOrFail($id);
+        
+        // Hapus akun WP terkait jika ada
+        $wp = Wp::where('subjek_pajak_id', $subjek->id)->first();
+        if ($wp) {
+            // Hapus user account terkait
+            $wp->user()->delete();
+            // WP record akan terhapus otomatis karena foreign key cascade
+        }
+        
         $subjek->delete();
         return response()->json(['success' => true]);
     }
@@ -105,11 +176,71 @@ class SubjekPajakController extends Controller
     {
         $subjek = \App\Models\SubjekPajak::findOrFail($id);
 
-        // Ukuran kartu ID Card: 85.6mm x 53.98mm = 242 x 153 point (1 mm = 2.83465 point)
+        // Menggunakan ukuran A4 portrait untuk kartu berdampingan
         $pdf = \Barryvdh\DomPDF\Facade\Pdf::loadView('subjek_pajak.kartu_pdf', compact('subjek'))
-            ->setPaper([0, 0, 242, 153], 'landscape');
+            ->setPaper('A4', 'portrait')
+            ->setOptions([
+                'defaultFont' => 'Arial',
+                'isRemoteEnabled' => false,
+                'isHtml5ParserEnabled' => true,
+                'dpi' => 96
+            ]);
 
         return $pdf->stream('kartu-npwpd-'.$subjek->npwpd.'.pdf');
+    }
+
+    /**
+     * Mendapatkan informasi akun WP dari subjek pajak
+     */
+    public function getWpAccount($id)
+    {
+        $subjek = SubjekPajak::findOrFail($id);
+        $wp = Wp::where('subjek_pajak_id', $subjek->id)->with('user')->first();
+        
+        if (!$wp) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Akun WP tidak ditemukan untuk subjek pajak ini.'
+            ]);
+        }
+        
+        return response()->json([
+            'success' => true,
+            'data' => [
+                'username' => $wp->user->userid,
+                'name' => $wp->name,
+                'nip' => $wp->nip,
+                'nohp' => $wp->nohp,
+                'npwpd' => $subjek->npwpd,
+                'disabled' => $wp->disabled,
+                'created_at' => $wp->created_at->format('d/m/Y H:i')
+            ]
+        ]);
+    }
+
+    /**
+     * Reset password akun WP
+     */
+    public function resetWpPassword($id)
+    {
+        $subjek = SubjekPajak::findOrFail($id);
+        $wp = Wp::where('subjek_pajak_id', $subjek->id)->with('user')->first();
+        
+        if (!$wp) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Akun WP tidak ditemukan.'
+            ]);
+        }
+        
+        $newPassword = 'wp' . date('Y');
+        $wp->user->update(['password' => Hash::make($newPassword)]);
+        
+        return response()->json([
+            'success' => true,
+            'message' => 'Password berhasil direset.',
+            'new_password' => $newPassword
+        ]);
     }
 }
 
