@@ -44,12 +44,12 @@ class UserSeeder extends Seeder
 
         // Seed Kecamatan jika belum ada
         $kecamatans = [
-            ['kode' => 'KEC001', 'nama' => 'Bogor Utara'],
-            ['kode' => 'KEC002', 'nama' => 'Bogor Selatan'],
-            ['kode' => 'KEC003', 'nama' => 'Bogor Timur'],
-            ['kode' => 'KEC004', 'nama' => 'Bogor Barat'],
-            ['kode' => 'KEC005', 'nama' => 'Bogor Tengah'],
-            ['kode' => 'KEC006', 'nama' => 'Tanah Sereal']
+            ['kode' => '001', 'nama' => 'Gunung Putri'],
+            ['kode' => '002', 'nama' => 'Cisarua'],
+            ['kode' => '003', 'nama' => 'Ciomas'],
+            ['kode' => '004', 'nama' => 'Parung'],
+            ['kode' => '005', 'nama' => 'Citereup'],
+            ['kode' => '006', 'nama' => 'Ciawi']
         ];
 
         foreach ($kecamatans as $kecamatan) {
