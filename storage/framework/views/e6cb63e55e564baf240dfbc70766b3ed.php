@@ -1,6 +1,4 @@
-@extends('layouts.app')
-
-@section('content')
+<?php $__env->startSection('content'); ?>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <div class="container">
         <div class="row justify-content-center">
@@ -17,35 +15,35 @@
                             </div>
                         </div>
                     </div>
-                    @if (Auth::user())
+                    <?php if(Auth::user()): ?>
                         <div class="user-profile-modern dropdown">
                             <div class="profile-container" data-bs-toggle="dropdown">
                                 <div class="profile-avatar">
                                     <i class="fas fa-user"></i>
                                 </div>
                                 <div class="profile-info">
-                                    <span class="profile-name">{{ Auth::user()->userid }}</span>
-                                    @if(Auth::user()->role)
-                                        <small class="profile-role">{{ ucfirst(Auth::user()->role->name) }}</small>
-                                    @endif
+                                    <span class="profile-name"><?php echo e(Auth::user()->userid); ?></span>
+                                    <?php if(Auth::user()->role): ?>
+                                        <small class="profile-role"><?php echo e(ucfirst(Auth::user()->role->name)); ?></small>
+                                    <?php endif; ?>
                                 </div>
                                 <i class="fas fa-chevron-down profile-dropdown-icon"></i>
                             </div>
                             <ul class="dropdown-menu dropdown-menu-end modern-dropdown">
-                                <li><a class="dropdown-item" href="{{ route('profile.index') }}"><i class="fas fa-user-circle me-2"></i>Profil</a></li>
+                                <li><a class="dropdown-item" href="<?php echo e(url('/profile')); ?>"><i class="fas fa-user-circle me-2"></i>Profil</a></li>
                                 <li><hr class="dropdown-divider"></li>
                                 <li>
-                                    <form method="POST" action="{{ route('logout') }}">
-                                        @csrf
+                                    <form method="POST" action="<?php echo e(route('logout')); ?>">
+                                        <?php echo csrf_field(); ?>
                                         <button type="submit" class="dropdown-item text-danger"><i class="fas fa-sign-out-alt me-2"></i>Logout</button>
                                     </form>
                                 </li>
                             </ul>
                         </div>
-                    @endif
+                    <?php endif; ?>
                 </div>
 
-                {{-- MODERN FILTER CONTROLS --}}
+                
                 <div class="modern-controls-container mb-4">
                     <div class="controls-grid">
                         <div class="control-group">
@@ -54,9 +52,9 @@
                             </label>
                             <select id="filterUpt" class="modern-select">
                                 <option value="">Semua UPT</option>
-                                @foreach($uptList as $upt)
-                                    <option value="{{ $upt->id }}">{{ $upt->nama }}</option>
-                                @endforeach
+                                <?php $__currentLoopData = $uptList; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $upt): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                    <option value="<?php echo e($upt->id); ?>"><?php echo e($upt->nama); ?></option>
+                                <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                             </select>
                         </div>
                         <div class="control-group">
@@ -70,9 +68,9 @@
                         </div>
                     </div>
                 </div>
-                {{-- END MODERN FILTER CONTROLS --}}
+                
 
-                {{-- MODERN MAIN DASHBOARD CARDS --}}
+                
                 <div class="dashboard-grid mb-4">
                     <div class="main-card tax-summary-card">
                         <div class="card-header-modern">
@@ -121,31 +119,31 @@
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        @foreach($taxData as $tax)
-                                        @php
+                                        <?php $__currentLoopData = $taxData; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $tax): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                        <?php
                                             $persen = ($tax['targetAnggaran'] > 0) ? ($tax['realisasi'] / $tax['targetAnggaran']) * 100 : 0;
                                             $rowClass = $persen > 100 ? 'success-row' : '';
-                                        @endphp
-                                        <tr class="{{ $rowClass }}">
+                                        ?>
+                                        <tr class="<?php echo e($rowClass); ?>">
                                             <td class="text-start">
-                                                <div class="tax-name">{{ $tax['jenisPajak'] }}</div>
+                                                <div class="tax-name"><?php echo e($tax['jenisPajak']); ?></div>
                                             </td>
                                             <td class="text-end">
-                                                <div class="amount">{{ number_format($tax['targetAnggaran'], 0, ',', '.') }}</div>
+                                                <div class="amount"><?php echo e(number_format($tax['targetAnggaran'], 0, ',', '.')); ?></div>
                                             </td>
                                             <td class="text-end">
-                                                <div class="amount">{{ number_format($tax['realisasi'], 0, ',', '.') }}</div>
+                                                <div class="amount"><?php echo e(number_format($tax['realisasi'], 0, ',', '.')); ?></div>
                                             </td>
                                             <td class="text-end">
                                                 <div class="progress-container">
-                                                    <span class="progress-text">{{ number_format($persen, 2) }}%</span>
+                                                    <span class="progress-text"><?php echo e(number_format($persen, 2)); ?>%</span>
                                                     <div class="mini-progress">
-                                                        <div class="progress-fill" style="width: {{ min($persen, 100) }}%"></div>
+                                                        <div class="progress-fill" style="width: <?php echo e(min($persen, 100)); ?>%"></div>
                                                     </div>
                                                 </div>
                                             </td>
                                         </tr>
-                                    @endforeach
+                                    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                                         <tr class="total-row">
                                             <td class="text-start">
                                                 <div class="total-label">
@@ -153,13 +151,13 @@
                                                 </div>
                                             </td>
                                             <td class="text-end">
-                                                <div class="total-amount">{{ number_format(array_sum(array_column($taxData, 'targetAnggaran')), 0, ',', '.') }}</div>
+                                                <div class="total-amount"><?php echo e(number_format(array_sum(array_column($taxData, 'targetAnggaran')), 0, ',', '.')); ?></div>
                                             </td>
                                             <td class="text-end">
-                                                <div class="total-amount">{{ number_format(array_sum(array_column($taxData, 'realisasi')), 0, ',', '.') }}</div>
+                                                <div class="total-amount"><?php echo e(number_format(array_sum(array_column($taxData, 'realisasi')), 0, ',', '.')); ?></div>
                                             </td>
                                             <td class="text-end">
-                                                <div class="total-percentage">{{ number_format((array_sum(array_column($taxData, 'realisasi')) / array_sum(array_column($taxData, 'targetAnggaran'))) * 100, 2) }}%</div>
+                                                <div class="total-percentage"><?php echo e(number_format((array_sum(array_column($taxData, 'realisasi')) / array_sum(array_column($taxData, 'targetAnggaran'))) * 100, 2)); ?>%</div>
                                             </td>
                                         </tr>
                                     </tbody>
@@ -190,7 +188,8 @@
                             <!-- Revenue Amount -->
                             <div class="revenue-amount-section">
                                 <div class="revenue-amount">
-                                    Rp.{{ number_format(array_sum(array_column($taxData, 'realisasi')), 0, ',', '.') }}
+                                    Rp.<?php echo e(number_format(array_sum(array_column($taxData, 'realisasi')), 0, ',', '.')); ?>
+
                                 </div>
                             </div>
                             
@@ -198,18 +197,18 @@
                             <div class="revenue-progress-section">
                                 <div class="progress-info">
                                     <span class="progress-label">Progress:</span>
-                                    <span class="progress-value">{{ number_format((array_sum(array_column($taxData, 'realisasi')) / array_sum(array_column($taxData, 'targetAnggaran'))) * 100, 2) }}%</span>
+                                    <span class="progress-value"><?php echo e(number_format((array_sum(array_column($taxData, 'realisasi')) / array_sum(array_column($taxData, 'targetAnggaran'))) * 100, 2)); ?>%</span>
                                 </div>
                                 <div class="progress-bar-modern">
-                                    <div class="progress-fill-modern" style="width: {{ (array_sum(array_column($taxData, 'realisasi')) / array_sum(array_column($taxData, 'targetAnggaran'))) * 100 }}%"></div>
+                                    <div class="progress-fill-modern" style="width: <?php echo e((array_sum(array_column($taxData, 'realisasi')) / array_sum(array_column($taxData, 'targetAnggaran'))) * 100); ?>%"></div>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
-                {{-- END MODERN MAIN DASHBOARD CARDS --}}
+                
 
-                {{-- MODERN COMPARISON SECTION --}}
+                
                 <div class="comparison-section mb-4">
                     <div class="section-header">
                         <h3 class="section-title">
@@ -220,41 +219,41 @@
                     </div>
                     
                     <div class="comparison-grid">
-                        @foreach($taxData as $tax)
+                        <?php $__currentLoopData = $taxData; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $tax): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                             <div class="comparison-card">
                                 <div class="card-icon">
-                                    <img src="{{ $tax['img'] }}" alt="{{ $tax['jenisPajak'] }}" class="tax-icon">
+                                    <img src="<?php echo e($tax['img']); ?>" alt="<?php echo e($tax['jenisPajak']); ?>" class="tax-icon">
                                 </div>
                                 
                                 <div class="card-content">
-                                    <h4 class="tax-title">{{ $tax['jenisPajak'] }}</h4>
+                                    <h4 class="tax-title"><?php echo e($tax['jenisPajak']); ?></h4>
                                     
                                     <div class="comparison-stats">
                                         <div class="stat-item current-year">
                                             <span class="year-label">2025</span>
-                                            <span class="amount-value">Rp {{ number_format($tax['realisasi'], 0, ',', '.') }}</span>
+                                            <span class="amount-value">Rp <?php echo e(number_format($tax['realisasi'], 0, ',', '.')); ?></span>
                                         </div>
                                         
                                         <div class="stat-item previous-year">
                                             <span class="year-label">2024</span>
-                                            <span class="amount-value">Rp {{ number_format($tax['tahunLalu'], 0, ',', '.') }}</span>
+                                            <span class="amount-value">Rp <?php echo e(number_format($tax['tahunLalu'], 0, ',', '.')); ?></span>
                                         </div>
                                     </div>
                                     
                                     <div class="card-actions">
-                                        <button class="detail-btn btn-detail-sptpd" data-jenis="{{ $tax['jenisPajak'] }}">
+                                        <button class="detail-btn btn-detail-sptpd" data-jenis="<?php echo e($tax['jenisPajak']); ?>">
                                             <i class="fas fa-eye me-1"></i>
                                             Lihat Detail
                                         </button>
                                     </div>
                                 </div>
                             </div>
-                        @endforeach
+                        <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                     </div>
                 </div>
-                {{-- END MODERN COMPARISON SECTION --}}
+                
 
-                {{-- MODERN MONTHLY TABLE --}}
+                
                 <div class="monthly-table-section">
                     <div class="main-card">
                         <div class="card-header-modern">
@@ -364,73 +363,73 @@
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        @foreach($taxData2 as $tax)
+                                        <?php $__currentLoopData = $taxData2; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $tax): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                                             <tr>
                                                 <td class="text-start sticky-col">
-                                                    <div class="tax-name">{{ $tax['jenisPajak'] }}</div>
+                                                    <div class="tax-name"><?php echo e($tax['jenisPajak']); ?></div>
                                                 </td>
                                                 <td class="text-end quarter-target">
-                                                    <div class="amount">{{ number_format($tax['targetTW1'], 0, ',', '.') }}</div>
+                                                    <div class="amount"><?php echo e(number_format($tax['targetTW1'], 0, ',', '.')); ?></div>
                                                 </td>
                                                 <td class="text-end">
-                                                    <div class="amount">{{ number_format($tax['januari'], 0, ',', '.') }}</div>
+                                                    <div class="amount"><?php echo e(number_format($tax['januari'], 0, ',', '.')); ?></div>
                                                 </td>
                                                 <td class="text-end">
-                                                    <div class="amount">{{ number_format($tax['februari'], 0, ',', '.') }}</div>
+                                                    <div class="amount"><?php echo e(number_format($tax['februari'], 0, ',', '.')); ?></div>
                                                 </td>
                                                 <td class="text-end">
-                                                    <div class="amount">{{ number_format($tax['maret'], 0, ',', '.') }}</div>
+                                                    <div class="amount"><?php echo e(number_format($tax['maret'], 0, ',', '.')); ?></div>
                                                 </td>
                                                 <td class="text-end quarter-percentage">
-                                                    <div class="percentage">{{ number_format((($tax['januari'] + $tax['februari'] + $tax['maret']) / $tax['targetTW1']) * 100, 2) }}%</div>
+                                                    <div class="percentage"><?php echo e(number_format((($tax['januari'] + $tax['februari'] + $tax['maret']) / $tax['targetTW1']) * 100, 2)); ?>%</div>
                                                 </td>
                                                 <td class="text-end quarter-target">
-                                                    <div class="amount">{{ number_format($tax['targetTW2'], 0, ',', '.') }}</div>
+                                                    <div class="amount"><?php echo e(number_format($tax['targetTW2'], 0, ',', '.')); ?></div>
                                                 </td>
                                                 <td class="text-end">
-                                                    <div class="amount">{{ number_format($tax['april'], 0, ',', '.') }}</div>
+                                                    <div class="amount"><?php echo e(number_format($tax['april'], 0, ',', '.')); ?></div>
                                                 </td>
                                                 <td class="text-end">
-                                                    <div class="amount">{{ number_format($tax['mei'], 0, ',', '.') }}</div>
+                                                    <div class="amount"><?php echo e(number_format($tax['mei'], 0, ',', '.')); ?></div>
                                                 </td>
                                                 <td class="text-end">
-                                                    <div class="amount">{{ number_format($tax['juni'], 0, ',', '.') }}</div>
+                                                    <div class="amount"><?php echo e(number_format($tax['juni'], 0, ',', '.')); ?></div>
                                                 </td>
                                                 <td class="text-end quarter-percentage">
-                                                    <div class="percentage">{{ number_format((($tax['april'] + $tax['mei'] + $tax['juni']) / $tax['targetTW2']) * 100, 2) }}%</div>
+                                                    <div class="percentage"><?php echo e(number_format((($tax['april'] + $tax['mei'] + $tax['juni']) / $tax['targetTW2']) * 100, 2)); ?>%</div>
                                                 </td>
                                                 <td class="text-end quarter-target">
-                                                    <div class="amount">{{ number_format($tax['targetTW3'], 0, ',', '.') }}</div>
+                                                    <div class="amount"><?php echo e(number_format($tax['targetTW3'], 0, ',', '.')); ?></div>
                                                 </td>
                                                 <td class="text-end">
-                                                    <div class="amount">{{ number_format($tax['juli'], 0, ',', '.') }}</div>
+                                                    <div class="amount"><?php echo e(number_format($tax['juli'], 0, ',', '.')); ?></div>
                                                 </td>
                                                 <td class="text-end">
-                                                    <div class="amount">{{ number_format($tax['agustus'], 0, ',', '.') }}</div>
+                                                    <div class="amount"><?php echo e(number_format($tax['agustus'], 0, ',', '.')); ?></div>
                                                 </td>
                                                 <td class="text-end">
-                                                    <div class="amount">{{ number_format($tax['september'], 0, ',', '.') }}</div>
+                                                    <div class="amount"><?php echo e(number_format($tax['september'], 0, ',', '.')); ?></div>
                                                 </td>
                                                 <td class="text-end quarter-percentage">
-                                                    <div class="percentage">{{ number_format((($tax['juli'] + $tax['agustus'] + $tax['september']) / $tax['targetTW3']) * 100, 2) }}%</div>
+                                                    <div class="percentage"><?php echo e(number_format((($tax['juli'] + $tax['agustus'] + $tax['september']) / $tax['targetTW3']) * 100, 2)); ?>%</div>
                                                 </td>
                                                 <td class="text-end quarter-target">
-                                                    <div class="amount">{{ number_format($tax['targetTW4'], 0, ',', '.') }}</div>
+                                                    <div class="amount"><?php echo e(number_format($tax['targetTW4'], 0, ',', '.')); ?></div>
                                                 </td>
                                                 <td class="text-end">
-                                                    <div class="amount">{{ number_format($tax['oktober'], 0, ',', '.') }}</div>
+                                                    <div class="amount"><?php echo e(number_format($tax['oktober'], 0, ',', '.')); ?></div>
                                                 </td>
                                                 <td class="text-end">
-                                                    <div class="amount">{{ number_format($tax['november'], 0, ',', '.') }}</div>
+                                                    <div class="amount"><?php echo e(number_format($tax['november'], 0, ',', '.')); ?></div>
                                                 </td>
                                                 <td class="text-end">
-                                                    <div class="amount">{{ number_format($tax['desember'], 0, ',', '.') }}</div>
+                                                    <div class="amount"><?php echo e(number_format($tax['desember'], 0, ',', '.')); ?></div>
                                                 </td>
                                                 <td class="text-end quarter-percentage">
-                                                    <div class="percentage">{{ number_format((($tax['oktober'] + $tax['november'] + $tax['desember']) / $tax['targetTW4']) * 100, 2) }}%</div>
+                                                    <div class="percentage"><?php echo e(number_format((($tax['oktober'] + $tax['november'] + $tax['desember']) / $tax['targetTW4']) * 100, 2)); ?>%</div>
                                                 </td>
                                             </tr>
-                                        @endforeach
+                                        <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                                         <tr class="total-row">
                                             <td class="text-start sticky-col">
                                                 <div class="total-label">
@@ -438,59 +437,63 @@
                                                 </div>
                                             </td>
                                             <td class="text-end">
-                                                <div class="total-amount">{{ number_format(array_sum(array_column($taxData2, 'targetTW1')), 0, ',', '.') }}</div>
+                                                <div class="total-amount"><?php echo e(number_format(array_sum(array_column($taxData2, 'targetTW1')), 0, ',', '.')); ?></div>
                                             </td>
                                             <td class="text-end">
-                                                <div class="total-amount">{{ number_format(array_sum(array_column($taxData2, 'januari')), 0, ',', '.') }}</div>
+                                                <div class="total-amount"><?php echo e(number_format(array_sum(array_column($taxData2, 'januari')), 0, ',', '.')); ?></div>
                                             </td>
                                             <td class="text-end">
-                                                <div class="total-amount">{{ number_format(array_sum(array_column($taxData2, 'februari')), 0, ',', '.') }}</div>
+                                                <div class="total-amount"><?php echo e(number_format(array_sum(array_column($taxData2, 'februari')), 0, ',', '.')); ?></div>
                                             </td>
                                             <td class="text-end">
-                                                <div class="total-amount">{{ number_format(array_sum(array_column($taxData2, 'maret')), 0, ',', '.') }}</div>
+                                                <div class="total-amount"><?php echo e(number_format(array_sum(array_column($taxData2, 'maret')), 0, ',', '.')); ?></div>
                                             </td>
                                             <td class="text-end">
                                                 <div class="total-percentage">
-                                                    @php
+                                                    <?php
                                                         $totalTargetTW1 = array_sum(array_column($taxData2, 'targetTW1'));
                                                         $totalRealisasiTW1 = array_sum(array_column($taxData2, 'januari')) + array_sum(array_column($taxData2, 'februari')) + array_sum(array_column($taxData2, 'maret'));
-                                                    @endphp
-                                                    {{ $totalTargetTW1 > 0 ? number_format(($totalRealisasiTW1 / $totalTargetTW1) * 100, 2) . '%' : '0%' }}
+                                                    ?>
+                                                    <?php echo e($totalTargetTW1 > 0 ? number_format(($totalRealisasiTW1 / $totalTargetTW1) * 100, 2) . '%' : '0%'); ?>
+
                                                 </div>
                                             </td>
                                             <!-- Continue with other quarters... -->
-                                            <td class="text-end"><div class="total-amount">{{ number_format(array_sum(array_column($taxData2, 'targetTW2')), 0, ',', '.') }}</div></td>
-                                            <td class="text-end"><div class="total-amount">{{ number_format(array_sum(array_column($taxData2, 'april')), 0, ',', '.') }}</div></td>
-                                            <td class="text-end"><div class="total-amount">{{ number_format(array_sum(array_column($taxData2, 'mei')), 0, ',', '.') }}</div></td>
-                                            <td class="text-end"><div class="total-amount">{{ number_format(array_sum(array_column($taxData2, 'juni')), 0, ',', '.') }}</div></td>
+                                            <td class="text-end"><div class="total-amount"><?php echo e(number_format(array_sum(array_column($taxData2, 'targetTW2')), 0, ',', '.')); ?></div></td>
+                                            <td class="text-end"><div class="total-amount"><?php echo e(number_format(array_sum(array_column($taxData2, 'april')), 0, ',', '.')); ?></div></td>
+                                            <td class="text-end"><div class="total-amount"><?php echo e(number_format(array_sum(array_column($taxData2, 'mei')), 0, ',', '.')); ?></div></td>
+                                            <td class="text-end"><div class="total-amount"><?php echo e(number_format(array_sum(array_column($taxData2, 'juni')), 0, ',', '.')); ?></div></td>
                                             <td class="text-end"><div class="total-percentage">
-                                                @php
+                                                <?php
                                                     $totalTargetTW2 = array_sum(array_column($taxData2, 'targetTW2'));
                                                     $totalRealisasiTW2 = array_sum(array_column($taxData2, 'april')) + array_sum(array_column($taxData2, 'mei')) + array_sum(array_column($taxData2, 'juni'));
-                                                @endphp
-                                                {{ $totalTargetTW2 > 0 ? number_format(($totalRealisasiTW2 / $totalTargetTW2) * 100, 2) . '%' : '0%' }}
+                                                ?>
+                                                <?php echo e($totalTargetTW2 > 0 ? number_format(($totalRealisasiTW2 / $totalTargetTW2) * 100, 2) . '%' : '0%'); ?>
+
                                             </div></td>
-                                            <td class="text-end"><div class="total-amount">{{ number_format(array_sum(array_column($taxData2, 'targetTW3')), 0, ',', '.') }}</div></td>
-                                            <td class="text-end"><div class="total-amount">{{ number_format(array_sum(array_column($taxData2, 'juli')), 0, ',', '.') }}</div></td>
-                                            <td class="text-end"><div class="total-amount">{{ number_format(array_sum(array_column($taxData2, 'agustus')), 0, ',', '.') }}</div></td>
-                                            <td class="text-end"><div class="total-amount">{{ number_format(array_sum(array_column($taxData2, 'september')), 0, ',', '.') }}</div></td>
+                                            <td class="text-end"><div class="total-amount"><?php echo e(number_format(array_sum(array_column($taxData2, 'targetTW3')), 0, ',', '.')); ?></div></td>
+                                            <td class="text-end"><div class="total-amount"><?php echo e(number_format(array_sum(array_column($taxData2, 'juli')), 0, ',', '.')); ?></div></td>
+                                            <td class="text-end"><div class="total-amount"><?php echo e(number_format(array_sum(array_column($taxData2, 'agustus')), 0, ',', '.')); ?></div></td>
+                                            <td class="text-end"><div class="total-amount"><?php echo e(number_format(array_sum(array_column($taxData2, 'september')), 0, ',', '.')); ?></div></td>
                                             <td class="text-end"><div class="total-percentage">
-                                                @php
+                                                <?php
                                                     $totalTargetTW3 = array_sum(array_column($taxData2, 'targetTW3'));
                                                     $totalRealisasiTW3 = array_sum(array_column($taxData2, 'juli')) + array_sum(array_column($taxData2, 'agustus')) + array_sum(array_column($taxData2, 'september'));
-                                                @endphp
-                                                {{ $totalTargetTW3 > 0 ? number_format(($totalRealisasiTW3 / $totalTargetTW3) * 100, 2) . '%' : '0%' }}
+                                                ?>
+                                                <?php echo e($totalTargetTW3 > 0 ? number_format(($totalRealisasiTW3 / $totalTargetTW3) * 100, 2) . '%' : '0%'); ?>
+
                                             </div></td>
-                                            <td class="text-end"><div class="total-amount">{{ number_format(array_sum(array_column($taxData2, 'targetTW4')), 0, ',', '.') }}</div></td>
-                                            <td class="text-end"><div class="total-amount">{{ number_format(array_sum(array_column($taxData2, 'oktober')), 0, ',', '.') }}</div></td>
-                                            <td class="text-end"><div class="total-amount">{{ number_format(array_sum(array_column($taxData2, 'november')), 0, ',', '.') }}</div></td>
-                                            <td class="text-end"><div class="total-amount">{{ number_format(array_sum(array_column($taxData2, 'desember')), 0, ',', '.') }}</div></td>
+                                            <td class="text-end"><div class="total-amount"><?php echo e(number_format(array_sum(array_column($taxData2, 'targetTW4')), 0, ',', '.')); ?></div></td>
+                                            <td class="text-end"><div class="total-amount"><?php echo e(number_format(array_sum(array_column($taxData2, 'oktober')), 0, ',', '.')); ?></div></td>
+                                            <td class="text-end"><div class="total-amount"><?php echo e(number_format(array_sum(array_column($taxData2, 'november')), 0, ',', '.')); ?></div></td>
+                                            <td class="text-end"><div class="total-amount"><?php echo e(number_format(array_sum(array_column($taxData2, 'desember')), 0, ',', '.')); ?></div></td>
                                             <td class="text-end"><div class="total-percentage">
-                                                @php
+                                                <?php
                                                     $totalTargetTW4 = array_sum(array_column($taxData2, 'targetTW4'));
                                                     $totalRealisasiTW4 = array_sum(array_column($taxData2, 'oktober')) + array_sum(array_column($taxData2, 'november')) + array_sum(array_column($taxData2, 'desember'));
-                                                @endphp
-                                                {{ $totalTargetTW4 > 0 ? number_format(($totalRealisasiTW4 / $totalTargetTW4) * 100, 2) . '%' : '0%' }}
+                                                ?>
+                                                <?php echo e($totalTargetTW4 > 0 ? number_format(($totalRealisasiTW4 / $totalTargetTW4) * 100, 2) . '%' : '0%'); ?>
+
                                             </div></td>
                                         </tr>
                                     </tbody>
@@ -503,11 +506,11 @@
                         </div>
                     </div>
                 </div>
-                {{-- END MODERN MONTHLY TABLE --}}
+                
             </div>
         </div>
     </div>
-    {{-- MODERN MODAL DETAIL SPTPD --}}
+    
     <div class="modal fade" id="modalDetailSptpd" tabindex="-1">
         <div class="modal-dialog modal-xl">
             <div class="modal-content modern-modal">
@@ -565,7 +568,7 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    {{-- Data via JS --}}
+                                    
                                 </tbody>
                             </table>
                         </div>
@@ -583,14 +586,14 @@
             </div>
         </div>
     </div>
-    {{-- END MODERN MODAL --}}
+    
 
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script>
-        let allTaxData = @json($taxData);
-        let allTaxData2 = @json($taxData2);
-        let allSptpdByJenis = @json($sptpdByJenis ?? []);
+        let allTaxData = <?php echo json_encode($taxData, 15, 512) ?>;
+        let allTaxData2 = <?php echo json_encode($taxData2, 15, 512) ?>;
+        let allSptpdByJenis = <?php echo json_encode($sptpdByJenis ?? [], 15, 512) ?>;
         let taxData = allTaxData;
         let taxData2 = allTaxData2;
         let sptpdByJenis = allSptpdByJenis;
@@ -2429,4 +2432,5 @@
             }
         }
     </style>
-@endsection
+<?php $__env->stopSection(); ?>
+<?php echo $__env->make('layouts.app', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?><?php /**PATH E:\Project\simpad\resources\views/wp/dashboard.blade.php ENDPATH**/ ?>

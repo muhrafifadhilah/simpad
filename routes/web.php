@@ -14,6 +14,10 @@ Route::post('/login', [LoginController::class, 'login']);
 Route::middleware('auth')->group(function () {
     Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
 
+    // Profile routes - accessible by all authenticated users
+    Route::get('/profile', [\App\Http\Controllers\ProfileController::class, 'index'])->name('profile.index');
+    Route::put('/profile', [\App\Http\Controllers\ProfileController::class, 'update'])->name('profile.update');
+
     // Semua role bisa akses admin dashboard
     Route::get('/dashboard', [DashboardController::class, 'adminDashboard'])->name('admin.dashboard');
 
@@ -39,8 +43,6 @@ Route::middleware('auth')->group(function () {
         Route::post('/wp/sptpd', [App\Http\Controllers\WpDashboardController::class, 'storeSptpd'])->name('wp.sptpd.store');
         Route::get('/wp/sptpd/{id}', [App\Http\Controllers\WpDashboardController::class, 'showSptpd'])->name('wp.sptpd.show');
         Route::get('/wp/sptpd/{id}/pdf', [App\Http\Controllers\WpDashboardController::class, 'printSptpdPdf'])->name('wp.sptpd.pdf');
-        Route::post('/wp/sptpd/{id}/bayar', [App\Http\Controllers\WpDashboardController::class, 'bayarSptpd'])->name('wp.sptpd.bayar');
-        Route::get('/wp/sptpd/{id}/bukti-bayar', [App\Http\Controllers\WpDashboardController::class, 'buktiBayar'])->name('wp.sptpd.bukti');
     });
 });
 

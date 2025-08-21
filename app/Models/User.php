@@ -67,7 +67,12 @@ class User extends Authenticatable
 
     public function pegawai()
     {
-        return $this->hasMany(Pegawai::class);
+        return $this->hasOne(Pegawai::class, 'user_id');
+    }
+
+    public function subjekPajak()
+    {
+        return $this->hasOne(SubjekPajak::class, 'user_id');
     }
 
     public static function validateCredentials($userid, $password)

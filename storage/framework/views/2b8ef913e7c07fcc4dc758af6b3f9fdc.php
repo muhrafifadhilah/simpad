@@ -1,10 +1,6 @@
-@extends('layouts.app')
-
-@section('title', 'SIMPAD - Sistem Informasi Manajemen Pajak Daerah')
-
-@section('content')
+<?php $__env->startSection('content'); ?>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <meta name="csrf-token" content="{{ csrf_token() }}">
+    <meta name="csrf-token" content="<?php echo e(csrf_token()); ?>">
     <div class="container">
         <div class="row justify-content-center">
             <div class="col-md-12">
@@ -14,42 +10,39 @@
                             <button class="sidebar-toggle-btn me-3" id="sidebarToggle">
                                 <i class="fas fa-bars"></i>
                             </button>
-                            <div class="header-logo">
-                                <img src="{{ asset('assets/img/semut.svg') }}" alt="SIMPAD Logo" class="logo-img">
-                            </div>
                             <div>
-                                <h2 class="header-title">SIMPAD</h2>
-                                <p class="header-subtitle">Sistem Informasi Manajemen Pajak Daerah - SPTPD Wajib Pajak</p>
+                                <h2 class="header-title">Executive Summary</h2>
+                                <p class="header-subtitle">Data SPTPD Wajib Pajak - Tahun 2025</p>
                             </div>
                         </div>
                     </div>
-                    @if (Auth::user())
+                    <?php if(Auth::user()): ?>
                         <div class="user-profile-modern dropdown">
                             <div class="profile-container" data-bs-toggle="dropdown">
                                 <div class="profile-avatar">
                                     <i class="fas fa-user"></i>
                                 </div>
                                 <div class="profile-info">
-                                    <span class="profile-name">{{ Auth::user()->userid }}</span>
-                                    @if(Auth::user()->role)
-                                        <small class="profile-role">{{ ucfirst(Auth::user()->role->name) }}</small>
-                                    @endif
+                                    <span class="profile-name"><?php echo e(Auth::user()->userid); ?></span>
+                                    <?php if(Auth::user()->role): ?>
+                                        <small class="profile-role"><?php echo e(ucfirst(Auth::user()->role->name)); ?></small>
+                                    <?php endif; ?>
                                 </div>
                                 <i class="fas fa-chevron-down profile-dropdown-icon"></i>
                             </div>
                             <ul class="dropdown-menu dropdown-menu-end modern-dropdown">
                                 <li>
-                                    <form method="POST" action="{{ route('logout') }}">
-                                        @csrf
+                                    <form method="POST" action="<?php echo e(route('logout')); ?>">
+                                        <?php echo csrf_field(); ?>
                                         <button type="submit" class="dropdown-item text-danger"><i class="fas fa-sign-out-alt me-2"></i>Logout</button>
                                     </form>
                                 </li>
                             </ul>
                         </div>
-                    @endif
+                    <?php endif; ?>
                 </div>
 
-                {{-- MODERN FILTER CONTROLS --}}
+                
                 <div class="modern-controls-container mb-4">
                     <div class="controls-grid">
                         <div class="control-group">
@@ -67,9 +60,9 @@
                             </label>
                             <select id="filterObjekPajak" class="modern-select">
                                 <option value="">Semua Jenis Pajak</option>
-                                @foreach($objekPajaks as $objek)
-                                    <option value="{{ $objek->jenis_pajak }}">{{ $objek->jenis_pajak }}</option>
-                                @endforeach
+                                <?php $__currentLoopData = $objekPajaks; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $objek): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                    <option value="<?php echo e($objek->jenis_pajak); ?>"><?php echo e($objek->jenis_pajak); ?></option>
+                                <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                             </select>
                         </div>
                         <div class="control-group">
@@ -78,23 +71,23 @@
                             </label>
                             <select id="filterYear" class="modern-select">
                                 <option value="">Semua Tahun</option>
-                                @for($year = date('Y'); $year >= date('Y') - 5; $year--)
-                                    <option value="{{ $year }}">{{ $year }}</option>
-                                @endfor
+                                <?php for($year = date('Y'); $year >= date('Y') - 5; $year--): ?>
+                                    <option value="<?php echo e($year); ?>"><?php echo e($year); ?></option>
+                                <?php endfor; ?>
                             </select>
                         </div>
                     </div>
                 </div>
-                {{-- END MODERN FILTER CONTROLS --}}
+                
 
-                {{-- MODERN STATISTICS CARDS --}}
+                
                 <div class="modern-stats-grid mb-4">
                     <div class="stat-card-modern primary-gradient">
                         <div class="stat-icon-modern">
                             <i class="fas fa-file-invoice"></i>
                         </div>
                         <div class="stat-content-modern">
-                            <h3 class="stat-number-modern">{{ $sptpd->count() }}</h3>
+                            <h3 class="stat-number-modern"><?php echo e($sptpd->count()); ?></h3>
                             <p class="stat-label-modern">Total SPTPD</p>
                         </div>
                         <div class="stat-bg-icon">
@@ -107,13 +100,13 @@
                             <i class="fas fa-calendar-plus"></i>
                         </div>
                         <div class="stat-content-modern">
-                            @php
+                            <?php
                                 $sptpdBulanIni = $sptpd->filter(function($item) {
                                     return $item->created_at && 
                                            \Carbon\Carbon::parse($item->created_at)->isSameMonth(now());
                                 });
-                            @endphp
-                            <h3 class="stat-number-modern">{{ $sptpdBulanIni->count() }}</h3>
+                            ?>
+                            <h3 class="stat-number-modern"><?php echo e($sptpdBulanIni->count()); ?></h3>
                             <p class="stat-label-modern">SPTPD Bulan Ini</p>
                         </div>
                         <div class="stat-bg-icon">
@@ -126,14 +119,14 @@
                             <i class="fas fa-chart-line"></i>
                         </div>
                         <div class="stat-content-modern">
-                            @php
+                            <?php
                                 $sptpdTahunIni = $sptpd->filter(function($item) {
                                     return $item->masa_pajak_awal && 
                                            \Carbon\Carbon::parse($item->masa_pajak_awal)->year == now()->year;
                                 });
-                            @endphp
-                            <h3 class="stat-number-modern">{{ $sptpdTahunIni->count() }}</h3>
-                            <p class="stat-label-modern">SPTPD Tahun {{ now()->year }}</p>
+                            ?>
+                            <h3 class="stat-number-modern"><?php echo e($sptpdTahunIni->count()); ?></h3>
+                            <p class="stat-label-modern">SPTPD Tahun <?php echo e(now()->year); ?></p>
                         </div>
                         <div class="stat-bg-icon">
                             <i class="fas fa-chart-line"></i>
@@ -145,7 +138,7 @@
                             <i class="fas fa-money-bill-wave"></i>
                         </div>
                         <div class="stat-content-modern">
-                            <h3 class="stat-number-modern">{{ number_format($sptpd->sum('pajak_terutang'), 0, ',', '.') }}</h3>
+                            <h3 class="stat-number-modern"><?php echo e(number_format($sptpd->sum('pajak_terutang'), 0, ',', '.')); ?></h3>
                             <p class="stat-label-modern">Total Pajak Terutang (Rp)</p>
                         </div>
                         <div class="stat-bg-icon">
@@ -154,7 +147,7 @@
                     </div>
                 </div>
 
-                {{-- MODERN MAIN DASHBOARD CARD --}}
+                
                 <div class="dashboard-grid mb-4">
                     <div class="main-card tax-summary-card">
                         <div class="card-header-modern">
@@ -168,7 +161,7 @@
                         </div>
 
                         <div id="tableContainer" class="modern-table-container">
-                            @if($sptpd->count() > 0)
+                            <?php if($sptpd->count() > 0): ?>
                                 <div class="table-wrapper">
                                     <table class="modern-table" id="sptpdTable">
                                         <thead>
@@ -211,72 +204,76 @@
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            @foreach($sptpd as $index => $item)
+                                            <?php $__currentLoopData = $sptpd; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $index => $item): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                                             <tr class="table-row-modern">
                                                 <td class="text-start">
-                                                    <div class="cell-content">{{ $index + 1 }}</div>
+                                                    <div class="cell-content"><?php echo e($index + 1); ?></div>
                                                 </td>
                                                 <td class="text-start">
                                                     <div class="cell-content">
-                                                        <strong>{{ $item->nomor_sptpd ?? 'SPTPD-' . str_pad($item->id, 6, '0', STR_PAD_LEFT) }}</strong>
+                                                        <strong><?php echo e($item->nomor_sptpd ?? 'SPTPD-' . str_pad($item->id, 6, '0', STR_PAD_LEFT)); ?></strong>
                                                     </div>
                                                 </td>
                                                 <td class="text-center">
                                                     <div class="cell-content">
-                                                        @if($item->masa_pajak_awal && $item->masa_pajak_akhir)
-                                                            {{ \Carbon\Carbon::parse($item->masa_pajak_awal)->format('M Y') }} -
-                                                            {{ \Carbon\Carbon::parse($item->masa_pajak_akhir)->format('M Y') }}
-                                                        @else
+                                                        <?php if($item->masa_pajak_awal && $item->masa_pajak_akhir): ?>
+                                                            <?php echo e(\Carbon\Carbon::parse($item->masa_pajak_awal)->format('M Y')); ?> -
+                                                            <?php echo e(\Carbon\Carbon::parse($item->masa_pajak_akhir)->format('M Y')); ?>
+
+                                                        <?php else: ?>
                                                             <span class="text-muted">-</span>
-                                                        @endif
+                                                        <?php endif; ?>
                                                     </div>
                                                 </td>
                                                 <td class="text-center">
                                                     <div class="cell-content">
-                                                        @if($item->jatuh_tempo)
-                                                            @php
+                                                        <?php if($item->jatuh_tempo): ?>
+                                                            <?php
                                                                 $jatuhTempo = \Carbon\Carbon::parse($item->jatuh_tempo);
                                                                 $isOverdue = $jatuhTempo->isPast();
-                                                            @endphp
-                                                            <span class="{{ $isOverdue ? 'text-danger fw-bold' : '' }}">
-                                                                {{ $jatuhTempo->format('d/m/Y') }}
+                                                            ?>
+                                                            <span class="<?php echo e($isOverdue ? 'text-danger fw-bold' : ''); ?>">
+                                                                <?php echo e($jatuhTempo->format('d/m/Y')); ?>
+
                                                             </span>
-                                                            @if($isOverdue)
+                                                            <?php if($isOverdue): ?>
                                                                 <br><small class="text-danger">Terlambat</small>
-                                                            @endif
-                                                        @else
+                                                            <?php endif; ?>
+                                                        <?php else: ?>
                                                             <span class="text-muted">-</span>
-                                                        @endif
+                                                        <?php endif; ?>
                                                     </div>
                                                 </td>
                                                 <td class="text-center">
                                                     <div class="cell-content">
-                                                        {{ $item->objekPajak->jenis_pajak ?? 'Objek Pajak Umum' }}
+                                                        <?php echo e($item->objekPajak->jenis_pajak ?? 'Objek Pajak Umum'); ?>
+
                                                     </div>
                                                 </td>
                                                 <td class="text-end">
                                                     <div class="cell-content amount">
-                                                        {{ number_format($item->pajak_terutang ?? 0, 0, ',', '.') }}
+                                                        <?php echo e(number_format($item->pajak_terutang ?? 0, 0, ',', '.')); ?>
+
                                                     </div>
                                                 </td>
                                                 <td class="text-center">
                                                     <div class="cell-content">
                                                         <div class="action-buttons">
-                                                            <button class="action-btn primary" title="Lihat Detail" onclick="viewDetail({{ $item->id }})">
+                                                            <button class="action-btn primary" title="Lihat Detail" onclick="viewDetail(<?php echo e($item->id); ?>)">
                                                                 <i class="fas fa-eye"></i>
                                                             </button>
-                                                            <button class="action-btn info" title="Cetak PDF" onclick="printPdf({{ $item->id }})">
+                                                            <button class="action-btn info" title="Cetak PDF" onclick="printPdf(<?php echo e($item->id); ?>)">
                                                                 <i class="fas fa-print"></i>
                                                             </button>
                                                         </div>
                                                     </div>
                                                 </td>
                                             </tr>
-                                            @endforeach
+                                            <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                                         </tbody>
                                     </table>
                                 </div>
-                            @else
+                            <?php else: ?>
                                 <div class="empty-state-modern">
                                     <div class="empty-icon">
                                         <i class="fas fa-file-invoice"></i>
@@ -284,39 +281,13 @@
                                     <h3 class="empty-title">Belum Ada Data SPTPD</h3>
                                     <p class="empty-subtitle">Anda belum memiliki data SPTPD. Hubungi administrator untuk pembuatan SPTPD.</p>
                                 </div>
-                            @endif
+                            <?php endif; ?>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-
-    <!-- Footer SIMPAD -->
-    <footer class="simpad-footer mt-5">
-        <div class="container">
-            <div class="footer-content">
-                <div class="footer-left">
-                    <div class="footer-logo">
-                        <img src="{{ asset('assets/img/semut.svg') }}" alt="SIMPAD Logo" class="footer-logo-img">
-                        <div class="footer-brand">
-                            <h5 class="footer-title">SIMPAD</h5>
-                            <p class="footer-subtitle">Sistem Informasi Manajemen Pajak Daerah</p>
-                        </div>
-                    </div>
-                </div>
-                <div class="footer-right">
-                    <div class="footer-info">
-                        <p class="footer-copyright">© {{ date('Y') }} SIMPAD</p>
-                        <p class="footer-version">
-                            <span class="version-badge">Version 2.0.1</span>
-                            <span class="build-info">Build {{ date('Y.m.d') }}</span>
-                        </p>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </footer>
 
 <!-- Modal View Detail SPTPD -->
 <div class="modal fade" id="viewSptpdModal" tabindex="-1">
@@ -800,17 +771,6 @@ function buktiBayar(id) {
     color: rgba(255, 255, 255, 0.8);
 }
 
-/* Header Logo */
-.header-logo {
-    margin-right: 15px;
-}
-
-.logo-img {
-    width: 50px;
-    height: 50px;
-    object-fit: contain;
-}
-
 .modern-dropdown {
     border: none;
     box-shadow: var(--shadow-lg);
@@ -1221,119 +1181,7 @@ function buktiBayar(id) {
         padding: 15px 10px;
     }
 }
-
-/* Footer Styles */
-.simpad-footer {
-    background: linear-gradient(135deg, #1f2937 0%, #374151 100%);
-    color: white;
-    padding: 30px 0;
-    margin-top: 50px;
-    border-top: 3px solid #00712D;
-}
-
-.footer-content {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    flex-wrap: wrap;
-    gap: 20px;
-}
-
-.footer-left {
-    display: flex;
-    align-items: center;
-}
-
-.footer-logo {
-    display: flex;
-    align-items: center;
-    gap: 15px;
-}
-
-.footer-logo-img {
-    width: 40px;
-    height: 40px;
-    object-fit: contain;
-}
-
-.footer-brand {
-    display: flex;
-    flex-direction: column;
-}
-
-.footer-title {
-    font-size: 1.25rem;
-    font-weight: 700;
-    margin: 0;
-    color: white;
-}
-
-.footer-subtitle {
-    font-size: 0.8rem;
-    margin: 0;
-    opacity: 0.8;
-    color: rgba(255, 255, 255, 0.8);
-}
-
-.footer-right {
-    text-align: right;
-}
-
-.footer-info {
-    display: flex;
-    flex-direction: column;
-    align-items: flex-end;
-    gap: 5px;
-}
-
-.footer-copyright {
-    font-size: 0.9rem;
-    margin: 0;
-    color: rgba(255, 255, 255, 0.9);
-}
-
-.footer-version {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    margin: 0;
-}
-
-.version-badge {
-    background: #00712D;
-    color: white;
-    padding: 4px 12px;
-    border-radius: 20px;
-    font-size: 0.75rem;
-    font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-}
-
-.build-info {
-    font-size: 0.75rem;
-    color: rgba(255, 255, 255, 0.6);
-}
-
-@media (max-width: 768px) {
-    .footer-content {
-        flex-direction: column;
-        text-align: center;
-        gap: 15px;
-    }
-    
-    .footer-right {
-        text-align: center;
-    }
-    
-    .footer-info {
-        align-items: center;
-    }
-    
-    .footer-version {
-        flex-direction: column;
-        gap: 5px;
-    }
-}
 </style>
-@endsection
+<?php $__env->stopSection(); ?>
+
+<?php echo $__env->make('layouts.app', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?><?php /**PATH E:\Project\simpad\resources\views/wp/sptpd.blade.php ENDPATH**/ ?>

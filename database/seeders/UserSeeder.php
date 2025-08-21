@@ -34,11 +34,21 @@ class UserSeeder extends Seeder
         );
 
         // Tambahkan pengguna Pegawai
-        User::firstOrCreate(
+        $pegawaiUser = User::firstOrCreate(
             ['userid' => 'pegawai001'],
             [
                 'password' => Hash::make('pegawai123'),
                 'role_id' => $pegawaiRole->id
+            ]
+        );
+
+        // Tambahkan data pegawai
+        \App\Models\Pegawai::firstOrCreate(
+            ['user_id' => $pegawaiUser->id],
+            [
+                'nama' => 'Ahmad Subandi',
+                'nip' => '196512101985031001',
+                'jabatan' => 'Staff Pendataan Pajak'
             ]
         );
 
