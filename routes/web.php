@@ -27,6 +27,7 @@ Route::middleware('auth')->group(function () {
         Route::get('subjek_pajak/cetak-kartu/{id}', [\App\Http\Controllers\SubjekPajakController::class, 'cetakKartu'])->name('subjek_pajak.cetak_kartu');
         Route::get('subjek_pajak/wp-account/{id}', [\App\Http\Controllers\SubjekPajakController::class, 'getWpAccount'])->name('subjek_pajak.wp_account');
         Route::post('subjek_pajak/reset-wp-password/{id}', [\App\Http\Controllers\SubjekPajakController::class, 'resetWpPassword'])->name('subjek_pajak.reset_wp_password');
+        Route::get('api/kecamatan', [\App\Http\Controllers\SubjekPajakController::class, 'getKecamatanList'])->name('api.kecamatan');
         Route::resource('objek_pajak', \App\Http\Controllers\ObjekPajakController::class);
         Route::resource('kecamatan', \App\Http\Controllers\KecamatanController::class);
         Route::resource('upt', \App\Http\Controllers\UptController::class);

@@ -494,9 +494,7 @@
                         </div>
                         <div class="mb-2">
                             <label>Kecamatan</label>
-                            <select name="kecamatan" id="kecamatan" class="form-control" required>
-                                <option value="">Pilih Kecamatan</option>
-                            </select>
+                            <input type="text" name="kecamatan" id="kecamatan" class="form-control" required>
                         </div>
                         <div class="mb-2">
                             <label>Kelurahan</label>
@@ -596,6 +594,33 @@ $(function() {
     }
     
     let selectedRowId = null;
+    let kecamatanData = []; // Store kecamatan data
+    
+    // Load kecamatan data when page loads
+    function loadKecamatanData() {
+        $.get('{{ route('api.kecamatan') }}', function(data) {
+            kecamatanData = data;
+            populateKecamatanDropdown();
+        }).fail(function() {
+            console.error('Failed to load kecamatan data');
+        });
+    }
+    
+    // Populate kecamatan dropdown
+    function populateKecamatanDropdown(selectedValue = '') {
+        let dropdown = $('#kecamatan');
+        dropdown.empty();
+        dropdown.append('<option value="">Pilih Kecamatan</option>');
+        
+        kecamatanData.forEach(function(kecamatan) {
+            let selected = selectedValue == kecamatan.id ? 'selected' : '';
+            dropdown.append(`<option value="${kecamatan.id}" ${selected}>${kecamatan.nama}</option>`);
+        });
+    }
+    
+    // Load kecamatan data on page load
+    loadKecamatanData();
+    
     let table = $('#subjekTable').DataTable({
         processing: true,
         serverSide: true,
@@ -650,6 +675,8 @@ $(function() {
         $('#tanggal').val(today);
         $('#tanggal').prop('readonly', true);
         $('#subjekModalLabel').text('Tambah Subjek Pajak');
+        // Populate kecamatan dropdown without selected value
+        populateKecamatanDropdown();
         $('#subjekModal').modal('show');
     });
 
@@ -676,7 +703,8 @@ $(function() {
         $('#tanggalPengukuhan').val(rowData.tanggalPengukuhan);
         $('#pejabat').val(rowData.pejabat);
         $('#alamat').val(rowData.alamat);
-        $('#kecamatan').val(rowData.kecamatan);
+        // Populate kecamatan dropdown with selected value
+        populateKecamatanDropdown(rowData.kecamatan);
         $('#kelurahan').val(rowData.kelurahan);
         $('#kabupaten').val(rowData.kabupaten);
         $('#kode_pos').val(rowData.kode_pos);

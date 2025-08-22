@@ -36,4 +36,9 @@ class SubjekPajak extends Model
     {
         return $this->hasOne(Wp::class, 'subjek_pajak_id');
     }
+    
+    public function kecamatanRelation()
+    {
+        return $this->belongsTo(Kecamatan::class, 'kecamatan', 'id');
+    }
 }
