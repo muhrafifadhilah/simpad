@@ -555,11 +555,6 @@
                                         </th>
                                         <th class="text-end">
                                             <div class="th-content">
-                                                <i class="fas fa-calculator me-2"></i>Dasar
-                                            </div>
-                                        </th>
-                                        <th class="text-end">
-                                            <div class="th-content">
                                                 <i class="fas fa-money-bill-wave me-2"></i>Pajak Terutang
                                             </div>
                                         </th>
@@ -867,8 +862,7 @@
                             <td>${row.nopd}</td>
                             <td>${row.subjek_pajak}</td>
                             <td>${row.masa_pajak}</td>
-                            <td>${parseInt(row.dasar).toLocaleString('id-ID')}</td>
-                            <td>${parseInt(row.pajak_terutang).toLocaleString('id-ID')}</td>
+                            <td>${parseInt(row.total_pajak_terutang).toLocaleString('id-ID')}</td>
                         </tr>
                     `);
                 });
