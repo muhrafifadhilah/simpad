@@ -381,22 +381,6 @@
                     </label>
                     <input type="text" id="filterPemilik" class="modern-input" placeholder="Cari pemilik...">
                 </div>
-                <div class="control-group">
-                    <label class="modern-label">
-                        <i class="fas fa-map-marker-alt me-2"></i>Kecamatan
-                    </label>
-                    <select id="filterKecamatan" class="modern-select">
-                        <option value="">Semua Kecamatan</option>
-                    </select>
-                </div>
-                <div class="control-group">
-                    <label class="modern-label">
-                        <i class="fas fa-building me-2"></i>Kelurahan
-                    </label>
-                    <select id="filterKelurahan" class="modern-select">
-                        <option value="">Semua Kelurahan</option>
-                    </select>
-                </div>
             </div>
             
             <div class="action-buttons">
@@ -632,8 +616,6 @@ $(function() {
             data: function(d) {
                 d.subjek = $('#filterSubjek').val();
                 d.pemilik = $('#filterPemilik').val();
-                d.kecamatan = $('#filterKecamatan').val();
-                d.kelurahan = $('#filterKelurahan').val();
             }
         },
         columns: [
@@ -744,13 +726,6 @@ $(function() {
         table.ajax.reload();
     });
 
-    $('#filterKecamatan').change(function() {
-        table.ajax.reload();
-    });
-
-    $('#filterKelurahan').change(function() {
-        table.ajax.reload();
-    });
 
     $('#subjekForm').submit(function(e) {
         e.preventDefault();

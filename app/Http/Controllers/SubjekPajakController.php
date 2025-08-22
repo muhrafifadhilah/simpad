@@ -17,15 +17,42 @@ class SubjekPajakController extends Controller
 {
     public function index(Request $request)
     {
-        $kecamatans = Kecamatan::all();
         if ($request->ajax()) {
             $query = SubjekPajak::query();
-            if ($request->filled('tipe')) {
-                $query->where('pribadi_badan', $request->tipe);
+            
+            // Filter berdasarkan subjek pajak
+            if ($request->filled('subjek')) {
+                $query->where('subjek_pajak', 'like', '%' . $request->subjek . '%');
             }
-            return DataTables::of($query)->make(true);
+            
+            // Filter berdasarkan pemilik
+            if ($request->filled('pemilik')) {
+                $query->where('pemilik', 'like', '%' . $request->pemilik . '%');
+            }
+            
+            return DataTables::of($query)
+                ->addColumn('npwpd', function($row) {
+                    return $row->npwpd;
+                })
+                ->addColumn('subjek_pajak', function($row) {
+                    return $row->subjek_pajak;
+                })
+                ->addColumn('pemilik', function($row) {
+                    return $row->pemilik;
+                })
+                ->addColumn('alamat', function($row) {
+                    return $row->alamat;
+                })
+                ->addColumn('kecamatan', function($row) {
+                    return $row->kecamatan;
+                })
+                ->addColumn('kelurahan', function($row) {
+                    return $row->kelurahan;
+                })
+                ->rawColumns(['npwpd', 'subjek_pajak', 'pemilik', 'alamat', 'kecamatan', 'kelurahan'])
+                ->make(true);
         }
-        return view('subjek_pajak.index', compact('kecamatans'));
+        return view('subjek_pajak.index');
     }
 
     public function store(Request $request)
