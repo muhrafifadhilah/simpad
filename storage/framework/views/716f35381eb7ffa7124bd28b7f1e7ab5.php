@@ -398,17 +398,6 @@
                     Informasi Pajak
                 </h3>
                 
-                <div class="row">
-                    <div class="col-md-6">
-                        <div class="form-group">
-                            <label class="form-label">Tanggal Terima <span class="text-danger">*</span></label>
-                            <div class="input-icon">
-                                <i class="fas fa-calendar"></i>
-                                <input type="date" name="tanggal_terima" class="form-control" value="<?php echo e($sptpd->tanggal_terima); ?>" required>
-                            </div>
-                        </div>
-                    </div>
-                </div>
 
                 <div class="row">
                     <div class="col-md-8">

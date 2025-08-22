@@ -218,7 +218,7 @@
                                                 </td>
                                                 <td class="text-start">
                                                     <div class="cell-content">
-                                                        <strong>{{ $item->nomor_sptpd ?? 'SPTPD-' . str_pad($item->id, 6, '0', STR_PAD_LEFT) }}</strong>
+                                                        <strong>{{ $item->generated_nomor_sptpd }}</strong>
                                                     </div>
                                                 </td>
                                                 <td class="text-center">
@@ -451,7 +451,7 @@ function viewDetail(id) {
                                     <table class="table table-borderless">
                                         <tr>
                                             <td><strong>Nomor SPTPD:</strong></td>
-                                            <td>${sptpd.nomor_sptpd || 'SPTPD-' + String(sptpd.id).padStart(6, '0')}</td>
+                                            <td>${sptpd.generated_nomor_sptpd || 'SPTPD-' + String(sptpd.id).padStart(6, '0')}</td>
                                         </tr>
                                         <tr>
                                             <td><strong>Tanggal Dibuat:</strong></td>
@@ -605,7 +605,7 @@ function bayarSptpd(id) {
                 
                 // Fill payment modal
                 document.getElementById('bayarSptpdId').value = sptpd.id;
-                document.getElementById('bayarNomorSptpd').textContent = sptpd.nomor_sptpd || 'SPTPD-' + String(sptpd.id).padStart(6, '0');
+                document.getElementById('bayarNomorSptpd').textContent = sptpd.generated_nomor_sptpd || 'SPTPD-' + String(sptpd.id).padStart(6, '0');
                 document.getElementById('bayarPeriode').textContent = formatMonth(sptpd.masa_pajak_awal) + ' - ' + formatMonth(sptpd.masa_pajak_akhir);
                 document.getElementById('bayarPajakTerutang').textContent = 'Rp ' + formatNumber(sptpd.total_pajak_terutang || 0);
                 

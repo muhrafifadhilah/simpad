@@ -2,7 +2,7 @@
 <html>
 <head>
     <meta charset="utf-8">
-    <title>SPTPD - <?php echo e($sptpd->nomor_sptpd); ?></title>
+    <title>SPTPD - <?php echo e($sptpd->generated_nomor_sptpd); ?></title>
     <style>
         body { 
             font-family: Arial, sans-serif; 
@@ -224,7 +224,7 @@
         <div class="info-row">
             <div class="info-label">Nomor SPTPD</div>
             <div class="info-colon">:</div>
-            <div class="info-value fw-bold"><?php echo e($sptpd->nomor_sptpd); ?></div>
+            <div class="info-value fw-bold"><?php echo e($sptpd->generated_nomor_sptpd); ?></div>
         </div>
         <div class="info-row">
             <div class="info-label">Tanggal Dibuat</div>

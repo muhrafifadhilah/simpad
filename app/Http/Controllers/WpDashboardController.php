@@ -220,16 +220,10 @@ class WpDashboardController extends Controller
         // Hitung pajak terutang
         $pajakTerutang = ($request->dasar * $tarif) / 100;
 
-        // Generate nomor SPTPD
-        $tanggal = now();
-        $counter = Sptpd::whereDate('created_at', $tanggal->toDateString())->count() + 1;
-        $nomorSptpd = 'SPTPD-' . $tanggal->format('Ymd') . '-' . str_pad($counter, 4, '0', STR_PAD_LEFT);
-
         // Set jatuh tempo (30 hari dari sekarang)
         $jatuhTempo = now()->addDays(30);
 
         $sptpd = Sptpd::create([
-            'nomor_sptpd' => $nomorSptpd,
             'objek_pajak_id' => $request->objek_pajak_id,
             'subjek_pajak_id' => $wp->subjek_pajak_id,
             'masa_pajak_awal' => $request->masa_pajak_awal,
@@ -262,7 +256,11 @@ class WpDashboardController extends Controller
                      ->where('subjek_pajak_id', $wp->subjek_pajak_id)
                      ->firstOrFail();
 
-        return response()->json(['success' => true, 'data' => $sptpd]);
+        // Tambahkan generated_nomor_sptpd ke response
+        $sptpdArray = $sptpd->toArray();
+        $sptpdArray['generated_nomor_sptpd'] = $sptpd->generated_nomor_sptpd;
+
+        return response()->json(['success' => true, 'data' => $sptpdArray]);
     }
 
     public function printSptpdPdf($id)
@@ -281,7 +279,7 @@ class WpDashboardController extends Controller
         $pdf = app('dompdf.wrapper');
         $pdf->loadView('wp.sptpd_pdf', compact('sptpd'));
         
-        return $pdf->download('SPTPD-' . $sptpd->nomor_sptpd . '.pdf');
+        return $pdf->download('SPTPD-' . $sptpd->generated_nomor_sptpd . '.pdf');
     }
 
 }

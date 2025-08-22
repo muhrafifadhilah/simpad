@@ -9,7 +9,6 @@ class Sptpd extends Model
     protected $table = 'sptpd';
 
     protected $fillable = [
-        'nomor_sptpd',
         'objek_pajak_id',
         'subjek_pajak_id',
         'upt_id',

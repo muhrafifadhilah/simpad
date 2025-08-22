@@ -289,6 +289,7 @@
                     <div class="detail-value">{{ \Carbon\Carbon::parse($sptpd->tanggal_terima)->format('d F Y') }}</div>
                 </div>
                 
+                
                 <div class="detail-item">
                     <label class="detail-label">Jatuh Tempo</label>
                     <div class="detail-value">{{ \Carbon\Carbon::parse($sptpd->jatuh_tempo)->format('d F Y') }}</div>
