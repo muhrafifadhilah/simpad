@@ -265,8 +265,8 @@
             <tr>
                 <td class="label">Pemilik</td>
                 <td>{{ $sptpd->subjekPajak->pemilik }}</td>
-                <td class="label">Tarif Pajak</td>
-                <td>{{ $sptpd->tarif }}%</td>
+                <td class="label">Total Pajak</td>
+                <td>Rp {{ number_format($sptpd->total_pajak_terutang ?? 0, 0, ',', '.') }}</td>
             </tr>
             <tr>
                 <td class="label">Alamat</td>
@@ -281,56 +281,20 @@
 
     <!-- Perhitungan Pajak -->
     <div class="calculation">
-        <h3>PERHITUNGAN PAJAK</h3>
+        <h3>INFORMASI PAJAK</h3>
         <table class="calc-table">
-            <tr>
-                <td class="calc-label">Dasar Pengenaan Pajak (Omzet)</td>
-                <td class="calc-value">Rp {{ number_format($sptpd->dasar, 0, ',', '.') }}</td>
-            </tr>
-            <tr>
-                <td class="calc-label">Tarif Pajak</td>
-                <td class="calc-value">{{ $sptpd->tarif }}%</td>
-            </tr>
-            <tr>
-                <td class="calc-label">Pajak Terutang</td>
-                <td class="calc-value">Rp {{ number_format($sptpd->pajak_terutang, 0, ',', '.') }}</td>
-            </tr>
-            @if($sptpd->denda > 0)
-            <tr>
-                <td class="calc-label">Denda Keterlambatan</td>
-                <td class="calc-value">Rp {{ number_format($sptpd->denda, 0, ',', '.') }}</td>
-            </tr>
-            @endif
-            @if($sptpd->bunga > 0)
-            <tr>
-                <td class="calc-label">Bunga</td>
-                <td class="calc-value">Rp {{ number_format($sptpd->bunga, 0, ',', '.') }}</td>
-            </tr>
-            @endif
-            @if($sptpd->kenaikan > 0)
-            <tr>
-                <td class="calc-label">Kenaikan</td>
-                <td class="calc-value">Rp {{ number_format($sptpd->kenaikan, 0, ',', '.') }}</td>
-            </tr>
-            @endif
-            @if($sptpd->kompensasi > 0)
-            <tr>
-                <td class="calc-label">Kompensasi</td>
-                <td class="calc-value">- Rp {{ number_format($sptpd->kompensasi, 0, ',', '.') }}</td>
-            </tr>
-            @endif
-            @if($sptpd->setoran > 0)
-            <tr>
-                <td class="calc-label">Setoran Sebelumnya</td>
-                <td class="calc-value">- Rp {{ number_format($sptpd->setoran, 0, ',', '.') }}</td>
-            </tr>
-            @endif
             <tr class="total-row">
-                <td class="calc-label">TOTAL YANG HARUS DIBAYAR</td>
+                <td class="calc-label">TOTAL PAJAK YANG HARUS DIBAYARKAN</td>
                 <td class="calc-value">
-                    Rp {{ number_format($sptpd->pajak_terutang + $sptpd->denda + $sptpd->bunga + $sptpd->kenaikan - $sptpd->kompensasi - $sptpd->setoran, 0, ',', '.') }}
+                    Rp {{ number_format($sptpd->total_pajak_terutang ?? 0, 0, ',', '.') }}
                 </td>
             </tr>
+            @if($sptpd->keterangan)
+            <tr>
+                <td class="calc-label">Keterangan</td>
+                <td class="calc-value">{{ $sptpd->keterangan }}</td>
+            </tr>
+            @endif
         </table>
     </div>
 
