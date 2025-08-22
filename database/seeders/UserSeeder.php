@@ -107,10 +107,8 @@ class UserSeeder extends Seeder
                 
                 $nomorSptpd = 'SPTPD-' . $tanggal->format('Ymd') . '-' . str_pad(($index + 1) * 10 + $i, 4, '0', STR_PAD_LEFT);
                 
-                // Generate random omzet
-                $baseOmzet = rand(5000000, 100000000);
-                $tarif = 10; // Default 10%
-                $pajakTerutang = ($baseOmzet * $tarif) / 100;
+                // Generate total pajak langsung tanpa perhitungan kompleks
+                $totalPajakTerutang = rand(500000, 10000000);
                 
                 // Random objek pajak ID
                 $objekPajakId = $objekPajakIds[array_rand($objekPajakIds)];
@@ -129,20 +127,13 @@ class UserSeeder extends Seeder
                         'objek_pajak_id' => $objekPajakId,
                         'subjek_pajak_id' => $subjek->id,
                         'upt_id' => 1, // Default UPT ID
+                        'tanggal_terima' => $tanggal,
                         'masa_pajak_awal' => $masaPajakAwal,
                         'masa_pajak_akhir' => $masaPajakAkhir,
                         'jatuh_tempo' => $masaPajakAkhir->copy()->addDays(30),
-                        'dasar' => $baseOmzet,
-                        'tarif' => $tarif,
-                        'pajak_terutang' => $pajakTerutang,
+                        'total_pajak_terutang' => $totalPajakTerutang,
+                        'keterangan' => 'Data seed untuk ' . $subjek->subjek_pajak,
                         'status' => $status,
-                        'denda' => $status == 'Terkirim' && $masaPajakAkhir->addDays(30)->isPast() ? $pajakTerutang * 0.02 : 0,
-                        'bunga' => 0,
-                        'setoran' => $status == 'Lunas' ? $pajakTerutang : 0,
-                        'lain_lain' => 0,
-                        'kenaikan' => 0,
-                        'kompensasi' => 0,
-                        'omset_tapping_box' => 0,
                         'created_at' => $tanggal,
                         'updated_at' => $tanggal,
                     ]

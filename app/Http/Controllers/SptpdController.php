@@ -75,14 +75,15 @@ class SptpdController extends Controller
                 ->addColumn('masa', function($row) {
                     return $row->masa_pajak_awal ? \Carbon\Carbon::parse($row->masa_pajak_awal)->format('M Y') : '';
                 })
-                ->addColumn('dasar', function($row) {
-                    return $row->dasar ?? 0;
+                ->addColumn('total_pajak', function($row) {
+                    return number_format($row->total_pajak_terutang ?? 0, 0, ',', '.');
                 })
-                ->addColumn('omset_tapping_box', function($row) {
-                    return $row->omset_tapping_box ?? 0;
+                ->addColumn('status', function($row) {
+                    $statusClass = $row->status === 'Draft' ? 'warning' : 'success';
+                    return '<span class="badge bg-' . $statusClass . '">' . $row->status . '</span>';
                 })
-                ->addColumn('pajak', function($row) {
-                    return $row->pajak_terutang ?? 0;
+                ->addColumn('keterangan', function($row) {
+                    return $row->keterangan ? substr($row->keterangan, 0, 50) . '...' : '-';
                 })
                 ->rawColumns(['subjek_pajak'])
                 ->make(true);
@@ -106,9 +107,8 @@ class SptpdController extends Controller
             'jatuh_tempo' => 'required|date',
             'masa_pajak_awal' => 'required|date',
             'masa_pajak_akhir' => 'required|date',
-            'dasar_pengenaan' => 'required|numeric',
-            'omset_tapping_box' => 'required|numeric',
-            'pajak_terutang' => 'required|numeric',
+            'total_pajak_terutang' => 'required|numeric|min:0',
+            'keterangan' => 'nullable|string|max:1000',
         ]);
 
         try {
@@ -118,20 +118,13 @@ class SptpdController extends Controller
             $sptpd->objek_pajak_id = $request->objek_pajak_id;
             $sptpd->subjek_pajak_id = $objek->subjek_pajak_id;
             $sptpd->upt_id = $request->upt_id;
+            $sptpd->tanggal_terima = $request->tanggal_terima;
             $sptpd->jatuh_tempo = $request->jatuh_tempo;
             $sptpd->masa_pajak_awal = $request->masa_pajak_awal;
             $sptpd->masa_pajak_akhir = $request->masa_pajak_akhir;
-            $sptpd->dasar = $request->dasar_pengenaan;
-            $sptpd->tarif = $request->tarif ?? 0;
-            $sptpd->omset_tapping_box = $request->omset_tapping_box;
-            $sptpd->pajak_terutang = $request->pajak_terutang;
-            $sptpd->denda = $request->denda ?? 0;
-            $sptpd->bunga = $request->bunga ?? 0;
-            $sptpd->setoran = $request->setoran ?? 0;
-            $sptpd->kenaikan = $request->kenaikan ?? 0;
-            $sptpd->kompensasi = $request->kompensasi ?? 0;
-            $sptpd->lain_lain = $request->lain_lain ?? 0;
-            $sptpd->created_at = $request->tanggal_terima;
+            $sptpd->total_pajak_terutang = $request->total_pajak_terutang;
+            $sptpd->keterangan = $request->keterangan;
+            $sptpd->status = 'Draft';
             $sptpd->save();
 
             // Check if AJAX request
@@ -175,9 +168,12 @@ class SptpdController extends Controller
         $request->validate([
             'objek_pajak_id' => 'required|exists:objek_pajak,id',
             'upt_id' => 'required|exists:upt,id',
+            'tanggal_terima' => 'required|date',
             'masa_pajak_awal' => 'required|date',
             'masa_pajak_akhir' => 'required|date',
             'jatuh_tempo' => 'required|date',
+            'total_pajak_terutang' => 'required|numeric|min:0',
+            'keterangan' => 'nullable|string|max:1000',
         ]);
 
         try {
@@ -186,19 +182,12 @@ class SptpdController extends Controller
             $sptpd->objek_pajak_id = $request->objek_pajak_id;
             $sptpd->subjek_pajak_id = $objek->subjek_pajak_id;
             $sptpd->upt_id = $request->upt_id;
+            $sptpd->tanggal_terima = $request->tanggal_terima;
             $sptpd->masa_pajak_awal = $request->masa_pajak_awal;
             $sptpd->masa_pajak_akhir = $request->masa_pajak_akhir;
             $sptpd->jatuh_tempo = $request->jatuh_tempo;
-            $sptpd->dasar = $request->dasar;
-            $sptpd->tarif = $request->tarif;
-            $sptpd->omset_tapping_box = $request->omset_tapping_box;
-            $sptpd->pajak_terutang = $request->pajak_terutang;
-            $sptpd->denda = $request->denda;
-            $sptpd->bunga = $request->bunga;
-            $sptpd->setoran = $request->setoran;
-            $sptpd->kenaikan = $request->kenaikan;
-            $sptpd->kompensasi = $request->kompensasi;
-            $sptpd->lain_lain = $request->lain_lain;
+            $sptpd->total_pajak_terutang = $request->total_pajak_terutang;
+            $sptpd->keterangan = $request->keterangan;
             $sptpd->save();
 
             // Check if AJAX request

@@ -145,7 +145,7 @@
                             <i class="fas fa-money-bill-wave"></i>
                         </div>
                         <div class="stat-content-modern">
-                            <h3 class="stat-number-modern">{{ number_format($sptpd->sum('pajak_terutang'), 0, ',', '.') }}</h3>
+                            <h3 class="stat-number-modern">{{ number_format($sptpd->sum('total_pajak_terutang'), 0, ',', '.') }}</h3>
                             <p class="stat-label-modern">Total Pajak Terutang (Rp)</p>
                         </div>
                         <div class="stat-bg-icon">
@@ -200,7 +200,7 @@
                                                 </th>
                                                 <th class="text-end">
                                                     <div class="th-content">
-                                                        <i class="fas fa-coins me-2"></i>Pajak Terutang
+                                                        <i class="fas fa-coins me-2"></i>Total Pajak Terutang
                                                     </div>
                                                 </th>
                                                 <th class="text-center">
@@ -256,7 +256,7 @@
                                                 </td>
                                                 <td class="text-end">
                                                     <div class="cell-content amount">
-                                                        {{ number_format($item->pajak_terutang ?? 0, 0, ',', '.') }}
+                                                        {{ number_format($item->total_pajak_terutang ?? 0, 0, ',', '.') }}
                                                     </div>
                                                 </td>
                                                 <td class="text-center">
@@ -291,33 +291,6 @@
             </div>
         </div>
     </div>
-
-    <!-- Footer SIMPAD -->
-    <footer class="simpad-footer mt-5">
-        <div class="container">
-            <div class="footer-content">
-                <div class="footer-left">
-                    <div class="footer-logo">
-                        <img src="{{ asset('assets/img/semut.svg') }}" alt="SIMPAD Logo" class="footer-logo-img">
-                        <div class="footer-brand">
-                            <h5 class="footer-title">SIMPAD</h5>
-                            <p class="footer-subtitle">Sistem Informasi Manajemen Pajak Daerah</p>
-                        </div>
-                    </div>
-                </div>
-                <div class="footer-right">
-                    <div class="footer-info">
-                        <p class="footer-copyright">© {{ date('Y') }} SIMPAD</p>
-                        <p class="footer-version">
-                            <span class="version-badge">Version 2.0.1</span>
-                            <span class="build-info">Build {{ date('Y.m.d') }}</span>
-                        </p>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </footer>
-
 <!-- Modal View Detail SPTPD -->
 <div class="modal fade" id="viewSptpdModal" tabindex="-1">
     <div class="modal-dialog modal-xl">
@@ -535,29 +508,14 @@ function viewDetail(id) {
                                                     <td>${formatMonth(sptpd.masa_pajak_awal)} - ${formatMonth(sptpd.masa_pajak_akhir)}</td>
                                                 </tr>
                                                 <tr>
-                                                    <td><strong>Dasar Pengenaan:</strong></td>
-                                                    <td>Rp ${formatNumber(sptpd.dasar || 0)}</td>
-                                                </tr>
-                                                <tr>
-                                                    <td><strong>Tarif Pajak:</strong></td>
-                                                    <td>${sptpd.tarif || 0}%</td>
+                                                    <td><strong>Total Pajak Terutang:</strong></td>
+                                                    <td class="text-success"><strong>Rp ${formatNumber(sptpd.total_pajak_terutang || 0)}</strong></td>
                                                 </tr>
                                             </table>
                                         </div>
                                         <div class="col-md-6">
                                             <table class="table table-borderless">
-                                                <tr>
-                                                    <td><strong>Pajak Terutang:</strong></td>
-                                                    <td class="text-success"><strong>Rp ${formatNumber(sptpd.pajak_terutang || 0)}</strong></td>
-                                                </tr>
-                                                <tr>
-                                                    <td><strong>Denda:</strong></td>
-                                                    <td>Rp ${formatNumber(sptpd.denda || 0)}</td>
-                                                </tr>
-                                                <tr>
-                                                    <td><strong>Total Bayar:</strong></td>
-                                                    <td class="text-danger"><strong>Rp ${formatNumber((sptpd.pajak_terutang || 0) + (sptpd.denda || 0))}</strong></td>
-                                                </tr>
+                                                ${sptpd.keterangan ? `<tr><td><strong>Keterangan:</strong></td><td>${sptpd.keterangan}</td></tr>` : ''}
                                             </table>
                                         </div>
                                     </div>
@@ -649,10 +607,10 @@ function bayarSptpd(id) {
                 document.getElementById('bayarSptpdId').value = sptpd.id;
                 document.getElementById('bayarNomorSptpd').textContent = sptpd.nomor_sptpd || 'SPTPD-' + String(sptpd.id).padStart(6, '0');
                 document.getElementById('bayarPeriode').textContent = formatMonth(sptpd.masa_pajak_awal) + ' - ' + formatMonth(sptpd.masa_pajak_akhir);
-                document.getElementById('bayarPajakTerutang').textContent = 'Rp ' + formatNumber(sptpd.pajak_terutang || 0);
+                document.getElementById('bayarPajakTerutang').textContent = 'Rp ' + formatNumber(sptpd.total_pajak_terutang || 0);
                 
-                // Calculate total
-                const total = (sptpd.pajak_terutang || 0) + (sptpd.denda || 0) + (sptpd.bunga || 0) + (sptpd.kenaikan || 0) - (sptpd.kompensasi || 0) - (sptpd.setoran || 0);
+                // Calculate total - simplified to use only total_pajak_terutang
+                const total = (sptpd.total_pajak_terutang || 0);
                 document.getElementById('bayarTotalBayar').textContent = 'Rp ' + formatNumber(total);
                 
                 // Show modal

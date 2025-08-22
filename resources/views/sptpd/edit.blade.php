@@ -391,107 +391,45 @@
                 </div>
             </div>
 
-            <!-- Section 4: Data Keuangan -->
+            <!-- Section 4: Data Pajak -->
             <div class="form-section">
                 <h3 class="section-title">
                     <i class="fas fa-calculator"></i>
-                    Data Keuangan & Perhitungan
+                    Informasi Pajak
                 </h3>
                 
                 <div class="row">
-                    <div class="col-md-4">
+                    <div class="col-md-6">
                         <div class="form-group">
-                            <label class="form-label">Dasar Pengenaan</label>
+                            <label class="form-label">Tanggal Terima <span class="text-danger">*</span></label>
+                            <div class="input-icon">
+                                <i class="fas fa-calendar"></i>
+                                <input type="date" name="tanggal_terima" class="form-control" value="{{ $sptpd->tanggal_terima }}" required>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-8">
+                        <div class="form-group">
+                            <label class="form-label">Total Pajak yang Harus Dibayarkan <span class="text-danger">*</span></label>
                             <div class="input-icon">
                                 <i class="fas fa-money-bill-wave"></i>
-                                <input type="number" name="dasar" class="form-control" value="{{ $sptpd->dasar }}" step="0.01">
+                                <input type="number" name="total_pajak_terutang" class="form-control" value="{{ $sptpd->total_pajak_terutang }}" step="1" min="0" required id="totalPajak">
                             </div>
-                        </div>
-                    </div>
-                    <div class="col-md-4">
-                        <div class="form-group">
-                            <label class="form-label">Tarif (%)</label>
-                            <div class="input-icon">
-                                <i class="fas fa-percentage"></i>
-                                <input type="number" name="tarif" class="form-control" value="{{ $sptpd->tarif }}" step="0.001">
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-4">
-                        <div class="form-group">
-                            <label class="form-label">Omset/Tapping Box</label>
-                            <div class="input-icon">
-                                <i class="fas fa-chart-line"></i>
-                                <input type="number" name="omset_tapping_box" class="form-control" value="{{ $sptpd->omset_tapping_box }}" step="0.01">
-                            </div>
+                            <div id="previewPajak" class="mt-2 text-muted"></div>
                         </div>
                     </div>
                 </div>
-
+                
                 <div class="row">
-                    <div class="col-md-4">
+                    <div class="col-md-12">
                         <div class="form-group">
-                            <label class="form-label">Pajak Terutang</label>
+                            <label class="form-label">Keterangan (Opsional)</label>
                             <div class="input-icon">
-                                <i class="fas fa-receipt"></i>
-                                <input type="number" name="pajak_terutang" class="form-control" value="{{ $sptpd->pajak_terutang }}" step="0.01">
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-4">
-                        <div class="form-group">
-                            <label class="form-label">Denda</label>
-                            <div class="input-icon">
-                                <i class="fas fa-exclamation-triangle"></i>
-                                <input type="number" name="denda" class="form-control" value="{{ $sptpd->denda }}" step="0.01">
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-4">
-                        <div class="form-group">
-                            <label class="form-label">Bunga</label>
-                            <div class="input-icon">
-                                <i class="fas fa-percentage"></i>
-                                <input type="number" name="bunga" class="form-control" value="{{ $sptpd->bunga }}" step="0.01">
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="row">
-                    <div class="col-md-3">
-                        <div class="form-group">
-                            <label class="form-label">Setoran</label>
-                            <div class="input-icon">
-                                <i class="fas fa-coins"></i>
-                                <input type="number" name="setoran" class="form-control" value="{{ $sptpd->setoran }}" step="0.01">
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-3">
-                        <div class="form-group">
-                            <label class="form-label">Kenaikan</label>
-                            <div class="input-icon">
-                                <i class="fas fa-arrow-up"></i>
-                                <input type="number" name="kenaikan" class="form-control" value="{{ $sptpd->kenaikan }}" step="0.01">
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-3">
-                        <div class="form-group">
-                            <label class="form-label">Kompensasi</label>
-                            <div class="input-icon">
-                                <i class="fas fa-balance-scale"></i>
-                                <input type="number" name="kompensasi" class="form-control" value="{{ $sptpd->kompensasi }}" step="0.01">
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-3">
-                        <div class="form-group">
-                            <label class="form-label">Lain-lain</label>
-                            <div class="input-icon">
-                                <i class="fas fa-ellipsis-h"></i>
-                                <input type="number" name="lain_lain" class="form-control" value="{{ $sptpd->lain_lain }}" step="0.01">
+                                <i class="fas fa-comment"></i>
+                                <textarea name="keterangan" class="form-control" rows="4" style="padding-left: 48px; resize: vertical;" placeholder="Masukkan keterangan tambahan jika diperlukan...">{{ $sptpd->keterangan }}</textarea>
                             </div>
                         </div>
                     </div>
@@ -591,15 +529,30 @@
             });
         });
 
-        // Format currency input
-        $('input[name="dasar"], input[name="omset_tapping_box"], input[name="pajak_terutang"], input[name="denda"], input[name="bunga"], input[name="setoran"], input[name="kenaikan"], input[name="kompensasi"], input[name="lain_lain"]').on('input', function() {
-            // Allow decimal input for financial fields
-            let value = this.value;
-            if (value && !isNaN(value)) {
-                // Format for display but keep actual value
-                $(this).attr('data-original', value);
+        // Format currency preview for total pajak
+        function updatePreviewPajak() {
+            const totalPajak = document.getElementById('totalPajak').value;
+            const previewElement = document.getElementById('previewPajak');
+            
+            if (totalPajak && !isNaN(totalPajak)) {
+                const formatted = new Intl.NumberFormat('id-ID', {
+                    style: 'currency',
+                    currency: 'IDR',
+                    minimumFractionDigits: 0,
+                    maximumFractionDigits: 0
+                }).format(totalPajak);
+                
+                previewElement.innerHTML = `<i class="fas fa-eye me-2"></i>Preview: <strong>${formatted}</strong>`;
+                previewElement.className = 'mt-2 text-success';
+            } else {
+                previewElement.innerHTML = '<i class="fas fa-info-circle me-2"></i>Masukkan nominal untuk melihat preview';
+                previewElement.className = 'mt-2 text-muted';
             }
-        });
+        }
+
+        // Initialize preview and bind event
+        $('#totalPajak').on('input', updatePreviewPajak);
+        updatePreviewPajak(); // Initial call
     });
 </script>
 

@@ -108,7 +108,7 @@
                 <th style="width: 20%">Subjek Pajak</th>
                 <th style="width: 15%">Jenis Pajak</th>
                 <th style="width: 8%">Masa</th>
-                <th style="width: 15%">Pajak Terutang</th>
+                <th style="width: 15%">Total Pajak Terutang</th>
             </tr>
         </thead>
         <tbody>
@@ -130,7 +130,7 @@
 
                 </td>
                 <td class="text-right">
-                    Rp <?php echo e(number_format($sptpd->pajak_terutang ?? 0, 0, ',', '.')); ?>
+                    Rp <?php echo e(number_format($sptpd->total_pajak_terutang ?? 0, 0, ',', '.')); ?>
 
                 </td>
             </tr>
@@ -140,7 +140,7 @@
             <tr style="background-color: #f0f8ff; font-weight: bold;">
                 <td colspan="6" class="text-center"><strong>TOTAL PAJAK TERUTANG</strong></td>
                 <td class="text-right">
-                    <strong>Rp <?php echo e(number_format($sptpds->sum('pajak_terutang'), 0, ',', '.')); ?></strong>
+                    <strong>Rp <?php echo e(number_format($sptpds->sum('total_pajak_terutang'), 0, ',', '.')); ?></strong>
                 </td>
             </tr>
         </tfoot>

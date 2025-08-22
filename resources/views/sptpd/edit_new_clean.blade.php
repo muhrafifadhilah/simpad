@@ -1,4 +1,6 @@
-<?php $__env->startSection('content'); ?>
+@extends('layouts.app')
+
+@section('content')
 <style>
     /* Modern Form Styling */
     :root {
@@ -227,20 +229,19 @@
         <h1 class="header-title">
             <i class="fas fa-edit me-3"></i>Edit SPTPD
         </h1>
-        <p class="header-subtitle">Surat Pemberitahuan Pajak Daerah - Form Edit Data</p>
+        <p class="header-subtitle">Surat Pemberitahuan Pajak Daerah - Form Edit Data Sederhana</p>
     </div>
 
     <!-- Modern Form -->
     <div class="modern-form-container">
         <div class="info-badge">
             <i class="fas fa-info-circle"></i>
-            ID SPTPD: <?php echo e($sptpd->id); ?> | Dibuat: <?php echo e($sptpd->created_at->format('d/m/Y H:i')); ?>
-
+            ID SPTPD: {{ $sptpd->id }} | Dibuat: {{ $sptpd->created_at->format('d/m/Y H:i') }}
         </div>
 
-        <form action="<?php echo e(route('sptpd.update', $sptpd)); ?>" method="POST" id="sptpdEditForm">
-            <?php echo csrf_field(); ?> 
-            <?php echo method_field('PUT'); ?>
+        <form action="{{ route('sptpd.update', $sptpd) }}" method="POST" id="sptpdEditForm">
+            @csrf 
+            @method('PUT')
             
             <!-- Section 1: Informasi Dasar -->
             <div class="form-section">
@@ -255,16 +256,16 @@
                             <label class="form-label">No. SPTPD</label>
                             <div class="input-icon">
                                 <i class="fas fa-hashtag"></i>
-                                <input type="text" class="form-control" value="<?php echo e($sptpd->id); ?>" disabled>
+                                <input type="text" class="form-control" value="ID: {{ $sptpd->id }}" disabled>
                             </div>
                         </div>
                     </div>
                     <div class="col-md-6">
                         <div class="form-group">
-                            <label class="form-label">Tanggal Terima</label>
+                            <label class="form-label">Tanggal Terima <span class="text-danger">*</span></label>
                             <div class="input-icon">
                                 <i class="fas fa-calendar"></i>
-                                <input type="text" class="form-control" value="<?php echo e($sptpd->created_at->format('d/m/Y')); ?>" disabled>
+                                <input type="date" name="tanggal_terima" class="form-control" value="{{ $sptpd->tanggal_terima }}" required>
                             </div>
                         </div>
                     </div>
@@ -273,10 +274,10 @@
                 <div class="row">
                     <div class="col-md-6">
                         <div class="form-group">
-                            <label class="form-label">Jatuh Tempo</label>
+                            <label class="form-label">Jatuh Tempo <span class="text-danger">*</span></label>
                             <div class="input-icon">
                                 <i class="fas fa-calendar-check"></i>
-                                <input type="date" name="jatuh_tempo" class="form-control" value="<?php echo e($sptpd->jatuh_tempo); ?>" required>
+                                <input type="date" name="jatuh_tempo" class="form-control" value="{{ $sptpd->jatuh_tempo }}" required>
                             </div>
                         </div>
                     </div>
@@ -293,21 +294,20 @@
                 <div class="row">
                     <div class="col-md-6">
                         <div class="form-group">
-                            <label class="form-label">NOPD</label>
+                            <label class="form-label">NOPD <span class="text-danger">*</span></label>
                             <div class="input-icon">
                                 <i class="fas fa-id-card"></i>
                                 <select name="objek_pajak_id" class="form-select" required id="objek_pajak_id">
                                     <option value="">Pilih NOPD</option>
-                                    <?php $__currentLoopData = $objekPajaks; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $objek): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
-                                        <option value="<?php echo e($objek->id); ?>"
-                                            data-npwpd="<?php echo e($objek->subjekPajak->npwpd ?? ''); ?>"
-                                            data-nama="<?php echo e($objek->subjekPajak->subjek_pajak ?? ''); ?>"
-                                            data-jenis="<?php echo e($objek->jenis_pajak ?? ''); ?>"
-                                            <?php if($sptpd->objek_pajak_id == $objek->id): ?> selected <?php endif; ?>>
-                                            <?php echo e($objek->nopd); ?>
-
+                                    @foreach($objekPajaks as $objek)
+                                        <option value="{{ $objek->id }}"
+                                            data-npwpd="{{ $objek->subjekPajak->npwpd ?? '' }}"
+                                            data-nama="{{ $objek->subjekPajak->subjek_pajak ?? '' }}"
+                                            data-jenis="{{ $objek->jenis_pajak ?? '' }}"
+                                            @if($sptpd->objek_pajak_id == $objek->id) selected @endif>
+                                            {{ $objek->nopd }}
                                         </option>
-                                    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                                    @endforeach
                                 </select>
                             </div>
                         </div>
@@ -317,7 +317,7 @@
                             <label class="form-label">NPWPD</label>
                             <div class="input-icon">
                                 <i class="fas fa-certificate"></i>
-                                <input type="text" id="npwpd" class="form-control" value="<?php echo e($sptpd->objekPajak->subjekPajak->npwpd ?? ''); ?>" disabled>
+                                <input type="text" id="npwpd" class="form-control" value="{{ $sptpd->objekPajak->subjekPajak->npwpd ?? '' }}" disabled>
                             </div>
                         </div>
                     </div>
@@ -329,7 +329,7 @@
                             <label class="form-label">Nama Wajib Pajak</label>
                             <div class="input-icon">
                                 <i class="fas fa-user"></i>
-                                <input type="text" id="nama_subjek" class="form-control" value="<?php echo e($sptpd->objekPajak->subjekPajak->subjek_pajak ?? ''); ?>" disabled>
+                                <input type="text" id="nama_subjek" class="form-control" value="{{ $sptpd->objekPajak->subjekPajak->subjek_pajak ?? '' }}" disabled>
                             </div>
                         </div>
                     </div>
@@ -338,7 +338,7 @@
                             <label class="form-label">Jenis Pajak</label>
                             <div class="input-icon">
                                 <i class="fas fa-tags"></i>
-                                <input type="text" id="jenis_pajak" class="form-control" value="<?php echo e($sptpd->objekPajak->jenis_pajak ?? ''); ?>" disabled>
+                                <input type="text" id="jenis_pajak" class="form-control" value="{{ $sptpd->objekPajak->jenis_pajak ?? '' }}" disabled>
                             </div>
                         </div>
                     </div>
@@ -355,14 +355,14 @@
                 <div class="row">
                     <div class="col-md-6">
                         <div class="form-group">
-                            <label class="form-label">UPT</label>
+                            <label class="form-label">UPT <span class="text-danger">*</span></label>
                             <div class="input-icon">
                                 <i class="fas fa-building-user"></i>
                                 <select name="upt_id" class="form-select" required>
                                     <option value="">Pilih UPT</option>
-                                    <?php $__currentLoopData = $upts; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $upt): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
-                                        <option value="<?php echo e($upt->id); ?>" <?php if($sptpd->upt_id == $upt->id): ?> selected <?php endif; ?>><?php echo e($upt->nama); ?></option>
-                                    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                                    @foreach($upts as $upt)
+                                        <option value="{{ $upt->id }}" @if($sptpd->upt_id == $upt->id) selected @endif>{{ $upt->nama }}</option>
+                                    @endforeach
                                 </select>
                             </div>
                         </div>
@@ -372,19 +372,19 @@
                 <div class="row">
                     <div class="col-md-6">
                         <div class="form-group">
-                            <label class="form-label">Masa Pajak Awal</label>
+                            <label class="form-label">Masa Pajak Awal <span class="text-danger">*</span></label>
                             <div class="input-icon">
                                 <i class="fas fa-calendar-week"></i>
-                                <input type="date" name="masa_pajak_awal" class="form-control" value="<?php echo e($sptpd->masa_pajak_awal); ?>" required>
+                                <input type="date" name="masa_pajak_awal" class="form-control" value="{{ $sptpd->masa_pajak_awal }}" required>
                             </div>
                         </div>
                     </div>
                     <div class="col-md-6">
                         <div class="form-group">
-                            <label class="form-label">Masa Pajak Akhir</label>
+                            <label class="form-label">Masa Pajak Akhir <span class="text-danger">*</span></label>
                             <div class="input-icon">
                                 <i class="fas fa-calendar-week"></i>
-                                <input type="date" name="masa_pajak_akhir" class="form-control" value="<?php echo e($sptpd->masa_pajak_akhir); ?>" required>
+                                <input type="date" name="masa_pajak_akhir" class="form-control" value="{{ $sptpd->masa_pajak_akhir }}" required>
                             </div>
                         </div>
                     </div>
@@ -394,29 +394,17 @@
             <!-- Section 4: Data Pajak -->
             <div class="form-section">
                 <h3 class="section-title">
-                    <i class="fas fa-calculator"></i>
+                    <i class="fas fa-money-bill-wave"></i>
                     Informasi Pajak
                 </h3>
                 
-                <div class="row">
-                    <div class="col-md-6">
-                        <div class="form-group">
-                            <label class="form-label">Tanggal Terima <span class="text-danger">*</span></label>
-                            <div class="input-icon">
-                                <i class="fas fa-calendar"></i>
-                                <input type="date" name="tanggal_terima" class="form-control" value="<?php echo e($sptpd->tanggal_terima); ?>" required>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
                 <div class="row">
                     <div class="col-md-8">
                         <div class="form-group">
                             <label class="form-label">Total Pajak yang Harus Dibayarkan <span class="text-danger">*</span></label>
                             <div class="input-icon">
                                 <i class="fas fa-money-bill-wave"></i>
-                                <input type="number" name="total_pajak_terutang" class="form-control" value="<?php echo e($sptpd->total_pajak_terutang); ?>" step="1" min="0" required id="totalPajak">
+                                <input type="number" name="total_pajak_terutang" class="form-control" value="{{ $sptpd->total_pajak_terutang }}" step="1" min="0" required id="totalPajak">
                             </div>
                             <div id="previewPajak" class="mt-2 text-muted"></div>
                         </div>
@@ -429,7 +417,7 @@
                             <label class="form-label">Keterangan (Opsional)</label>
                             <div class="input-icon">
                                 <i class="fas fa-comment"></i>
-                                <textarea name="keterangan" class="form-control" rows="4" style="padding-left: 48px; resize: vertical;" placeholder="Masukkan keterangan tambahan jika diperlukan..."><?php echo e($sptpd->keterangan); ?></textarea>
+                                <textarea name="keterangan" class="form-control" rows="4" style="padding-left: 48px; resize: vertical;" placeholder="Masukkan keterangan tambahan jika diperlukan...">{{ $sptpd->keterangan }}</textarea>
                             </div>
                         </div>
                     </div>
@@ -438,7 +426,7 @@
 
             <!-- Action Buttons -->
             <div class="btn-group">
-                <a href="<?php echo e(route('sptpd.index')); ?>" class="btn-modern btn-secondary">
+                <a href="{{ route('sptpd.index') }}" class="btn-modern btn-secondary">
                     <i class="fas fa-arrow-left"></i>
                     Kembali
                 </a>
@@ -450,9 +438,9 @@
         </form>
     </div>
 </div>
-<?php $__env->stopSection(); ?>
+@endsection
 
-<?php $__env->startSection('scripts'); ?>
+@section('scripts')
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
     $(document).ready(function() {
@@ -463,6 +451,31 @@
             $('#nama_subjek').val(selectedOption.data('nama'));
             $('#jenis_pajak').val(selectedOption.data('jenis'));
         });
+
+        // Format currency preview for total pajak
+        function updatePreviewPajak() {
+            const totalPajak = document.getElementById('totalPajak').value;
+            const previewElement = document.getElementById('previewPajak');
+            
+            if (totalPajak && !isNaN(totalPajak)) {
+                const formatted = new Intl.NumberFormat('id-ID', {
+                    style: 'currency',
+                    currency: 'IDR',
+                    minimumFractionDigits: 0,
+                    maximumFractionDigits: 0
+                }).format(totalPajak);
+                
+                previewElement.innerHTML = `<i class="fas fa-eye me-2"></i>Preview: <strong>${formatted}</strong>`;
+                previewElement.className = 'mt-2 text-success';
+            } else {
+                previewElement.innerHTML = '<i class="fas fa-info-circle me-2"></i>Masukkan nominal untuk melihat preview';
+                previewElement.className = 'mt-2 text-muted';
+            }
+        }
+
+        // Initialize preview and bind event
+        $('#totalPajak').on('input', updatePreviewPajak);
+        updatePreviewPajak(); // Initial call
 
         // Form submission with SweetAlert
         $('#sptpdEditForm').on('submit', function(e) {
@@ -505,7 +518,7 @@
                                 timer: 2000,
                                 timerProgressBar: true
                             }).then(() => {
-                                window.location.href = "<?php echo e(route('sptpd.index')); ?>";
+                                window.location.href = "{{ route('sptpd.index') }}";
                             });
                         },
                         error: function(xhr) {
@@ -528,46 +541,19 @@
                 }
             });
         });
-
-        // Format currency preview for total pajak
-        function updatePreviewPajak() {
-            const totalPajak = document.getElementById('totalPajak').value;
-            const previewElement = document.getElementById('previewPajak');
-            
-            if (totalPajak && !isNaN(totalPajak)) {
-                const formatted = new Intl.NumberFormat('id-ID', {
-                    style: 'currency',
-                    currency: 'IDR',
-                    minimumFractionDigits: 0,
-                    maximumFractionDigits: 0
-                }).format(totalPajak);
-                
-                previewElement.innerHTML = `<i class="fas fa-eye me-2"></i>Preview: <strong>${formatted}</strong>`;
-                previewElement.className = 'mt-2 text-success';
-            } else {
-                previewElement.innerHTML = '<i class="fas fa-info-circle me-2"></i>Masukkan nominal untuk melihat preview';
-                previewElement.className = 'mt-2 text-muted';
-            }
-        }
-
-        // Initialize preview and bind event
-        $('#totalPajak').on('input', updatePreviewPajak);
-        updatePreviewPajak(); // Initial call
     });
 </script>
 
-<?php if($errors->any()): ?>
+@if ($errors->any())
 <script>
     document.addEventListener('DOMContentLoaded', function() {
         Swal.fire({
             icon: 'error',
             title: 'Gagal!',
-            html: `<?php echo implode('<br>', $errors->all()); ?>`,
+            html: `{!! implode('<br>', $errors->all()) !!}`,
             confirmButtonColor: '#dc2626'
         });
     });
 </script>
-<?php endif; ?>
-<?php $__env->stopSection(); ?>
-
-<?php echo $__env->make('layouts.app', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?><?php /**PATH E:\Project\simpad\resources\views/sptpd/edit.blade.php ENDPATH**/ ?>
+@endif
+@endsection

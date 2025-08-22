@@ -1,3 +1,5 @@
+<?php $__env->startSection('title', 'SIMPAD - Sistem Informasi Manajemen Pajak Daerah'); ?>
+
 <?php $__env->startSection('content'); ?>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <meta name="csrf-token" content="<?php echo e(csrf_token()); ?>">
@@ -10,9 +12,12 @@
                             <button class="sidebar-toggle-btn me-3" id="sidebarToggle">
                                 <i class="fas fa-bars"></i>
                             </button>
+                            <div class="header-logo">
+                                <img src="<?php echo e(asset('assets/img/semut.svg')); ?>" alt="SIMPAD Logo" class="logo-img">
+                            </div>
                             <div>
-                                <h2 class="header-title">Executive Summary</h2>
-                                <p class="header-subtitle">Data SPTPD Wajib Pajak - Tahun 2025</p>
+                                <h2 class="header-title">SIMPAD</h2>
+                                <p class="header-subtitle">Sistem Informasi Manajemen Pajak Daerah - SPTPD Wajib Pajak</p>
                             </div>
                         </div>
                     </div>
@@ -138,7 +143,7 @@
                             <i class="fas fa-money-bill-wave"></i>
                         </div>
                         <div class="stat-content-modern">
-                            <h3 class="stat-number-modern"><?php echo e(number_format($sptpd->sum('pajak_terutang'), 0, ',', '.')); ?></h3>
+                            <h3 class="stat-number-modern"><?php echo e(number_format($sptpd->sum('total_pajak_terutang'), 0, ',', '.')); ?></h3>
                             <p class="stat-label-modern">Total Pajak Terutang (Rp)</p>
                         </div>
                         <div class="stat-bg-icon">
@@ -193,7 +198,7 @@
                                                 </th>
                                                 <th class="text-end">
                                                     <div class="th-content">
-                                                        <i class="fas fa-coins me-2"></i>Pajak Terutang
+                                                        <i class="fas fa-coins me-2"></i>Total Pajak Terutang
                                                     </div>
                                                 </th>
                                                 <th class="text-center">
@@ -252,7 +257,7 @@
                                                 </td>
                                                 <td class="text-end">
                                                     <div class="cell-content amount">
-                                                        <?php echo e(number_format($item->pajak_terutang ?? 0, 0, ',', '.')); ?>
+                                                        <?php echo e(number_format($item->total_pajak_terutang ?? 0, 0, ',', '.')); ?>
 
                                                     </div>
                                                 </td>
@@ -288,7 +293,6 @@
             </div>
         </div>
     </div>
-
 <!-- Modal View Detail SPTPD -->
 <div class="modal fade" id="viewSptpdModal" tabindex="-1">
     <div class="modal-dialog modal-xl">
@@ -506,29 +510,14 @@ function viewDetail(id) {
                                                     <td>${formatMonth(sptpd.masa_pajak_awal)} - ${formatMonth(sptpd.masa_pajak_akhir)}</td>
                                                 </tr>
                                                 <tr>
-                                                    <td><strong>Dasar Pengenaan:</strong></td>
-                                                    <td>Rp ${formatNumber(sptpd.dasar || 0)}</td>
-                                                </tr>
-                                                <tr>
-                                                    <td><strong>Tarif Pajak:</strong></td>
-                                                    <td>${sptpd.tarif || 0}%</td>
+                                                    <td><strong>Total Pajak Terutang:</strong></td>
+                                                    <td class="text-success"><strong>Rp ${formatNumber(sptpd.total_pajak_terutang || 0)}</strong></td>
                                                 </tr>
                                             </table>
                                         </div>
                                         <div class="col-md-6">
                                             <table class="table table-borderless">
-                                                <tr>
-                                                    <td><strong>Pajak Terutang:</strong></td>
-                                                    <td class="text-success"><strong>Rp ${formatNumber(sptpd.pajak_terutang || 0)}</strong></td>
-                                                </tr>
-                                                <tr>
-                                                    <td><strong>Denda:</strong></td>
-                                                    <td>Rp ${formatNumber(sptpd.denda || 0)}</td>
-                                                </tr>
-                                                <tr>
-                                                    <td><strong>Total Bayar:</strong></td>
-                                                    <td class="text-danger"><strong>Rp ${formatNumber((sptpd.pajak_terutang || 0) + (sptpd.denda || 0))}</strong></td>
-                                                </tr>
+                                                ${sptpd.keterangan ? `<tr><td><strong>Keterangan:</strong></td><td>${sptpd.keterangan}</td></tr>` : ''}
                                             </table>
                                         </div>
                                     </div>
@@ -620,10 +609,10 @@ function bayarSptpd(id) {
                 document.getElementById('bayarSptpdId').value = sptpd.id;
                 document.getElementById('bayarNomorSptpd').textContent = sptpd.nomor_sptpd || 'SPTPD-' + String(sptpd.id).padStart(6, '0');
                 document.getElementById('bayarPeriode').textContent = formatMonth(sptpd.masa_pajak_awal) + ' - ' + formatMonth(sptpd.masa_pajak_akhir);
-                document.getElementById('bayarPajakTerutang').textContent = 'Rp ' + formatNumber(sptpd.pajak_terutang || 0);
+                document.getElementById('bayarPajakTerutang').textContent = 'Rp ' + formatNumber(sptpd.total_pajak_terutang || 0);
                 
-                // Calculate total
-                const total = (sptpd.pajak_terutang || 0) + (sptpd.denda || 0) + (sptpd.bunga || 0) + (sptpd.kenaikan || 0) - (sptpd.kompensasi || 0) - (sptpd.setoran || 0);
+                // Calculate total - simplified to use only total_pajak_terutang
+                const total = (sptpd.total_pajak_terutang || 0);
                 document.getElementById('bayarTotalBayar').textContent = 'Rp ' + formatNumber(total);
                 
                 // Show modal
@@ -769,6 +758,17 @@ function buktiBayar(id) {
 
 .profile-role {
     color: rgba(255, 255, 255, 0.8);
+}
+
+/* Header Logo */
+.header-logo {
+    margin-right: 15px;
+}
+
+.logo-img {
+    width: 50px;
+    height: 50px;
+    object-fit: contain;
 }
 
 .modern-dropdown {
@@ -1179,6 +1179,120 @@ function buktiBayar(id) {
     .modern-table td,
     .modern-table th {
         padding: 15px 10px;
+    }
+}
+
+/* Footer Styles */
+.simpad-footer {
+    background: linear-gradient(135deg, #1f2937 0%, #374151 100%);
+    color: white;
+    padding: 30px 0;
+    margin-top: 50px;
+    border-top: 3px solid #00712D;
+}
+
+.footer-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 20px;
+}
+
+.footer-left {
+    display: flex;
+    align-items: center;
+}
+
+.footer-logo {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.footer-logo-img {
+    width: 40px;
+    height: 40px;
+    object-fit: contain;
+}
+
+.footer-brand {
+    display: flex;
+    flex-direction: column;
+}
+
+.footer-title {
+    font-size: 1.25rem;
+    font-weight: 700;
+    margin: 0;
+    color: white;
+}
+
+.footer-subtitle {
+    font-size: 0.8rem;
+    margin: 0;
+    opacity: 0.8;
+    color: rgba(255, 255, 255, 0.8);
+}
+
+.footer-right {
+    text-align: right;
+}
+
+.footer-info {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 5px;
+}
+
+.footer-copyright {
+    font-size: 0.9rem;
+    margin: 0;
+    color: rgba(255, 255, 255, 0.9);
+}
+
+.footer-version {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin: 0;
+}
+
+.version-badge {
+    background: #00712D;
+    color: white;
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.build-info {
+    font-size: 0.75rem;
+    color: rgba(255, 255, 255, 0.6);
+}
+
+@media (max-width: 768px) {
+    .footer-content {
+        flex-direction: column;
+        text-align: center;
+        gap: 15px;
+    }
+    
+    .footer-right {
+        text-align: center;
+    }
+    
+    .footer-info {
+        align-items: center;
+    }
+    
+    .footer-version {
+        flex-direction: column;
+        gap: 5px;
     }
 }
 </style>

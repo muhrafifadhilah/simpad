@@ -219,6 +219,7 @@
         <p class="header-subtitle">Surat Pemberitahuan Pajak Daerah - Form Tambah Data</p>
     </div>
 
+
     <!-- Modern Form -->
     <div class="modern-form-container">
         <form action="{{ route('sptpd.store') }}" method="POST" id="sptpdForm">
@@ -374,104 +375,62 @@
             <!-- Section 4: Data Keuangan -->
             <div class="form-section">
                 <h3 class="section-title">
-                    <i class="fas fa-calculator"></i>
-                    Data Keuangan & Perhitungan
+                    <i class="fas fa-money-bill-wave"></i>
+                    Data Keuangan
+                </h3>
+                
+                <div class="row justify-content-center">
+                    <div class="col-md-8">
+                        <div class="form-group">
+                            <label class="form-label" style="font-size: 1.1rem; font-weight: 700;">
+                                <i class="fas fa-receipt me-2"></i>
+                                Total Pajak yang Harus Dibayarkan
+                            </label>
+                            <div class="input-icon">
+                                <i class="fas fa-money-bill-wave"></i>
+                                <input type="number" name="total_pajak_terutang" id="total_pajak_terutang" class="form-control" step="0.01" required 
+                                    style="font-size: 1.2rem; font-weight: 600; height: 60px; border: 3px solid var(--primary-green); background: linear-gradient(135deg, #f8f9fa 0%, #ffffff 100%);" 
+                                    placeholder="Masukkan total pajak yang harus dibayarkan">
+                            </div>
+                            <small class="text-muted mt-1 d-block">
+                                <i class="fas fa-info-circle me-1"></i>
+                                Masukkan jumlah total pajak yang harus dibayarkan dalam Rupiah
+                            </small>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Preview Total -->
+                <div class="row justify-content-center mt-3">
+                    <div class="col-md-8">
+                        <div class="alert alert-info text-center" style="background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%); border: 1px solid #2196f3; border-radius: 12px;">
+                            <h5 style="color: #1565c0; font-weight: 700; margin-bottom: 8px;">
+                                <i class="fas fa-eye me-2"></i>Preview Total Pajak
+                            </h5>
+                            <div style="font-size: 1.5rem; font-weight: 800; color: #1565c0;" id="formatted_total">
+                                Rp 0
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Section 5: Keterangan -->
+            <div class="form-section">
+                <h3 class="section-title">
+                    <i class="fas fa-sticky-note"></i>
+                    Keterangan
                 </h3>
                 
                 <div class="row">
-                    <div class="col-md-4">
+                    <div class="col-md-12">
                         <div class="form-group">
-                            <label class="form-label">Dasar Pengenaan Pajak</label>
+                            <label class="form-label">Keterangan Tambahan (Opsional)</label>
                             <div class="input-icon">
-                                <i class="fas fa-money-bill-wave"></i>
-                                <input type="number" name="dasar_pengenaan" class="form-control" step="0.01" required>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-4">
-                        <div class="form-group">
-                            <label class="form-label">Tarif (%)</label>
-                            <div class="input-icon">
-                                <i class="fas fa-percentage"></i>
-                                <input type="number" name="tarif" class="form-control" value="0" step="0.001">
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-4">
-                        <div class="form-group">
-                            <label class="form-label">Omset/Tapping Box</label>
-                            <div class="input-icon">
-                                <i class="fas fa-chart-line"></i>
-                                <input type="number" name="omset_tapping_box" class="form-control" step="0.01" required>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="row">
-                    <div class="col-md-4">
-                        <div class="form-group">
-                            <label class="form-label">Jumlah Pajak Terutang</label>
-                            <div class="input-icon">
-                                <i class="fas fa-receipt"></i>
-                                <input type="number" name="pajak_terutang" class="form-control" step="0.01" required>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-4">
-                        <div class="form-group">
-                            <label class="form-label">Denda</label>
-                            <div class="input-icon">
-                                <i class="fas fa-exclamation-triangle"></i>
-                                <input type="number" name="denda" class="form-control" value="0" step="0.01">
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-4">
-                        <div class="form-group">
-                            <label class="form-label">Bunga</label>
-                            <div class="input-icon">
-                                <i class="fas fa-percentage"></i>
-                                <input type="number" name="bunga" class="form-control" value="0" step="0.01">
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="row">
-                    <div class="col-md-3">
-                        <div class="form-group">
-                            <label class="form-label">Setoran</label>
-                            <div class="input-icon">
-                                <i class="fas fa-coins"></i>
-                                <input type="number" name="setoran" class="form-control" value="0" step="0.01">
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-3">
-                        <div class="form-group">
-                            <label class="form-label">Kenaikan</label>
-                            <div class="input-icon">
-                                <i class="fas fa-arrow-up"></i>
-                                <input type="number" name="kenaikan" class="form-control" value="0" step="0.01">
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-3">
-                        <div class="form-group">
-                            <label class="form-label">Kompensasi</label>
-                            <div class="input-icon">
-                                <i class="fas fa-balance-scale"></i>
-                                <input type="number" name="kompensasi" class="form-control" value="0" step="0.01">
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-3">
-                        <div class="form-group">
-                            <label class="form-label">Lain-lain</label>
-                            <div class="input-icon">
-                                <i class="fas fa-ellipsis-h"></i>
-                                <input type="number" name="lain_lain" class="form-control" value="0" step="0.01">
+                                <i class="fas fa-comment"></i>
+                                <textarea name="keterangan" class="form-control" rows="4" 
+                                    placeholder="Masukkan keterangan tambahan jika diperlukan..."
+                                    style="padding-left: 48px; resize: vertical;"></textarea>
                             </div>
                         </div>
                     </div>
@@ -505,6 +464,36 @@
             $('#nama_pajak').val(selectedOption.data('nama'));
             $('#jenis_pajak').val(selectedOption.data('jenis'));
         });
+
+        // Format currency display
+        function formatRupiah(angka) {
+            var number_string = angka.toString().replace(/[^,\d]/g, ''),
+                split = number_string.split(','),
+                sisa = split[0].length % 3,
+                rupiah = split[0].substr(0, sisa),
+                ribuan = split[0].substr(sisa).match(/\d{3}/gi);
+                
+            if(ribuan){
+                separator = sisa ? '.' : '';
+                rupiah += separator + ribuan.join('.');
+            }
+            
+            rupiah = split[1] != undefined ? rupiah + ',' + split[1] : rupiah;
+            return 'Rp ' + rupiah;
+        }
+
+        // Update formatted total preview
+        $('#total_pajak_terutang').on('input', function() {
+            let value = $(this).val();
+            if (value && !isNaN(value) && value > 0) {
+                $('#formatted_total').text(formatRupiah(value));
+            } else {
+                $('#formatted_total').text('Rp 0');
+            }
+        });
+
+        // Initialize formatted display
+        $('#formatted_total').text('Rp 0');
 
         // Form submission with SweetAlert
         $('#sptpdForm').on('submit', function(e) {
@@ -571,13 +560,16 @@
             });
         });
 
-        // Format currency input
-        $('input[name="dasar_pengenaan"], input[name="tarif"], input[name="omset_tapping_box"], input[name="pajak_terutang"], input[name="denda"], input[name="bunga"], input[name="setoran"], input[name="kenaikan"], input[name="kompensasi"], input[name="lain_lain"]').on('input', function() {
-            // Allow decimal input for financial fields
+        // Validate numeric input only
+        $('#total_pajak_terutang').on('input', function() {
             let value = this.value;
-            if (value && !isNaN(value)) {
-                // Format for display but keep actual value
-                $(this).attr('data-original', value);
+            // Only allow numbers and decimal point
+            this.value = value.replace(/[^0-9.]/g, '');
+            
+            // Prevent multiple decimal points
+            let parts = this.value.split('.');
+            if (parts.length > 2) {
+                this.value = parts[0] + '.' + parts.slice(1).join('');
             }
         });
     });

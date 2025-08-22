@@ -32,8 +32,6 @@
                                 <i class="fas fa-chevron-down profile-dropdown-icon"></i>
                             </div>
                             <ul class="dropdown-menu dropdown-menu-end modern-dropdown">
-                                <li><a class="dropdown-item" href="{{ route('profile.index') }}"><i class="fas fa-user-circle me-2"></i>Profil</a></li>
-                                <li><hr class="dropdown-divider"></li>
                                 <li>
                                     <form method="POST" action="{{ route('logout') }}">
                                         @csrf

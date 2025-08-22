@@ -702,9 +702,6 @@
                             <a class="dropdown-item" href="<?php echo e(url('/subjek_pajak')); ?>">
                                 <i class="fas fa-user me-2"></i>Subjek Pajak
                             </a>
-                            <a class="dropdown-item" href="<?php echo e(url('/objek_pajak')); ?>">
-                                <i class="fas fa-building me-2"></i>Objek Pajak
-                            </a>
                         </div>
                     </div>
                     

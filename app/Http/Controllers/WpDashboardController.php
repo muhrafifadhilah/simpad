@@ -89,12 +89,12 @@ class WpDashboardController extends Controller
 
         foreach ($allJenis as $jenis) {
             $items = $grouped[$jenis] ?? collect();
-            $realisasi = $items->sum('pajak_terutang');
+            $realisasi = $items->sum('total_pajak_terutang');
 
             // Hitung realisasi per UPT untuk filter
             $realisasi_by_upt = [];
             foreach ($uptList as $upt) {
-                $realisasi_by_upt[$upt->id] = $items->where('upt_id', $upt->id)->sum('pajak_terutang');
+                $realisasi_by_upt[$upt->id] = $items->where('upt_id', $upt->id)->sum('total_pajak_terutang');
             }
 
             $taxData[] = [
@@ -121,13 +121,13 @@ class WpDashboardController extends Controller
             foreach ($bulan as $i => $b) {
                 $bulanData[$b] = $items->filter(function($item) use ($i) {
                     return \Carbon\Carbon::parse($item->masa_pajak_awal)->month == ($i+1);
-                })->sum('pajak_terutang');
+                })->sum('total_pajak_terutang');
                 // By UPT
                 $byUpt = [];
                 foreach ($uptList as $upt) {
                     $byUpt[$upt->id] = $items->filter(function($item) use ($i, $upt) {
                         return \Carbon\Carbon::parse($item->masa_pajak_awal)->month == ($i+1) && $item->upt_id == $upt->id;
-                    })->sum('pajak_terutang');
+                    })->sum('total_pajak_terutang');
                 }
                 $bulanData[$b.'_by_upt'] = $byUpt;
             }

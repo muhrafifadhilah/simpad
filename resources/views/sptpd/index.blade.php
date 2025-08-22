@@ -645,9 +645,8 @@
                             <th><i class="fas fa-building me-2"></i>Kelurahan</th>
                             <th><i class="fas fa-tags me-2"></i>Jenis Pajak</th>
                             <th><i class="fas fa-clock me-2"></i>Masa</th>
-                            <th><i class="fas fa-calculator me-2"></i>Dasar</th>
-                            <th><i class="fas fa-chart-line me-2"></i>Omset</th>
-                            <th><i class="fas fa-money-bill me-2"></i>Pajak</th>
+                            <th><i class="fas fa-money-bill me-2"></i>Total Pajak</th>
+                            <th><i class="fas fa-comment me-2"></i>Keterangan</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -715,9 +714,8 @@ $(function() {
             { data: 'kelurahan', name: 'kelurahan' },
             { data: 'jenis_pajak', name: 'jenis_pajak' },
             { data: 'masa', name: 'masa' },
-            { data: 'dasar', name: 'dasar', render: $.fn.dataTable.render.number(',', '.', 0, 'Rp ') },
-            { data: 'omset_tapping_box', name: 'omset_tapping_box', render: $.fn.dataTable.render.number(',', '.', 0, 'Rp ') },
-            { data: 'pajak', name: 'pajak', render: $.fn.dataTable.render.number(',', '.', 0, 'Rp ') }
+            { data: 'total_pajak_terutang', name: 'total_pajak', render: $.fn.dataTable.render.number(',', '.', 0, 'Rp ') },
+            { data: 'keterangan', name: 'keterangan' }
         ],
         order: [[1, 'desc']]
     });
