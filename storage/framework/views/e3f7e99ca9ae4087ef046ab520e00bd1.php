@@ -1,4 +1,10 @@
 <?php $__env->startSection('content'); ?>
+<?php
+    use App\Models\Kecamatan;
+    // Ambil daftar kecamatan sekali di sini (tanpa AJAX)
+    $kecList = Kecamatan::orderBy('nama')->get(['id','nama']);
+?>
+
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
 <style>
@@ -133,82 +139,20 @@
         justify-content: center;
     }
     
-    .btn-search {
-        background: var(--primary-green);
-        color: white;
-    }
-    
-    .btn-search:hover {
-        background: var(--accent-green);
-        transform: translateY(-2px);
-        box-shadow: var(--shadow-md);
-    }
-    
-    .btn-refresh {
-        background: var(--neutral-600);
-        color: white;
-    }
-    
-    .btn-refresh:hover {
-        background: var(--neutral-700);
-        transform: translateY(-2px);
-        box-shadow: var(--shadow-md);
-    }
-    
-    .btn-add {
-        background: #22b8cf;
-        color: white;
-    }
-    
-    .btn-add:hover {
-        background: #1a94a8;
-        transform: translateY(-2px);
-        box-shadow: var(--shadow-md);
-    }
-    
-    .btn-edit {
-        background: #fab005;
-        color: white;
-    }
-    
-    .btn-edit:hover {
-        background: #d19903;
-        transform: translateY(-2px);
-        box-shadow: var(--shadow-md);
-    }
-    
-    .btn-delete {
-        background: #fa5252;
-        color: white;
-    }
-    
-    .btn-delete:hover {
-        background: #e03131;
-        transform: translateY(-2px);
-        box-shadow: var(--shadow-md);
-    }
-    
-    .btn-print {
-        background: var(--neutral-700);
-        color: white;
-    }
-    
-    .btn-print:hover {
-        background: var(--neutral-800);
-        transform: translateY(-2px);
-        box-shadow: var(--shadow-md);
-    }
-
-    .btn-info {
-        background: #17a2b8;
-        color: white;
-    }
-    
-    .btn-info:hover {
-        background: #138496;
-        transform: translateY(-2px);
-        box-shadow: var(--shadow-md);
-    }
+    .btn-search { background: var(--primary-green); color: white; }
+    .btn-search:hover { background: var(--accent-green); transform: translateY(-2px); box-shadow: var(--shadow-md); }
+    .btn-refresh { background: var(--neutral-600); color: white; }
+    .btn-refresh:hover { background: var(--neutral-700); transform: translateY(-2px); box-shadow: var(--shadow-md); }
+    .btn-add { background: #22b8cf; color: white; }
+    .btn-add:hover { background: #1a94a8; transform: translateY(-2px); box-shadow: var(--shadow-md); }
+    .btn-edit { background: #fab005; color: white; }
+    .btn-edit:hover { background: #d19903; transform: translateY(-2px); box-shadow: var(--shadow-md); }
+    .btn-delete { background: #fa5252; color: white; }
+    .btn-delete:hover { background: #e03131; transform: translateY(-2px); box-shadow: var(--shadow-md); }
+    .btn-print { background: var(--neutral-700); color: white; }
+    .btn-print:hover { background: var(--neutral-800); transform: translateY(-2px); box-shadow: var(--shadow-md); }
+    .btn-info { background: #17a2b8; color: white; }
+    .btn-info:hover { background: #138496; transform: translateY(-2px); box-shadow: var(--shadow-md); }
     
     /* Modern Table */
     .modern-table-container {
@@ -220,10 +164,7 @@
         margin-bottom: 30px;
     }
     
-    .table-wrapper {
-        overflow-x: auto;
-        border-radius: var(--radius-lg);
-    }
+    .table-wrapper { overflow-x: auto; border-radius: var(--radius-lg); }
     
     .modern-table {
         width: 100%;
@@ -233,9 +174,7 @@
         min-width: 800px;
     }
     
-    .modern-table thead {
-        background: linear-gradient(135deg, var(--primary-green) 0%, var(--accent-green) 100%);
-    }
+    .modern-table thead { background: linear-gradient(135deg, var(--primary-green) 0%, var(--accent-green) 100%); }
     
     .modern-table thead th {
         color: white;
@@ -253,99 +192,31 @@
         cursor: pointer;
     }
     
-    .modern-table tbody tr:hover {
-        background: var(--neutral-100);
-    }
-    
-    .modern-table tbody tr.selected {
-        background: rgba(0, 113, 45, 0.1) !important;
-        border-left: 4px solid var(--primary-green);
-    }
-    
-    .modern-table tbody td {
-        padding: 16px;
-        border: none;
-        color: var(--neutral-700);
-        vertical-align: middle;
-    }
+    .modern-table tbody tr:hover { background: var(--neutral-100); }
+    .modern-table tbody tr.selected { background: rgba(0, 113, 45, 0.1) !important; border-left: 4px solid var(--primary-green); }
+    .modern-table tbody td { padding: 16px; border: none; color: var(--neutral-700); vertical-align: middle; }
     
     /* Status Badge */
-    .status-badge {
-        padding: 6px 14px;
-        border-radius: 20px;
-        font-size: 0.8rem;
-        font-weight: 600;
-        text-transform: uppercase;
-    }
-    
-    .status-active {
-        background: rgba(40, 167, 69, 0.2);
-        color: #28a745;
-    }
-    
-    .status-inactive {
-        background: rgba(220, 53, 69, 0.2);
-        color: #dc3545;
-    }
+    .status-badge { padding: 6px 14px; border-radius: 20px; font-size: 0.8rem; font-weight: 600; text-transform: uppercase; }
+    .status-active { background: rgba(40, 167, 69, 0.2); color: #28a745; }
+    .status-inactive { background: rgba(220, 53, 69, 0.2); color: #dc3545; }
     
     /* Table Container Improvements */
-    .table-wrapper::-webkit-scrollbar {
-        height: 8px;
-    }
-    
-    .table-wrapper::-webkit-scrollbar-track {
-        background: #f1f1f1;
-        border-radius: 4px;
-    }
-    
-    .table-wrapper::-webkit-scrollbar-thumb {
-        background: var(--primary-green);
-        border-radius: 4px;
-    }
-    
-    .table-wrapper::-webkit-scrollbar-thumb:hover {
-        background: var(--accent-green);
-    }
+    .table-wrapper::-webkit-scrollbar { height: 8px; }
+    .table-wrapper::-webkit-scrollbar-track { background: #f1f1f1; border-radius: 4px; }
+    .table-wrapper::-webkit-scrollbar-thumb { background: var(--primary-green); border-radius: 4px; }
+    .table-wrapper::-webkit-scrollbar-thumb:hover { background: var(--accent-green); }
     
     /* Responsive Design */
     @media (max-width: 768px) {
-        .main-content-wrapper {
-            padding: 15px;
-        }
-        
-        .container-fluid {
-            padding: 0 15px;
-        }
-        
-        .modern-header {
-            flex-direction: column;
-            gap: 16px;
-            text-align: center;
-            padding: 20px;
-        }
-        
-        .controls-grid {
-            grid-template-columns: 1fr;
-            gap: 16px;
-        }
-        
-        .action-buttons {
-            justify-content: center;
-            flex-wrap: wrap;
-        }
-        
-        .modern-table {
-            font-size: 0.85rem;
-        }
-        
-        .modern-table thead th,
-        .modern-table tbody td {
-            padding: 12px 8px;
-        }
-        
-        .modern-table thead th {
-            font-size: 0.85rem;
-        }
+        .main-content-wrapper { padding: 15px; }
+        .container-fluid { padding: 0 15px; }
+        .modern-header { flex-direction: column; gap: 16px; text-align: center; padding: 20px; }
+        .controls-grid { grid-template-columns: 1fr; gap: 16px; }
+        .action-buttons { justify-content: center; flex-wrap: wrap; }
+        .modern-table { font-size: 0.85rem; }
+        .modern-table thead th, .modern-table tbody td { padding: 12px 8px; }
+        .modern-table thead th { font-size: 0.85rem; }
     }
 </style>
 
@@ -492,7 +363,12 @@
                         </div>
                         <div class="mb-2">
                             <label>Kecamatan</label>
-                            <input type="text" name="kecamatan" id="kecamatan" class="form-control" required>
+                            <select name="kecamatan" id="kecamatan" class="form-control" required>
+                                <option value="">Pilih Kecamatan</option>
+                                <?php $__currentLoopData = $kecList; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $k): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                    <option value="<?php echo e($k->id); ?>"><?php echo e($k->nama); ?></option>
+                                <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                            </select>
                         </div>
                         <div class="mb-2">
                             <label>Kelurahan</label>
@@ -592,33 +468,8 @@ $(function() {
     }
     
     let selectedRowId = null;
-    let kecamatanData = []; // Store kecamatan data
-    
-    // Load kecamatan data when page loads
-    function loadKecamatanData() {
-        $.get('<?php echo e(route('api.kecamatan')); ?>', function(data) {
-            kecamatanData = data;
-            populateKecamatanDropdown();
-        }).fail(function() {
-            console.error('Failed to load kecamatan data');
-        });
-    }
-    
-    // Populate kecamatan dropdown
-    function populateKecamatanDropdown(selectedValue = '') {
-        let dropdown = $('#kecamatan');
-        dropdown.empty();
-        dropdown.append('<option value="">Pilih Kecamatan</option>');
-        
-        kecamatanData.forEach(function(kecamatan) {
-            let selected = selectedValue == kecamatan.id ? 'selected' : '';
-            dropdown.append(`<option value="${kecamatan.id}" ${selected}>${kecamatan.nama}</option>`);
-        });
-    }
-    
-    // Load kecamatan data on page load
-    loadKecamatanData();
-    
+
+    // ======== DataTable ========
     let table = $('#subjekTable').DataTable({
         processing: true,
         serverSide: true,
@@ -648,8 +499,10 @@ $(function() {
             { data: 'subjek_pajak', name: 'subjek_pajak' },
             { data: 'pemilik', name: 'pemilik' },
             { data: 'alamat', name: 'alamat' },
-            { data: 'kecamatan', name: 'kecamatan' },
+            { data: 'kecamatan', name: 'kecamatan' }, // biasanya nama
             { data: 'kelurahan', name: 'kelurahan' },
+            // Jika API Anda juga mengembalikan kecamatan_id, tambahkan kolom ini (bisa hidden):
+            // { data: 'kecamatan_id', name: 'kecamatan_id', visible: false, searchable: false },
         ]
     });
 
@@ -664,6 +517,30 @@ $(function() {
         }
     });
 
+    // ======== Helper: set opsi kecamatan saat edit ========
+    function setKecamatanDropdownFromRow(rowData) {
+        // 1) Prefer kecamatan_id jika tersedia di response
+        if (rowData && rowData.kecamatan_id) {
+            $('#kecamatan').val(rowData.kecamatan_id);
+            if ($('#kecamatan').val() === null) {
+                // jika id tidak ada di opsi (mis-match), fallback ke nama
+                matchKecamatanByText(rowData.kecamatan);
+            }
+            return;
+        }
+        // 2) Fallback: cocokkan berdasarkan teks nama kecamatan
+        matchKecamatanByText(rowData ? rowData.kecamatan : '');
+    }
+
+    function matchKecamatanByText(nama) {
+        $('#kecamatan').val('');
+        if (!nama) return;
+        $('#kecamatan option').filter(function(){
+            return $(this).text().trim().toLowerCase() === String(nama).trim().toLowerCase();
+        }).prop('selected', true);
+    }
+
+    // ======== Add ========
     $('#addSubjekBtn').click(function() {
         $('#subjekForm')[0].reset();
         $('#subjek_id').val('');
@@ -672,12 +549,12 @@ $(function() {
         let today = new Date().toISOString().slice(0, 10);
         $('#tanggal').val(today);
         $('#tanggal').prop('readonly', true);
+        $('#kecamatan').val(''); // kosongkan pilihan kecamatan
         $('#subjekModalLabel').text('Tambah Subjek Pajak');
-        // Populate kecamatan dropdown without selected value
-        populateKecamatanDropdown();
         $('#subjekModal').modal('show');
     });
 
+    // ======== Edit ========
     $('#editSubjekBtn').click(function() {
         if (!selectedRowId) {
             Swal.fire('Pilih baris yang akan diedit!', '', 'warning');
@@ -701,8 +578,10 @@ $(function() {
         $('#tanggalPengukuhan').val(rowData.tanggalPengukuhan);
         $('#pejabat').val(rowData.pejabat);
         $('#alamat').val(rowData.alamat);
-        // Populate kecamatan dropdown with selected value
-        populateKecamatanDropdown(rowData.kecamatan);
+
+        // Set kecamatan dari data row (id jika ada, fallback nama)
+        setKecamatanDropdownFromRow(rowData);
+
         $('#kelurahan').val(rowData.kelurahan);
         $('#kabupaten').val(rowData.kabupaten);
         $('#kode_pos').val(rowData.kode_pos);
@@ -713,6 +592,7 @@ $(function() {
         $('#subjekModal').modal('show');
     });
 
+    // ======== Delete ========
     $('#deleteSubjekBtn').click(function() {
         if (!selectedRowId) {
             Swal.fire('Pilih baris yang akan dihapus!', '', 'warning');
@@ -750,11 +630,12 @@ $(function() {
         });
     });
 
+    // ======== Cari & Refresh ========
     $('#btnCari, #btnRefresh').click(function() {
         table.ajax.reload();
     });
 
-
+    // ======== Submit Tambah/Edit ========
     $('#subjekForm').submit(function(e) {
         e.preventDefault();
         let formData = $(this).serializeArray();
@@ -774,7 +655,6 @@ $(function() {
             success: function(res) {
                 $('#subjekModal').modal('hide');
                 
-                // Tampilkan pesan sukses dengan informasi akun WP
                 if (res.message) {
                     Swal.fire({
                         title: 'Berhasil!',
@@ -798,6 +678,7 @@ $(function() {
         });
     });
 
+    // ======== Cetak Kartu ========
     $('#btnCetakKartu').click(function() {
         if (!selectedRowId) {
             Swal.fire('Pilih baris yang akan dicetak!', '', 'warning');
@@ -814,7 +695,7 @@ $(function() {
         window.open(url, '_blank');
     });
 
-    // Handle tombol Lihat Akun WP
+    // ======== Lihat Akun WP ========
     $('#btnLihatAkunWP').click(function() {
         if (!selectedRowId) {
             Swal.fire('Pilih baris subjek pajak yang akan dilihat akun WP-nya!', '', 'warning');
@@ -827,7 +708,6 @@ $(function() {
             return;
         }
 
-        // Ambil informasi akun WP
         $.get(`/subjek_pajak/wp-account/${rowData.id}`, function(response) {
             if (response.success) {
                 let data = response.data;
@@ -876,11 +756,9 @@ $(function() {
         });
     });
 
-    // Handle tombol Reset Password
+    // ======== Reset Password ========
     $('#btnResetPassword').click(function() {
-        if (!selectedRowId) {
-            return;
-        }
+        if (!selectedRowId) return;
 
         Swal.fire({
             title: 'Reset Password?',
